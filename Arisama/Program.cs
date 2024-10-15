@@ -4,7 +4,7 @@ internal abstract record VendingMachineStateContext
 {
     public sealed record Idle : VendingMachineStateContext;
 
-    public sealed record CoinInserted : VendingMachineStateContext;
+    public sealed record CoinInserted(int Amount) : VendingMachineStateContext;
 
     public sealed record ProductChosen : VendingMachineStateContext;
 
@@ -15,18 +15,18 @@ internal abstract record VendingMachineStateContext
 
 internal abstract record VendingMachineState
 {
-    public sealed record Idle : VendingMachineState<VendingMachineStateContext.Idle>;
+    public sealed record Idle(VendingMachineStateContext.Idle Context) : VendingMachineState<VendingMachineStateContext.Idle>(Context);
 
-    public sealed record CoinInserted : VendingMachineState<VendingMachineStateContext.CoinInserted>;
+    public sealed record CoinInserted(VendingMachineStateContext.CoinInserted Context) : VendingMachineState<VendingMachineStateContext.CoinInserted>(Context);
 
-    public sealed record ProductChosen : VendingMachineState<VendingMachineStateContext.ProductChosen>;
+    public sealed record ProductChosen(VendingMachineStateContext.ProductChosen Context) : VendingMachineState<VendingMachineStateContext.ProductChosen>(Context);
 
-    public sealed record ChangeReturned : VendingMachineState<VendingMachineStateContext.ChangeReturned>;
+    public sealed record ChangeReturned(VendingMachineStateContext.ChangeReturned Context) : VendingMachineState<VendingMachineStateContext.ChangeReturned>(Context);
 
-    public sealed record ProductDispensed : VendingMachineState<VendingMachineStateContext.ProductDispensed>;
+    public sealed record ProductDispensed(VendingMachineStateContext.ProductDispensed Context) : VendingMachineState<VendingMachineStateContext.ProductDispensed>(Context);
 }
 
-internal abstract record VendingMachineState<TContext> : VendingMachineState
+internal abstract record VendingMachineState<TContext>(TContext Context) : VendingMachineState
     where TContext : VendingMachineStateContext;
 
 internal class VendingMachine
@@ -57,29 +57,29 @@ internal class VendingMachine
     {
         var vendingMachine = new VendingMachine();
 
-        vendingMachine._states.Add(new VendingMachineState.Idle());
+        vendingMachine._states.Add(new VendingMachineState.Idle(new()));
 
         return vendingMachine;
     }
 
     public void InsertCoin(int amount)
     {
-        FromTo<VendingMachineState.Idle, VendingMachineState.CoinInserted>(from => new VendingMachineState.CoinInserted());
+        FromTo<VendingMachineState.Idle, VendingMachineState.CoinInserted>(from => new VendingMachineState.CoinInserted(new(Amount: amount)));
     }
 
     public void ChooseProduct()
     {
-        FromTo<VendingMachineState.CoinInserted, VendingMachineState.ProductChosen>(from => new VendingMachineState.ProductChosen());
+        FromTo<VendingMachineState.CoinInserted, VendingMachineState.ProductChosen>(from => new VendingMachineState.ProductChosen(new()));
     }
 
     public void ReturnChange()
     {
-        FromTo<VendingMachineState.CoinInserted, VendingMachineState.Idle>(from => new VendingMachineState.Idle());
+        FromTo<VendingMachineState.CoinInserted, VendingMachineState.Idle>(from => new VendingMachineState.Idle(new()));
     }
 
     public void DispenseProduct()
     {
-        FromTo<VendingMachineState.ProductChosen, VendingMachineState.ProductDispensed>(from => new VendingMachineState.ProductDispensed());
+        FromTo<VendingMachineState.ProductChosen, VendingMachineState.ProductDispensed>(from => new VendingMachineState.ProductDispensed(new()));
     }
 }
 
