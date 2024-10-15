@@ -1,5 +1,7 @@
 ﻿namespace Arisama;
 
+using static VendingMachineState;
+
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 internal readonly partial struct Coin
 {
@@ -86,29 +88,29 @@ internal class VendingMachine
     {
         var vendingMachine = new VendingMachine();
 
-        vendingMachine._states.Add(new VendingMachineState.Idle(new()));
+        vendingMachine._states.Add(new Idle(new()));
 
         return vendingMachine;
     }
 
     public void InsertCoin(Coin amount)
     {
-        FromTo<VendingMachineState.ICanInsertCoin, VendingMachineState.CoinInserted>(from => new VendingMachineState.CoinInserted(new(Amount: amount, TotalAmount: from.TotalAmount + amount)));
+        FromTo<ICanInsertCoin, CoinInserted>(from => new CoinInserted(new(Amount: amount, TotalAmount: from.TotalAmount + amount)));
     }
 
     public void ChooseProduct()
     {
-        FromTo<VendingMachineState.ICanChooseProduct, VendingMachineState.ProductChosen>(from => new VendingMachineState.ProductChosen(new()));
+        FromTo<ICanChooseProduct, ProductChosen>(from => new ProductChosen(new()));
     }
 
     public void ReturnChange()
     {
-        FromTo<VendingMachineState.ICanReturnChange, VendingMachineState.Idle>(from => new VendingMachineState.Idle(new()));
+        FromTo<ICanReturnChange, Idle>(from => new Idle(new()));
     }
 
     public void DispenseProduct()
     {
-        FromTo<VendingMachineState.ICanDispenseProduct, VendingMachineState.ProductDispensed>(from => new VendingMachineState.ProductDispensed(new()));
+        FromTo<ICanDispenseProduct, ProductDispensed>(from => new ProductDispensed(new()));
     }
 }
 
