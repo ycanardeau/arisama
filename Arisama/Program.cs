@@ -1,10 +1,16 @@
 ﻿namespace Arisama;
 
+[StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
+internal readonly partial struct Coin
+{
+    public static Coin operator +(Coin left, Coin right) => new(left.Value + right.Value);
+}
+
 internal abstract record VendingMachineStateContext
 {
     public sealed record Idle : VendingMachineStateContext;
 
-    public sealed record CoinInserted(int Amount, int TotalAmount) : VendingMachineStateContext;
+    public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : VendingMachineStateContext;
 
     public sealed record ProductChosen : VendingMachineStateContext;
 
@@ -22,7 +28,7 @@ internal abstract record VendingMachineState(VendingMachineStateContext ContextB
 {
     public interface ICanInsertCoin : IVendingMachineState
     {
-        int TotalAmount { get; }
+        Coin TotalAmount { get; }
     }
 
     public interface ICanChooseProduct : IVendingMachineState;
@@ -33,12 +39,12 @@ internal abstract record VendingMachineState(VendingMachineStateContext ContextB
 
     public sealed record Idle(VendingMachineStateContext.Idle Context) : VendingMachineState<VendingMachineStateContext.Idle>(Context), ICanInsertCoin
     {
-        int ICanInsertCoin.TotalAmount => 0;
+        Coin ICanInsertCoin.TotalAmount => Coin.Empty;
     }
 
     public sealed record CoinInserted(VendingMachineStateContext.CoinInserted Context) : VendingMachineState<VendingMachineStateContext.CoinInserted>(Context), ICanInsertCoin, ICanChooseProduct, ICanReturnChange
     {
-        int ICanInsertCoin.TotalAmount => Context.TotalAmount;
+        Coin ICanInsertCoin.TotalAmount => Context.TotalAmount;
     }
 
     public sealed record ProductChosen(VendingMachineStateContext.ProductChosen Context) : VendingMachineState<VendingMachineStateContext.ProductChosen>(Context), ICanDispenseProduct;
@@ -85,7 +91,7 @@ internal class VendingMachine
         return vendingMachine;
     }
 
-    public void InsertCoin(int amount)
+    public void InsertCoin(Coin amount)
     {
         FromTo<VendingMachineState.ICanInsertCoin, VendingMachineState.CoinInserted>(from => new VendingMachineState.CoinInserted(new(Amount: amount, TotalAmount: from.TotalAmount + amount)));
     }
@@ -112,11 +118,11 @@ internal static class Program
     {
         var vendingMachine = VendingMachine.Create();
 
-        vendingMachine.InsertCoin(amount: 100);
+        vendingMachine.InsertCoin(amount: new Coin(100));
 
-        vendingMachine.InsertCoin(amount: 50);
+        vendingMachine.InsertCoin(amount: new Coin(50));
 
-        vendingMachine.InsertCoin(amount: 10);
+        vendingMachine.InsertCoin(amount: new Coin(10));
 
         vendingMachine.ChooseProduct();
 
