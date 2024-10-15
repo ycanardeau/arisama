@@ -13,13 +13,23 @@ internal abstract record VendingMachineStateContext
     public sealed record ProductDispensed : VendingMachineStateContext;
 }
 
-internal abstract record VendingMachineState
+internal interface IVendingMachineState;
+
+internal abstract record VendingMachineState : IVendingMachineState
 {
-    public sealed record Idle(VendingMachineStateContext.Idle Context) : VendingMachineState<VendingMachineStateContext.Idle>(Context);
+    public interface ICanInsertCoin : IVendingMachineState;
 
-    public sealed record CoinInserted(VendingMachineStateContext.CoinInserted Context) : VendingMachineState<VendingMachineStateContext.CoinInserted>(Context);
+    public interface ICanChooseProduct : IVendingMachineState;
 
-    public sealed record ProductChosen(VendingMachineStateContext.ProductChosen Context) : VendingMachineState<VendingMachineStateContext.ProductChosen>(Context);
+    public interface ICanReturnChange : IVendingMachineState;
+
+    public interface ICanDispenseProduct : IVendingMachineState;
+
+    public sealed record Idle(VendingMachineStateContext.Idle Context) : VendingMachineState<VendingMachineStateContext.Idle>(Context), ICanInsertCoin;
+
+    public sealed record CoinInserted(VendingMachineStateContext.CoinInserted Context) : VendingMachineState<VendingMachineStateContext.CoinInserted>(Context), ICanInsertCoin, ICanChooseProduct, ICanReturnChange;
+
+    public sealed record ProductChosen(VendingMachineStateContext.ProductChosen Context) : VendingMachineState<VendingMachineStateContext.ProductChosen>(Context), ICanDispenseProduct;
 
     public sealed record ChangeReturned(VendingMachineStateContext.ChangeReturned Context) : VendingMachineState<VendingMachineStateContext.ChangeReturned>(Context);
 
@@ -31,14 +41,14 @@ internal abstract record VendingMachineState<TContext>(TContext Context) : Vendi
 
 internal class VendingMachine
 {
-    private readonly List<VendingMachineState> _states = [];
-    public IReadOnlyCollection<VendingMachineState> States => _states.AsReadOnly();
+    private readonly List<IVendingMachineState> _states = [];
+    public IReadOnlyCollection<IVendingMachineState> States => _states.AsReadOnly();
 
     private VendingMachine() { }
 
     private void FromTo<TFrom, TTo>(Func<TFrom, TTo> callback)
-        where TFrom : VendingMachineState
-        where TTo : VendingMachineState
+        where TFrom : class, IVendingMachineState
+        where TTo : class, IVendingMachineState
     {
         Console.WriteLine($"Transitioning from {typeof(TFrom).Name} to {typeof(TTo).Name}.");
 
@@ -64,22 +74,22 @@ internal class VendingMachine
 
     public void InsertCoin(int amount)
     {
-        FromTo<VendingMachineState.Idle, VendingMachineState.CoinInserted>(from => new VendingMachineState.CoinInserted(new(Amount: amount)));
+        FromTo<VendingMachineState.ICanInsertCoin, VendingMachineState.CoinInserted>(from => new VendingMachineState.CoinInserted(new(Amount: amount)));
     }
 
     public void ChooseProduct()
     {
-        FromTo<VendingMachineState.CoinInserted, VendingMachineState.ProductChosen>(from => new VendingMachineState.ProductChosen(new()));
+        FromTo<VendingMachineState.ICanChooseProduct, VendingMachineState.ProductChosen>(from => new VendingMachineState.ProductChosen(new()));
     }
 
     public void ReturnChange()
     {
-        FromTo<VendingMachineState.CoinInserted, VendingMachineState.Idle>(from => new VendingMachineState.Idle(new()));
+        FromTo<VendingMachineState.ICanReturnChange, VendingMachineState.Idle>(from => new VendingMachineState.Idle(new()));
     }
 
     public void DispenseProduct()
     {
-        FromTo<VendingMachineState.ProductChosen, VendingMachineState.ProductDispensed>(from => new VendingMachineState.ProductDispensed(new()));
+        FromTo<VendingMachineState.ICanDispenseProduct, VendingMachineState.ProductDispensed>(from => new VendingMachineState.ProductDispensed(new()));
     }
 }
 
@@ -90,6 +100,10 @@ internal static class Program
         var vendingMachine = VendingMachine.Create();
 
         vendingMachine.InsertCoin(amount: 100);
+
+        vendingMachine.InsertCoin(amount: 50);
+
+        vendingMachine.InsertCoin(amount: 10);
 
         vendingMachine.ChooseProduct();
 
