@@ -96,6 +96,9 @@ internal interface IVendingMachineCommand
 
 internal class VendingMachine
 {
+    private readonly List<IVendingMachineState> _states = [];
+    public IReadOnlyCollection<IVendingMachineState> States => _states.AsReadOnly();
+
     public interface IFromBuilder<TFrom>
         where TFrom : class, IVendingMachineState
     {
@@ -124,9 +127,6 @@ internal class VendingMachine
             Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
         }
     }
-
-    private readonly List<IVendingMachineState> _states = [];
-    public IReadOnlyCollection<IVendingMachineState> States => _states.AsReadOnly();
 
     private VendingMachine() { }
 
