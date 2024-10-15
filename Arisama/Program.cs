@@ -59,6 +59,47 @@ internal abstract record VendingMachineState(VendingMachineStateContext ContextB
 internal abstract record VendingMachineState<TContext>(TContext Context) : VendingMachineState(Context)
     where TContext : VendingMachineStateContext;
 
+internal interface IVendingMachineCommand
+{
+    Task ExecuteAsync(VendingMachine vendingMachine);
+}
+
+internal sealed record InsertCoinVendingMachineCommand(Coin Amount) : IVendingMachineCommand
+{
+    public Task ExecuteAsync(VendingMachine vendingMachine)
+    {
+        vendingMachine.FromTo<ICanInsertCoin, CoinInserted>(from => new CoinInserted(new(Amount: Amount, TotalAmount: from.TotalAmount + Amount)));
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed record ChooseProductVendingMachineCommand : IVendingMachineCommand
+{
+    public Task ExecuteAsync(VendingMachine vendingMachine)
+    {
+        vendingMachine.FromTo<ICanChooseProduct, ProductChosen>(from => new ProductChosen(new()));
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed record ReturnChangeVendingMachineCommand : IVendingMachineCommand
+{
+    public Task ExecuteAsync(VendingMachine vendingMachine)
+    {
+        vendingMachine.FromTo<ICanReturnChange, Idle>(from => new Idle(new()));
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed record DispenseProductVendingMachineCommand : IVendingMachineCommand
+{
+    public Task ExecuteAsync(VendingMachine vendingMachine)
+    {
+        vendingMachine.FromTo<ICanDispenseProduct, ProductDispensed>(from => new ProductDispensed(new()));
+        return Task.CompletedTask;
+    }
+}
+
 internal class VendingMachine
 {
     private readonly List<IVendingMachineState> _states = [];
@@ -66,7 +107,16 @@ internal class VendingMachine
 
     private VendingMachine() { }
 
-    private void FromTo<TFrom, TTo>(Func<TFrom, TTo> callback)
+    public static VendingMachine Create()
+    {
+        var vendingMachine = new VendingMachine();
+
+        vendingMachine._states.Add(new Idle(new()));
+
+        return vendingMachine;
+    }
+
+    public void FromTo<TFrom, TTo>(Func<TFrom, TTo> callback)
         where TFrom : class, IVendingMachineState
         where TTo : class, IVendingMachineState
     {
@@ -84,50 +134,29 @@ internal class VendingMachine
         Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to.ContextBase}).");
     }
 
-    public static VendingMachine Create()
+    public Task ExecuteAsync(IVendingMachineCommand command)
     {
-        var vendingMachine = new VendingMachine();
-
-        vendingMachine._states.Add(new Idle(new()));
-
-        return vendingMachine;
-    }
-
-    public void InsertCoin(Coin amount)
-    {
-        FromTo<ICanInsertCoin, CoinInserted>(from => new CoinInserted(new(Amount: amount, TotalAmount: from.TotalAmount + amount)));
-    }
-
-    public void ChooseProduct()
-    {
-        FromTo<ICanChooseProduct, ProductChosen>(from => new ProductChosen(new()));
-    }
-
-    public void ReturnChange()
-    {
-        FromTo<ICanReturnChange, Idle>(from => new Idle(new()));
-    }
-
-    public void DispenseProduct()
-    {
-        FromTo<ICanDispenseProduct, ProductDispensed>(from => new ProductDispensed(new()));
+        return command.ExecuteAsync(this);
     }
 }
 
 internal static class Program
 {
-    public static void Main()
+    public static async Task Main()
     {
         var vendingMachine = VendingMachine.Create();
 
-        vendingMachine.InsertCoin(amount: new Coin(100));
+        IVendingMachineCommand[] commands = [
+            new InsertCoinVendingMachineCommand(Amount: new(100)),
+            new InsertCoinVendingMachineCommand(Amount: new(50)),
+            new InsertCoinVendingMachineCommand(Amount: new(10)),
+            new ChooseProductVendingMachineCommand(),
+            new DispenseProductVendingMachineCommand(),
+        ];
 
-        vendingMachine.InsertCoin(amount: new Coin(50));
-
-        vendingMachine.InsertCoin(amount: new Coin(10));
-
-        vendingMachine.ChooseProduct();
-
-        vendingMachine.DispenseProduct();
+        foreach (var command in commands)
+        {
+            await vendingMachine.ExecuteAsync(command);
+        }
     }
 }
