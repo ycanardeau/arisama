@@ -8,25 +8,9 @@ internal readonly partial struct Coin
     public static Coin operator +(Coin left, Coin right) => new(left.Value + right.Value);
 }
 
-internal abstract record VendingMachineStateContext
-{
-    public sealed record Idle : VendingMachineStateContext;
+internal interface IVendingMachineState;
 
-    public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : VendingMachineStateContext;
-
-    public sealed record ProductChosen : VendingMachineStateContext;
-
-    public sealed record ChangeReturned : VendingMachineStateContext;
-
-    public sealed record ProductDispensed : VendingMachineStateContext;
-}
-
-internal interface IVendingMachineState
-{
-    VendingMachineStateContext ContextBase { get; }
-}
-
-internal abstract record VendingMachineState(VendingMachineStateContext ContextBase) : IVendingMachineState
+internal abstract record VendingMachineState : IVendingMachineState
 {
     public interface ICanInsertCoin : IVendingMachineState
     {
@@ -39,25 +23,19 @@ internal abstract record VendingMachineState(VendingMachineStateContext ContextB
 
     public interface ICanDispenseProduct : IVendingMachineState;
 
-    public sealed record Idle(VendingMachineStateContext.Idle Context) : VendingMachineState<VendingMachineStateContext.Idle>(Context), ICanInsertCoin
+    public sealed record Idle : VendingMachineState, ICanInsertCoin
     {
-        Coin ICanInsertCoin.TotalAmount => Coin.Empty;
+        public Coin TotalAmount { get; } = Coin.Empty;
     }
 
-    public sealed record CoinInserted(VendingMachineStateContext.CoinInserted Context) : VendingMachineState<VendingMachineStateContext.CoinInserted>(Context), ICanInsertCoin, ICanChooseProduct, ICanReturnChange
-    {
-        Coin ICanInsertCoin.TotalAmount => Context.TotalAmount;
-    }
+    public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : VendingMachineState, ICanInsertCoin, ICanChooseProduct, ICanReturnChange;
 
-    public sealed record ProductChosen(VendingMachineStateContext.ProductChosen Context) : VendingMachineState<VendingMachineStateContext.ProductChosen>(Context), ICanDispenseProduct;
+    public sealed record ProductChosen : VendingMachineState, ICanDispenseProduct;
 
-    public sealed record ChangeReturned(VendingMachineStateContext.ChangeReturned Context) : VendingMachineState<VendingMachineStateContext.ChangeReturned>(Context);
+    public sealed record ChangeReturned : VendingMachineState;
 
-    public sealed record ProductDispensed(VendingMachineStateContext.ProductDispensed Context) : VendingMachineState<VendingMachineStateContext.ProductDispensed>(Context);
+    public sealed record ProductDispensed : VendingMachineState;
 }
-
-internal abstract record VendingMachineState<TContext>(TContext Context) : VendingMachineState(Context)
-    where TContext : VendingMachineStateContext;
 
 internal interface IVendingMachineCommand
 {
@@ -68,7 +46,7 @@ internal sealed record InsertCoinVendingMachineCommand(Coin Amount) : IVendingMa
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanInsertCoin, CoinInserted>(from => new CoinInserted(new(Amount: Amount, TotalAmount: from.TotalAmount + Amount)));
+        vendingMachine.FromTo<ICanInsertCoin, CoinInserted>(from => new CoinInserted(Amount: Amount, TotalAmount: from.TotalAmount + Amount));
         return Task.CompletedTask;
     }
 }
@@ -77,7 +55,7 @@ internal sealed record ChooseProductVendingMachineCommand : IVendingMachineComma
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanChooseProduct, ProductChosen>(from => new ProductChosen(new()));
+        vendingMachine.FromTo<ICanChooseProduct, ProductChosen>(from => new ProductChosen());
         return Task.CompletedTask;
     }
 }
@@ -86,7 +64,7 @@ internal sealed record ReturnChangeVendingMachineCommand : IVendingMachineComman
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanReturnChange, Idle>(from => new Idle(new()));
+        vendingMachine.FromTo<ICanReturnChange, Idle>(from => new Idle());
         return Task.CompletedTask;
     }
 }
@@ -95,15 +73,15 @@ internal sealed record DispenseProductVendingMachineCommand : IVendingMachineCom
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanDispenseProduct, ProductDispensed>(from => new ProductDispensed(new()));
+        vendingMachine.FromTo<ICanDispenseProduct, ProductDispensed>(from => new ProductDispensed());
         return Task.CompletedTask;
     }
 }
 
 internal class VendingMachine
 {
-    private readonly List<IVendingMachineState> _states = [];
-    public IReadOnlyCollection<IVendingMachineState> States => _states.AsReadOnly();
+    private readonly List<VendingMachineState> _states = [];
+    public IReadOnlyCollection<VendingMachineState> States => _states.AsReadOnly();
 
     private VendingMachine() { }
 
@@ -111,14 +89,14 @@ internal class VendingMachine
     {
         var vendingMachine = new VendingMachine();
 
-        vendingMachine._states.Add(new Idle(new()));
+        vendingMachine._states.Add(new Idle());
 
         return vendingMachine;
     }
 
     public void FromTo<TFrom, TTo>(Func<TFrom, TTo> callback)
         where TFrom : class, IVendingMachineState
-        where TTo : class, IVendingMachineState
+        where TTo : VendingMachineState
     {
         if (States.Last() is not TFrom from)
         {
@@ -126,12 +104,12 @@ internal class VendingMachine
             return;
         }
 
-        Console.WriteLine($"Transitioning from {typeof(TFrom).Name} (Context: {from.ContextBase}).");
+        Console.WriteLine($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
 
         var to = callback(from);
         _states.Add(to);
 
-        Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to.ContextBase}).");
+        Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
     }
 
     public Task ExecuteAsync(IVendingMachineCommand command)
