@@ -8,6 +8,9 @@ internal readonly partial struct Coin
     public static Coin operator +(Coin left, Coin right) => new(left.Value + right.Value);
 }
 
+[StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
+internal readonly partial struct ProductId;
+
 internal interface IVendingMachineState;
 
 internal abstract record VendingMachineState : IVendingMachineState
@@ -21,7 +24,10 @@ internal abstract record VendingMachineState : IVendingMachineState
 
     public interface ICanReturnChange : IVendingMachineState;
 
-    public interface ICanDispenseProduct : IVendingMachineState;
+    public interface ICanDispenseProduct : IVendingMachineState
+    {
+        ProductId ProductId { get; }
+    }
 
     public sealed record Idle : VendingMachineState, ICanInsertCoin
     {
@@ -30,11 +36,11 @@ internal abstract record VendingMachineState : IVendingMachineState
 
     public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : VendingMachineState, ICanInsertCoin, ICanChooseProduct, ICanReturnChange;
 
-    public sealed record ProductChosen : VendingMachineState, ICanDispenseProduct;
+    public sealed record ProductChosen(ProductId ProductId) : VendingMachineState, ICanDispenseProduct;
 
     public sealed record ChangeReturned : VendingMachineState;
 
-    public sealed record ProductDispensed : VendingMachineState;
+    public sealed record ProductDispensed(ProductId ProductId) : VendingMachineState;
 }
 
 internal interface IVendingMachineCommand
@@ -55,7 +61,7 @@ internal sealed record ChooseProductVendingMachineCommand : IVendingMachineComma
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanChooseProduct, ProductChosen>(from => new ProductChosen());
+        vendingMachine.FromTo<ICanChooseProduct, ProductChosen>(from => new ProductChosen(ProductId: new(1)));
         return Task.CompletedTask;
     }
 }
@@ -73,7 +79,7 @@ internal sealed record DispenseProductVendingMachineCommand : IVendingMachineCom
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanDispenseProduct, ProductDispensed>(from => new ProductDispensed());
+        vendingMachine.FromTo<ICanDispenseProduct, ProductDispensed>(from => new ProductDispensed(ProductId: from.ProductId));
         return Task.CompletedTask;
     }
 }
@@ -135,6 +141,12 @@ internal static class Program
         foreach (var command in commands)
         {
             await vendingMachine.ExecuteAsync(command);
+            Console.WriteLine();
+        }
+
+        foreach (var state in vendingMachine.States)
+        {
+            Console.WriteLine(state);
         }
     }
 }
