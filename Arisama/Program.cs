@@ -53,7 +53,9 @@ internal sealed record InsertCoinVendingMachineCommand(Coin Amount) : IVendingMa
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanInsertCoin, CoinInserted>(from => new CoinInserted(Amount: Amount, TotalAmount: from.TotalAmount + Amount));
+        vendingMachine.From<ICanInsertCoin>()
+            .To(from => new CoinInserted(Amount: Amount, TotalAmount: from.TotalAmount + Amount));
+
         return Task.CompletedTask;
     }
 }
@@ -62,7 +64,9 @@ internal sealed record ChooseProductVendingMachineCommand : IVendingMachineComma
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanChooseProduct, ProductChosen>(from => new ProductChosen(ProductId: new(1)));
+        vendingMachine.From<ICanChooseProduct>()
+            .To(from => new ProductChosen(ProductId: new(1)));
+
         return Task.CompletedTask;
     }
 }
@@ -71,7 +75,9 @@ internal sealed record ReturnChangeVendingMachineCommand : IVendingMachineComman
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanReturnChange, ChangeReturned>(from => new ChangeReturned(TotalAmount: from.TotalAmount));
+        vendingMachine.From<ICanReturnChange>()
+            .To(from => new ChangeReturned(TotalAmount: from.TotalAmount));
+
         return Task.CompletedTask;
     }
 }
@@ -80,13 +86,44 @@ internal sealed record DispenseProductVendingMachineCommand : IVendingMachineCom
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanDispenseProduct, ProductDispensed>(from => new ProductDispensed(ProductId: from.ProductId));
+        vendingMachine.From<ICanDispenseProduct>()
+            .To(from => new ProductDispensed(ProductId: from.ProductId));
+
         return Task.CompletedTask;
     }
 }
 
 internal class VendingMachine
 {
+    public interface IFromBuilder<TFrom>
+        where TFrom : class, IVendingMachineState
+    {
+        void To<TTo>(Func<TFrom, TTo> callback)
+            where TTo : class, IVendingMachineState;
+    }
+
+    private sealed class FromBuilder<TFrom>(VendingMachine vendingMachine) : IFromBuilder<TFrom>
+        where TFrom : class, IVendingMachineState
+    {
+        public void To<TTo>(Func<TFrom, TTo> callback)
+            where TTo : class, IVendingMachineState
+        {
+            var latestState = vendingMachine.States.Last();
+            if (latestState is not TFrom from)
+            {
+                Console.WriteLine($"Invalid transition from {latestState.GetType().Name} to {typeof(TTo).Name}.");
+                return;
+            }
+
+            Console.WriteLine($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
+
+            var to = callback(from);
+            vendingMachine._states.Add(to);
+
+            Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
+        }
+    }
+
     private readonly List<IVendingMachineState> _states = [];
     public IReadOnlyCollection<IVendingMachineState> States => _states.AsReadOnly();
 
@@ -101,23 +138,10 @@ internal class VendingMachine
         return vendingMachine;
     }
 
-    public void FromTo<TFrom, TTo>(Func<TFrom, TTo> callback)
+    public IFromBuilder<TFrom> From<TFrom>()
         where TFrom : class, IVendingMachineState
-        where TTo : class, IVendingMachineState
     {
-        var latestState = States.Last();
-        if (latestState is not TFrom from)
-        {
-            Console.WriteLine($"Invalid transition from {latestState.GetType().Name} to {typeof(TTo).Name}.");
-            return;
-        }
-
-        Console.WriteLine($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
-
-        var to = callback(from);
-        _states.Add(to);
-
-        Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
+        return new FromBuilder<TFrom>(this);
     }
 
     public Task ExecuteAsync(IVendingMachineCommand command)
