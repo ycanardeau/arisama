@@ -2,53 +2,56 @@ namespace Arisama;
 
 public interface IState;
 
-public interface ICommand<TState>
-	where TState : class, IState
-{
-	Task ExecuteAsync(StateMachine<TState> stateMachine);
-}
+public interface ICommand;
 
-public sealed class StateMachine<TState>
+public sealed class StateMachine<TState, TCommand>
 	where TState : class, IState
+	where TCommand : class, ICommand
 {
 	private readonly List<TState> _states = [];
 	public IReadOnlyCollection<TState> States => _states.AsReadOnly();
 
-	public interface IStateMachineBuilderFrom<TFrom>
-		where TFrom : class, TState
+	public interface IStateMachineBuilderOn<TFrom, TOn>
+		where TOn : class, TCommand
 	{
-		void To<TTo>(Func<TFrom, TTo> callback)
+		void To<TTo>(Func<TFrom, TOn, TTo> callback)
 			where TTo : class, TState;
 	}
 
-	private sealed class StateMachineBuilderFrom<TFrom>(StateMachine<TState> stateMachine) : IStateMachineBuilderFrom<TFrom>
+	private sealed class StateMachineBuilderOn<TFrom, TOn>(StateMachine<TState, TCommand> stateMachine) : IStateMachineBuilderOn<TFrom, TOn>
 		where TFrom : class, TState
+		where TOn : class, TCommand
 	{
-		public void To<TTo>(Func<TFrom, TTo> callback)
+		public void To<TTo>(Func<TFrom, TOn, TTo> callback)
 			where TTo : class, TState
 		{
-			var latestState = stateMachine.States.Last();
-			if (latestState is not TFrom from)
-			{
-				Console.WriteLine($"Invalid transition from {latestState.GetType().Name} to {typeof(TTo).Name}.");
-				return;
-			}
+			throw new NotImplementedException();
+		}
+	}
 
-			Console.WriteLine($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
+	public interface IStateMachineBuilderFrom<TFrom>
+		where TFrom : class, TState
+	{
+		IStateMachineBuilderOn<TFrom, TOn> On<TOn>()
+			where TOn : class, TCommand;
+	}
 
-			var to = callback(from);
-			stateMachine._states.Add(to);
-
-			Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
+	private sealed class StateMachineBuilderFrom<TFrom>(StateMachine<TState, TCommand> stateMachine) : IStateMachineBuilderFrom<TFrom>
+		where TFrom : class, TState
+	{
+		public IStateMachineBuilderOn<TFrom, TOn> On<TOn>()
+			where TOn : class, TCommand
+		{
+			return new StateMachineBuilderOn<TFrom, TOn>(stateMachine);
 		}
 	}
 
 	private StateMachine() { }
 
-	public static StateMachine<TState> Create<TInitialState>()
-		where TInitialState : TState, new()
+	public static StateMachine<TState, TCommand> Create<TInitialState>()
+		where TInitialState : class, TState, new()
 	{
-		var stateMachine = new StateMachine<TState>();
+		var stateMachine = new StateMachine<TState, TCommand>();
 
 		stateMachine._states.Add(new TInitialState());
 
@@ -61,8 +64,8 @@ public sealed class StateMachine<TState>
 		return new StateMachineBuilderFrom<TFrom>(this);
 	}
 
-	public Task ExecuteAsync(ICommand<TState> command)
+	public Task ExecuteAsync(TCommand command)
 	{
-		return command.ExecuteAsync(this);
+		throw new NotImplementedException();
 	}
 }
