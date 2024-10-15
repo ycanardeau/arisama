@@ -20,7 +20,10 @@ internal interface IVendingMachineState
 
     public interface ICanChooseProduct : IVendingMachineState;
 
-    public interface ICanReturnChange : IVendingMachineState;
+    public interface ICanReturnChange : IVendingMachineState
+    {
+        Coin TotalAmount { get; }
+    }
 
     public interface ICanDispenseProduct : IVendingMachineState
     {
@@ -36,7 +39,7 @@ internal interface IVendingMachineState
 
     public sealed record ProductChosen(ProductId ProductId) : IVendingMachineState, ICanDispenseProduct;
 
-    public sealed record ChangeReturned : IVendingMachineState;
+    public sealed record ChangeReturned(Coin TotalAmount) : IVendingMachineState;
 
     public sealed record ProductDispensed(ProductId ProductId) : IVendingMachineState;
 }
@@ -68,7 +71,7 @@ internal sealed record ReturnChangeVendingMachineCommand : IVendingMachineComman
 {
     public Task ExecuteAsync(VendingMachine vendingMachine)
     {
-        vendingMachine.FromTo<ICanReturnChange, Idle>(from => new Idle());
+        vendingMachine.FromTo<ICanReturnChange, ChangeReturned>(from => new ChangeReturned(TotalAmount: from.TotalAmount));
         return Task.CompletedTask;
     }
 }
@@ -102,9 +105,10 @@ internal class VendingMachine
         where TFrom : class, IVendingMachineState
         where TTo : class, IVendingMachineState
     {
-        if (States.Last() is not TFrom from)
+        var latestState = States.Last();
+        if (latestState is not TFrom from)
         {
-            Console.WriteLine($"Invalid transition from {typeof(TFrom).Name} to {typeof(TTo).Name}.");
+            Console.WriteLine($"Invalid transition from {latestState.GetType().Name} to {typeof(TTo).Name}.");
             return;
         }
 
@@ -132,6 +136,7 @@ internal static class Program
             new InsertCoinVendingMachineCommand(Amount: new(100)),
             new InsertCoinVendingMachineCommand(Amount: new(50)),
             new InsertCoinVendingMachineCommand(Amount: new(10)),
+            new ReturnChangeVendingMachineCommand(),
             new ChooseProductVendingMachineCommand(),
             new DispenseProductVendingMachineCommand(),
         ];
