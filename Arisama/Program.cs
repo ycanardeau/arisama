@@ -1,6 +1,6 @@
 ﻿namespace Arisama;
 
-using static VendingMachineState;
+using static IVendingMachineState;
 
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 internal readonly partial struct Coin
@@ -11,9 +11,7 @@ internal readonly partial struct Coin
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 internal readonly partial struct ProductId;
 
-internal interface IVendingMachineState;
-
-internal abstract record VendingMachineState : IVendingMachineState
+internal interface IVendingMachineState
 {
     public interface ICanInsertCoin : IVendingMachineState
     {
@@ -29,18 +27,18 @@ internal abstract record VendingMachineState : IVendingMachineState
         ProductId ProductId { get; }
     }
 
-    public sealed record Idle : VendingMachineState, ICanInsertCoin
+    public sealed record Idle : IVendingMachineState, ICanInsertCoin
     {
         public Coin TotalAmount { get; } = Coin.Empty;
     }
 
-    public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : VendingMachineState, ICanInsertCoin, ICanChooseProduct, ICanReturnChange;
+    public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : IVendingMachineState, ICanInsertCoin, ICanChooseProduct, ICanReturnChange;
 
-    public sealed record ProductChosen(ProductId ProductId) : VendingMachineState, ICanDispenseProduct;
+    public sealed record ProductChosen(ProductId ProductId) : IVendingMachineState, ICanDispenseProduct;
 
-    public sealed record ChangeReturned : VendingMachineState;
+    public sealed record ChangeReturned : IVendingMachineState;
 
-    public sealed record ProductDispensed(ProductId ProductId) : VendingMachineState;
+    public sealed record ProductDispensed(ProductId ProductId) : IVendingMachineState;
 }
 
 internal interface IVendingMachineCommand
@@ -86,8 +84,8 @@ internal sealed record DispenseProductVendingMachineCommand : IVendingMachineCom
 
 internal class VendingMachine
 {
-    private readonly List<VendingMachineState> _states = [];
-    public IReadOnlyCollection<VendingMachineState> States => _states.AsReadOnly();
+    private readonly List<IVendingMachineState> _states = [];
+    public IReadOnlyCollection<IVendingMachineState> States => _states.AsReadOnly();
 
     private VendingMachine() { }
 
@@ -102,7 +100,7 @@ internal class VendingMachine
 
     public void FromTo<TFrom, TTo>(Func<TFrom, TTo> callback)
         where TFrom : class, IVendingMachineState
-        where TTo : VendingMachineState
+        where TTo : class, IVendingMachineState
     {
         if (States.Last() is not TFrom from)
         {
