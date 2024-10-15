@@ -1,5 +1,6 @@
 ﻿namespace Arisama;
 
+using static IVendingMachineCommand;
 using static IVendingMachineState;
 
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
@@ -47,49 +48,49 @@ internal interface IVendingMachineState
 internal interface IVendingMachineCommand
 {
     Task ExecuteAsync(VendingMachine vendingMachine);
-}
 
-internal sealed record InsertCoinVendingMachineCommand(Coin Amount) : IVendingMachineCommand
-{
-    public Task ExecuteAsync(VendingMachine vendingMachine)
+    public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand
     {
-        vendingMachine.From<ICanInsertCoin>()
-            .To(from => new CoinInserted(Amount: Amount, TotalAmount: from.TotalAmount + Amount));
+        public Task ExecuteAsync(VendingMachine vendingMachine)
+        {
+            vendingMachine.From<ICanInsertCoin>()
+                .To(from => new CoinInserted(Amount: Amount, TotalAmount: from.TotalAmount + Amount));
 
-        return Task.CompletedTask;
+            return Task.CompletedTask;
+        }
     }
-}
 
-internal sealed record ChooseProductVendingMachineCommand : IVendingMachineCommand
-{
-    public Task ExecuteAsync(VendingMachine vendingMachine)
+    public sealed record ChooseProduct : IVendingMachineCommand
     {
-        vendingMachine.From<ICanChooseProduct>()
-            .To(from => new ProductChosen(ProductId: new(1)));
+        public Task ExecuteAsync(VendingMachine vendingMachine)
+        {
+            vendingMachine.From<ICanChooseProduct>()
+                .To(from => new ProductChosen(ProductId: new(1)));
 
-        return Task.CompletedTask;
+            return Task.CompletedTask;
+        }
     }
-}
 
-internal sealed record ReturnChangeVendingMachineCommand : IVendingMachineCommand
-{
-    public Task ExecuteAsync(VendingMachine vendingMachine)
+    public sealed record ReturnChange : IVendingMachineCommand
     {
-        vendingMachine.From<ICanReturnChange>()
-            .To(from => new ChangeReturned(TotalAmount: from.TotalAmount));
+        public Task ExecuteAsync(VendingMachine vendingMachine)
+        {
+            vendingMachine.From<ICanReturnChange>()
+                .To(from => new ChangeReturned(TotalAmount: from.TotalAmount));
 
-        return Task.CompletedTask;
+            return Task.CompletedTask;
+        }
     }
-}
 
-internal sealed record DispenseProductVendingMachineCommand : IVendingMachineCommand
-{
-    public Task ExecuteAsync(VendingMachine vendingMachine)
+    public sealed record DispenseProduct : IVendingMachineCommand
     {
-        vendingMachine.From<ICanDispenseProduct>()
-            .To(from => new ProductDispensed(ProductId: from.ProductId));
+        public Task ExecuteAsync(VendingMachine vendingMachine)
+        {
+            vendingMachine.From<ICanDispenseProduct>()
+                .To(from => new ProductDispensed(ProductId: from.ProductId));
 
-        return Task.CompletedTask;
+            return Task.CompletedTask;
+        }
     }
 }
 
@@ -157,12 +158,12 @@ internal static class Program
         var vendingMachine = VendingMachine.Create();
 
         IVendingMachineCommand[] commands = [
-            new InsertCoinVendingMachineCommand(Amount: new(100)),
-            new InsertCoinVendingMachineCommand(Amount: new(50)),
-            new InsertCoinVendingMachineCommand(Amount: new(10)),
-            new ReturnChangeVendingMachineCommand(),
-            new ChooseProductVendingMachineCommand(),
-            new DispenseProductVendingMachineCommand(),
+            new InsertCoin(Amount: new(100)),
+            new InsertCoin(Amount: new(50)),
+            new InsertCoin(Amount: new(10)),
+            new ReturnChange(),
+            new ChooseProduct(),
+            new DispenseProduct(),
         ];
 
         foreach (var command in commands)
