@@ -4,7 +4,7 @@ internal abstract record VendingMachineStateContext
 {
     public sealed record Idle : VendingMachineStateContext;
 
-    public sealed record CoinInserted(int Amount) : VendingMachineStateContext;
+    public sealed record CoinInserted(int Amount, int TotalAmount) : VendingMachineStateContext;
 
     public sealed record ProductChosen : VendingMachineStateContext;
 
@@ -13,11 +13,17 @@ internal abstract record VendingMachineStateContext
     public sealed record ProductDispensed : VendingMachineStateContext;
 }
 
-internal interface IVendingMachineState;
-
-internal abstract record VendingMachineState : IVendingMachineState
+internal interface IVendingMachineState
 {
-    public interface ICanInsertCoin : IVendingMachineState;
+    VendingMachineStateContext ContextBase { get; }
+}
+
+internal abstract record VendingMachineState(VendingMachineStateContext ContextBase) : IVendingMachineState
+{
+    public interface ICanInsertCoin : IVendingMachineState
+    {
+        int TotalAmount { get; }
+    }
 
     public interface ICanChooseProduct : IVendingMachineState;
 
@@ -25,9 +31,15 @@ internal abstract record VendingMachineState : IVendingMachineState
 
     public interface ICanDispenseProduct : IVendingMachineState;
 
-    public sealed record Idle(VendingMachineStateContext.Idle Context) : VendingMachineState<VendingMachineStateContext.Idle>(Context), ICanInsertCoin;
+    public sealed record Idle(VendingMachineStateContext.Idle Context) : VendingMachineState<VendingMachineStateContext.Idle>(Context), ICanInsertCoin
+    {
+        int ICanInsertCoin.TotalAmount => 0;
+    }
 
-    public sealed record CoinInserted(VendingMachineStateContext.CoinInserted Context) : VendingMachineState<VendingMachineStateContext.CoinInserted>(Context), ICanInsertCoin, ICanChooseProduct, ICanReturnChange;
+    public sealed record CoinInserted(VendingMachineStateContext.CoinInserted Context) : VendingMachineState<VendingMachineStateContext.CoinInserted>(Context), ICanInsertCoin, ICanChooseProduct, ICanReturnChange
+    {
+        int ICanInsertCoin.TotalAmount => Context.TotalAmount;
+    }
 
     public sealed record ProductChosen(VendingMachineStateContext.ProductChosen Context) : VendingMachineState<VendingMachineStateContext.ProductChosen>(Context), ICanDispenseProduct;
 
@@ -36,7 +48,7 @@ internal abstract record VendingMachineState : IVendingMachineState
     public sealed record ProductDispensed(VendingMachineStateContext.ProductDispensed Context) : VendingMachineState<VendingMachineStateContext.ProductDispensed>(Context);
 }
 
-internal abstract record VendingMachineState<TContext>(TContext Context) : VendingMachineState
+internal abstract record VendingMachineState<TContext>(TContext Context) : VendingMachineState(Context)
     where TContext : VendingMachineStateContext;
 
 internal class VendingMachine
@@ -50,17 +62,18 @@ internal class VendingMachine
         where TFrom : class, IVendingMachineState
         where TTo : class, IVendingMachineState
     {
-        Console.WriteLine($"Transitioning from {typeof(TFrom).Name} to {typeof(TTo).Name}.");
-
         if (States.Last() is not TFrom from)
         {
             Console.WriteLine($"Invalid transition from {typeof(TFrom).Name} to {typeof(TTo).Name}.");
             return;
         }
 
-        _states.Add(callback(from));
+        Console.WriteLine($"Transitioning from {typeof(TFrom).Name} (Context: {from.ContextBase}).");
 
-        Console.WriteLine($"Transitioned from {typeof(TFrom).Name} to {typeof(TTo).Name}.");
+        var to = callback(from);
+        _states.Add(to);
+
+        Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to.ContextBase}).");
     }
 
     public static VendingMachine Create()
@@ -74,7 +87,7 @@ internal class VendingMachine
 
     public void InsertCoin(int amount)
     {
-        FromTo<VendingMachineState.ICanInsertCoin, VendingMachineState.CoinInserted>(from => new VendingMachineState.CoinInserted(new(Amount: amount)));
+        FromTo<VendingMachineState.ICanInsertCoin, VendingMachineState.CoinInserted>(from => new VendingMachineState.CoinInserted(new(Amount: amount, TotalAmount: from.TotalAmount + amount)));
     }
 
     public void ChooseProduct()
