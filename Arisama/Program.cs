@@ -60,12 +60,12 @@ internal interface IVendingMachineCommand
         }
     }
 
-    public sealed record ChooseProduct : IVendingMachineCommand
+    public sealed record ChooseProduct(ProductId ProductId) : IVendingMachineCommand
     {
         public Task ExecuteAsync(VendingMachine vendingMachine)
         {
             vendingMachine.From<ICanChooseProduct>()
-                .To(from => new ProductChosen(ProductId: new(1)));
+                .To(from => new ProductChosen(ProductId: ProductId));
 
             return Task.CompletedTask;
         }
@@ -162,7 +162,7 @@ internal static class Program
             new InsertCoin(Amount: new(50)),
             new InsertCoin(Amount: new(10)),
             new ReturnChange(),
-            new ChooseProduct(),
+            new ChooseProduct(ProductId: new(1)),
             new DispenseProduct(),
         ];
 
