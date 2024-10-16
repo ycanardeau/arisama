@@ -1,7 +1,7 @@
-namespace Arisama;
+using static Arisama.ConsoleApp.IVendingMachineCommand;
+using static Arisama.ConsoleApp.IVendingMachineState;
 
-using static IVendingMachineCommand;
-using static IVendingMachineState;
+namespace Arisama.ConsoleApp;
 
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 internal readonly partial struct Coin
@@ -12,7 +12,7 @@ internal readonly partial struct Coin
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 internal readonly partial struct ProductId;
 
-internal interface IVendingMachineState
+internal interface IVendingMachineState : IState
 {
 	public interface ICanInsertCoin : IVendingMachineState
 	{
@@ -31,27 +31,30 @@ internal interface IVendingMachineState
 		ProductId ProductId { get; }
 	}
 
-	public sealed record Idle : IVendingMachineState, ICanInsertCoin
+	public sealed record Idle : IVendingMachineState,
+		ICanInsertCoin
 	{
 		public Coin TotalAmount { get; } = Coin.Empty;
 	}
 
-	public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : IVendingMachineState, ICanInsertCoin, ICanChooseProduct, ICanReturnChange;
+	public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : IVendingMachineState,
+		ICanInsertCoin,
+		ICanChooseProduct,
+		ICanReturnChange;
 
-	public sealed record ProductChosen(ProductId ProductId) : IVendingMachineState, ICanDispenseProduct;
+	public sealed record ProductChosen(ProductId ProductId) : IVendingMachineState,
+		ICanDispenseProduct;
 
 	public sealed record ChangeReturned(Coin TotalAmount) : IVendingMachineState;
 
 	public sealed record ProductDispensed(ProductId ProductId) : IVendingMachineState;
 }
 
-internal interface IVendingMachineCommand
+internal interface IVendingMachineCommand : ICommand<IVendingMachineState>
 {
-	Task ExecuteAsync(VendingMachine vendingMachine);
-
 	public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand
 	{
-		public Task ExecuteAsync(VendingMachine vendingMachine)
+		public Task ExecuteAsync(StateMachine<IVendingMachineState> vendingMachine)
 		{
 			vendingMachine.From<ICanInsertCoin>()
 				.To(from => new CoinInserted(Amount: Amount, TotalAmount: from.TotalAmount + Amount));
@@ -62,7 +65,7 @@ internal interface IVendingMachineCommand
 
 	public sealed record ChooseProduct(ProductId ProductId) : IVendingMachineCommand
 	{
-		public Task ExecuteAsync(VendingMachine vendingMachine)
+		public Task ExecuteAsync(StateMachine<IVendingMachineState> vendingMachine)
 		{
 			vendingMachine.From<ICanChooseProduct>()
 				.To(from => new ProductChosen(ProductId: ProductId));
@@ -73,7 +76,7 @@ internal interface IVendingMachineCommand
 
 	public sealed record ReturnChange : IVendingMachineCommand
 	{
-		public Task ExecuteAsync(VendingMachine vendingMachine)
+		public Task ExecuteAsync(StateMachine<IVendingMachineState> vendingMachine)
 		{
 			vendingMachine.From<ICanReturnChange>()
 				.To(from => new ChangeReturned(TotalAmount: from.TotalAmount));
@@ -84,7 +87,7 @@ internal interface IVendingMachineCommand
 
 	public sealed record DispenseProduct : IVendingMachineCommand
 	{
-		public Task ExecuteAsync(VendingMachine vendingMachine)
+		public Task ExecuteAsync(StateMachine<IVendingMachineState> vendingMachine)
 		{
 			vendingMachine.From<ICanDispenseProduct>()
 				.To(from => new ProductDispensed(ProductId: from.ProductId));
@@ -94,68 +97,11 @@ internal interface IVendingMachineCommand
 	}
 }
 
-internal class VendingMachine
-{
-	private readonly List<IVendingMachineState> _states = [];
-	public IReadOnlyCollection<IVendingMachineState> States => _states.AsReadOnly();
-
-	public interface IFromBuilder<TFrom>
-		where TFrom : class, IVendingMachineState
-	{
-		void To<TTo>(Func<TFrom, TTo> callback)
-			where TTo : class, IVendingMachineState;
-	}
-
-	private sealed class FromBuilder<TFrom>(VendingMachine vendingMachine) : IFromBuilder<TFrom>
-		where TFrom : class, IVendingMachineState
-	{
-		public void To<TTo>(Func<TFrom, TTo> callback)
-			where TTo : class, IVendingMachineState
-		{
-			var latestState = vendingMachine.States.Last();
-			if (latestState is not TFrom from)
-			{
-				Console.WriteLine($"Invalid transition from {latestState.GetType().Name} to {typeof(TTo).Name}.");
-				return;
-			}
-
-			Console.WriteLine($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
-
-			var to = callback(from);
-			vendingMachine._states.Add(to);
-
-			Console.WriteLine($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
-		}
-	}
-
-	private VendingMachine() { }
-
-	public static VendingMachine Create()
-	{
-		var vendingMachine = new VendingMachine();
-
-		vendingMachine._states.Add(new Idle());
-
-		return vendingMachine;
-	}
-
-	public IFromBuilder<TFrom> From<TFrom>()
-		where TFrom : class, IVendingMachineState
-	{
-		return new FromBuilder<TFrom>(this);
-	}
-
-	public Task ExecuteAsync(IVendingMachineCommand command)
-	{
-		return command.ExecuteAsync(this);
-	}
-}
-
 internal static class Program
 {
-	public static async Task Main()
+	static async Task Main()
 	{
-		var vendingMachine = VendingMachine.Create();
+		var vendingMachine = StateMachine<IVendingMachineState>.Create<Idle>();
 
 		IVendingMachineCommand[] commands = [
 			new InsertCoin(Amount: new(100)),
