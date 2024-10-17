@@ -12,7 +12,7 @@ internal readonly partial struct Coin
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 internal readonly partial struct ProductId;
 
-internal interface IVendingMachineState : IState
+internal partial interface IVendingMachineState : IState
 {
 	public interface ICanInsertCoin : IVendingMachineState
 	{
@@ -30,7 +30,10 @@ internal interface IVendingMachineState : IState
 	{
 		ProductId ProductId { get; }
 	}
+}
 
+internal partial interface IVendingMachineState : IState
+{
 	public sealed record Idle : IVendingMachineState,
 		ICanInsertCoin
 	{
@@ -50,73 +53,35 @@ internal interface IVendingMachineState : IState
 	public sealed record ProductDispensed(ProductId ProductId) : IVendingMachineState;
 }
 
-internal interface IVendingMachineCommand : ICommand<IVendingMachineState>
+internal interface IVendingMachineCommand : ICommand
 {
-	public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand
-	{
-		public Task ExecuteAsync(StateMachine<IVendingMachineState> vendingMachine)
-		{
-			vendingMachine.From<ICanInsertCoin>()
-				.To(from => new CoinInserted(Amount: Amount, TotalAmount: from.TotalAmount + Amount));
+	public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand;
 
-			return Task.CompletedTask;
-		}
-	}
+	public sealed record ChooseProduct(ProductId ProductId) : IVendingMachineCommand;
 
-	public sealed record ChooseProduct(ProductId ProductId) : IVendingMachineCommand
-	{
-		public Task ExecuteAsync(StateMachine<IVendingMachineState> vendingMachine)
-		{
-			vendingMachine.From<ICanChooseProduct>()
-				.To(from => new ProductChosen(ProductId: ProductId));
+	public sealed record ReturnChange : IVendingMachineCommand;
 
-			return Task.CompletedTask;
-		}
-	}
-
-	public sealed record ReturnChange : IVendingMachineCommand
-	{
-		public Task ExecuteAsync(StateMachine<IVendingMachineState> vendingMachine)
-		{
-			vendingMachine.From<ICanReturnChange>()
-				.To(from => new ChangeReturned(TotalAmount: from.TotalAmount));
-
-			return Task.CompletedTask;
-		}
-	}
-
-	public sealed record DispenseProduct : IVendingMachineCommand
-	{
-		public Task ExecuteAsync(StateMachine<IVendingMachineState> vendingMachine)
-		{
-			vendingMachine.From<ICanDispenseProduct>()
-				.To(from => new ProductDispensed(ProductId: from.ProductId));
-
-			return Task.CompletedTask;
-		}
-	}
+	public sealed record DispenseProduct : IVendingMachineCommand;
 }
 
 internal static class Program
 {
 	static async Task Main()
 	{
-		var vendingMachine = StateMachine<IVendingMachineState>.Create<Idle>();
+		var vendingMachine = StateMachine<IVendingMachineState, IVendingMachineCommand>.Create<Idle>();
 
-		IVendingMachineCommand[] commands = [
-			new InsertCoin(Amount: new(100)),
-			new InsertCoin(Amount: new(50)),
-			new InsertCoin(Amount: new(10)),
-			new ReturnChange(),
-			new ChooseProduct(ProductId: new(1)),
-			new DispenseProduct(),
-		];
+		vendingMachine
+			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>((from, command) => new CoinInserted(Amount: command.Amount, TotalAmount: from.TotalAmount + command.Amount))
+			.ConfigureState<ICanChooseProduct, ChooseProduct, ProductChosen>((from, command) => new ProductChosen(ProductId: command.ProductId))
+			.ConfigureState<ICanReturnChange, ReturnChange, ChangeReturned>((from, command) => new ChangeReturned(TotalAmount: from.TotalAmount))
+			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>((from, command) => new ProductDispensed(ProductId: from.ProductId));
 
-		foreach (var command in commands)
-		{
-			await vendingMachine.ExecuteAsync(command);
-			Console.WriteLine();
-		}
+		await vendingMachine.ExecuteAsync(new InsertCoin(Amount: new(100)));
+		await vendingMachine.ExecuteAsync(new InsertCoin(Amount: new(50)));
+		await vendingMachine.ExecuteAsync(new InsertCoin(Amount: new(10)));
+		await vendingMachine.ExecuteAsync(new ReturnChange());
+		await vendingMachine.ExecuteAsync(new ChooseProduct(ProductId: new(1)));
+		await vendingMachine.ExecuteAsync(new DispenseProduct());
 
 		foreach (var state in vendingMachine.States)
 		{
