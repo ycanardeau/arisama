@@ -2,10 +2,13 @@ namespace Arisama;
 
 public interface IState;
 
-public interface ICommand<TState>
+public interface ICommand;
+
+public interface ICommandHandler<TState, TCommand>
 	where TState : class, IState
+	where TCommand : class, ICommand
 {
-	Task ExecuteAsync(StateMachine<TState> stateMachine);
+	Task ExecuteAsync(StateMachine<TState> stateMachine, TCommand command);
 }
 
 public sealed class StateMachine<TState>
@@ -61,7 +64,7 @@ public sealed class StateMachine<TState>
 		return new StateMachineBuilderFrom<TFrom>(this);
 	}
 
-	public Task ExecuteAsync(ICommand<TState> command)
+	public Task ExecuteAsync(ICommand command)
 	{
 		return command.ExecuteAsync(this);
 	}
