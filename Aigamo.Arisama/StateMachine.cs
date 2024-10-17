@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace Aigamo.Arisama;
@@ -13,65 +14,43 @@ public sealed class StateMachine<TState, TCommand>
 	private readonly List<TState> _states = [];
 	public IReadOnlyCollection<TState> States => _states.AsReadOnly();
 
-	private readonly Dictionary<Type, Func<StateMachine<TState, TCommand>, TCommand, Task>> _commandHandlers = [];
+	private readonly ImmutableDictionary<Type, Func<StateMachine<TState, TCommand>, TCommand, Task>> _commandHandlers;
 
-	private interface IStateMachineBuilderFrom<TFrom>
-		where TFrom : TState
+	private StateMachine(ImmutableDictionary<Type, Func<StateMachine<TState, TCommand>, TCommand, Task>> commandHandlers)
 	{
-		void To<TTo>(Func<TFrom, TTo> callback)
-			where TTo : TState;
+		_commandHandlers = commandHandlers;
 	}
 
-	private sealed class StateMachineBuilderFrom<TFrom>(StateMachine<TState, TCommand> stateMachine) : IStateMachineBuilderFrom<TFrom>
-		where TFrom : TState
+	internal void AddState(TState state)
 	{
-		public void To<TTo>(Func<TFrom, TTo> callback)
-			where TTo : TState
-		{
-			var lines = new List<string>();
-			try
-			{
-				var latestState = stateMachine.States.Last();
-				if (latestState is not TFrom from)
-				{
-					lines.Add($"Invalid transition from {latestState.GetType().Name} to {typeof(TTo).Name}.");
-					return;
-				}
-
-				lines.Add($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
-
-				var to = callback(from);
-				stateMachine._states.Add(to);
-
-				lines.Add($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
-			}
-			finally
-			{
-				Console.WriteLine(string.Join('\n', lines));
-				Console.WriteLine();
-			}
-		}
+		_states.Add(state);
 	}
 
-	private StateMachine() { }
-
-	public static StateMachine<TState, TCommand> Create<TInitialState>()
-		where TInitialState : TState, new()
+	internal static StateMachine<TState, TCommand> Create<TInitialState>(
+		ImmutableDictionary<Type, Func<StateMachine<TState, TCommand>, TCommand, Task>> commandHandlers,
+		TInitialState initialState
+	)
+		where TInitialState : TState
 	{
-		var stateMachine = new StateMachine<TState, TCommand>();
-
-		stateMachine._states.Add(new TInitialState());
-
+		var stateMachine = new StateMachine<TState, TCommand>(commandHandlers);
+		stateMachine.AddState(initialState);
 		return stateMachine;
 	}
 
-	private IStateMachineBuilderFrom<TFrom> From<TFrom>()
-		where TFrom : TState
+	public Task ExecuteAsync<TConcreteCommand>(TConcreteCommand command)
+		where TConcreteCommand : TCommand
 	{
-		return new StateMachineBuilderFrom<TFrom>(this);
+		return _commandHandlers[typeof(TConcreteCommand)](this, command);
 	}
+}
 
-	private StateMachine<TState, TCommand> AddCommandHandler<TConcreteCommand>(Func<StateMachine<TState, TCommand>, TConcreteCommand, Task> commandHandler)
+public sealed class StateMachineBuilder<TState, TCommand>
+	where TState : IState
+	where TCommand : ICommand
+{
+	private readonly Dictionary<Type, Func<StateMachine<TState, TCommand>, TCommand, Task>> _commandHandlers = [];
+
+	private StateMachineBuilder<TState, TCommand> AddCommandHandler<TConcreteCommand>(Func<StateMachine<TState, TCommand>, TConcreteCommand, Task> commandHandler)
 		where TConcreteCommand : TCommand
 	{
 		_commandHandlers.Add(typeof(TConcreteCommand), (stateMachine, command) =>
@@ -86,23 +65,44 @@ public sealed class StateMachine<TState, TCommand>
 		return this;
 	}
 
-	public StateMachine<TState, TCommand> ConfigureState<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback)
+	public StateMachineBuilder<TState, TCommand> ConfigureState<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback)
 		where TFrom : TState
 		where TConcreteCommand : TCommand
 		where TTo : TState
 	{
 		AddCommandHandler<TConcreteCommand>((stateMachine, command) =>
 		{
-			stateMachine.From<TFrom>()
-				.To(from => callback(from, command));
+			var lines = new List<string>();
+			try
+			{
+				var latestState = stateMachine.States.Last();
+				if (latestState is not TFrom from)
+				{
+					lines.Add($"Invalid transition from {latestState.GetType().Name} to {typeof(TTo).Name}.");
+					return Task.CompletedTask;
+				}
+
+				lines.Add($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
+
+				var to = callback(from, command);
+				stateMachine.AddState(to);
+
+				lines.Add($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
+			}
+			finally
+			{
+				Console.WriteLine(string.Join('\n', lines));
+				Console.WriteLine();
+			}
+
 			return Task.CompletedTask;
 		});
 		return this;
 	}
 
-	public Task ExecuteAsync<TConcreteCommand>(TConcreteCommand command)
-		where TConcreteCommand : TCommand
+	public StateMachine<TState, TCommand> Build<TInitialState>(TInitialState initialState)
+		where TInitialState : TState
 	{
-		return _commandHandlers[typeof(TConcreteCommand)](this, command);
+		return StateMachine<TState, TCommand>.Create(_commandHandlers.ToImmutableDictionary(), initialState);
 	}
 }

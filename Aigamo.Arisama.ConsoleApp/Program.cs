@@ -68,13 +68,12 @@ internal static class Program
 {
 	static async Task Main()
 	{
-		var vendingMachine = StateMachine<IVendingMachineState, IVendingMachineCommand>.Create<Idle>();
-
-		vendingMachine
+		var vendingMachine = new StateMachineBuilder<IVendingMachineState, IVendingMachineCommand>()
 			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>((from, command) => new CoinInserted(Amount: command.Amount, TotalAmount: from.TotalAmount + command.Amount))
 			.ConfigureState<ICanChooseProduct, ChooseProduct, ProductChosen>((from, command) => new ProductChosen(ProductId: command.ProductId))
 			.ConfigureState<ICanReturnChange, ReturnChange, ChangeReturned>((from, command) => new ChangeReturned(TotalAmount: from.TotalAmount))
-			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>((from, command) => new ProductDispensed(ProductId: from.ProductId));
+			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>((from, command) => new ProductDispensed(ProductId: from.ProductId))
+			.Build(new Idle());
 
 		await vendingMachine.ExecuteAsync(new InsertCoin(Amount: new(100)));
 		await vendingMachine.ExecuteAsync(new InsertCoin(Amount: new(50)));
