@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Arisama;
+namespace Aigamo.Arisama;
 
 public interface IState;
 

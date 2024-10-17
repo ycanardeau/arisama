@@ -1,7 +1,7 @@
-using static Arisama.ConsoleApp.IVendingMachineCommand;
-using static Arisama.ConsoleApp.IVendingMachineState;
+using static Aigamo.Arisama.ConsoleApp.IVendingMachineCommand;
+using static Aigamo.Arisama.ConsoleApp.IVendingMachineState;
 
-namespace Arisama.ConsoleApp;
+namespace Aigamo.Arisama.ConsoleApp;
 
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 internal readonly partial struct Coin

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Arisama\Arisama.csproj" />
+    <ProjectReference Include="..\Aigamo.Arisama\Aigamo.Arisama.csproj" />
   </ItemGroup>
 
 </Project>
