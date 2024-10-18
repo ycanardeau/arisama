@@ -66,7 +66,7 @@ internal interface IVendingMachineCommand : ICommand
 
 internal static class Program
 {
-	static async Task Main()
+	static void Main()
 	{
 		var vendingMachine = new StateMachineBuilder<IVendingMachineState, IVendingMachineCommand>()
 			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>((from, command) => new CoinInserted(Amount: command.Amount, TotalAmount: from.TotalAmount + command.Amount))
@@ -75,12 +75,12 @@ internal static class Program
 			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>((from, command) => new ProductDispensed(ProductId: from.ProductId))
 			.Build(new Idle());
 
-		await vendingMachine.ExecuteAsync(new InsertCoin(Amount: new(100)));
-		await vendingMachine.ExecuteAsync(new InsertCoin(Amount: new(50)));
-		await vendingMachine.ExecuteAsync(new InsertCoin(Amount: new(10)));
-		await vendingMachine.ExecuteAsync(new ReturnChange());
-		await vendingMachine.ExecuteAsync(new ChooseProduct(ProductId: new(1)));
-		await vendingMachine.ExecuteAsync(new DispenseProduct());
+		vendingMachine.Send(new InsertCoin(Amount: new(100)));
+		vendingMachine.Send(new InsertCoin(Amount: new(50)));
+		vendingMachine.Send(new InsertCoin(Amount: new(10)));
+		vendingMachine.Send(new ReturnChange());
+		vendingMachine.Send(new ChooseProduct(ProductId: new(1)));
+		vendingMachine.Send(new DispenseProduct());
 
 		foreach (var state in vendingMachine.States)
 		{
