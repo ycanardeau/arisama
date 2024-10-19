@@ -50,7 +50,7 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>
 		where TFrom : TTransition
 	{
 		public StateMachineBuilderOn<TFrom, TOn> On<TOn>()
-			where TOn : TCommand
+			where TOn : TCommand, ICommand<TFrom>
 		{
 			return new StateMachineBuilderOn<TFrom, TOn>(builder);
 		}
