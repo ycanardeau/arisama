@@ -56,21 +56,69 @@ partial interface IAlarmState : IState
 
 interface IAlarmCommand : ICommand
 {
-	public sealed record Startup : IAlarmCommand;
+	public sealed record Startup : IAlarmCommand, ICommand<ICanStartup, Disarmed>
+	{
+		public Disarmed Execute(ICanStartup from)
+		{
+			return new Disarmed();
+		}
+	}
 
-	public sealed record Arm : IAlarmCommand;
+	public sealed record Arm : IAlarmCommand, ICommand<ICanArm, PreArmed>
+	{
+		public PreArmed Execute(ICanArm from)
+		{
+			return new PreArmed();
+		}
+	}
 
-	public sealed record Disarm : IAlarmCommand;
+	public sealed record Disarm : IAlarmCommand, ICommand<ICanDisarm, Disarmed>
+	{
+		public Disarmed Execute(ICanDisarm from)
+		{
+			return new Disarmed();
+		}
+	}
 
-	public sealed record Trigger : IAlarmCommand;
+	public sealed record Trigger : IAlarmCommand, ICommand<ICanTrigger, PreTriggered>
+	{
+		public PreTriggered Execute(ICanTrigger from)
+		{
+			return new PreTriggered();
+		}
+	}
 
-	public sealed record Acknowledge : IAlarmCommand;
+	public sealed record Acknowledge : IAlarmCommand, ICommand<ICanAcknowledge, Acknowledged>
+	{
+		public Acknowledged Execute(ICanAcknowledge from)
+		{
+			return new Acknowledged();
+		}
+	}
 
-	public sealed record Pause : IAlarmCommand;
+	public sealed record Pause : IAlarmCommand, ICommand<ICanPause, ArmPaused>
+	{
+		public ArmPaused Execute(ICanPause from)
+		{
+			return new ArmPaused();
+		}
+	}
 
-	public sealed record TimeOutArmed : IAlarmCommand;
+	public sealed record TimeOutArmed : IAlarmCommand, ICommand<ICanTimeOutArmed, Armed>
+	{
+		public Armed Execute(ICanTimeOutArmed from)
+		{
+			return new Armed();
+		}
+	}
 
-	public sealed record TimeOutTriggered : IAlarmCommand;
+	public sealed record TimeOutTriggered : IAlarmCommand, ICommand<ICanTimeOutTriggered, Triggered>
+	{
+		public Triggered Execute(ICanTimeOutTriggered from)
+		{
+			return new Triggered();
+		}
+	}
 }
 
 static class Program
@@ -78,14 +126,14 @@ static class Program
 	static void Main()
 	{
 		var alarm = new StateMachineBuilder<IAlarmState, IAlarmCommand>()
-			.ConfigureState<ICanStartup, Startup, Disarmed>((from, command) => new Disarmed())
-			.ConfigureState<ICanArm, Arm, PreArmed>((from, command) => new PreArmed())
-			.ConfigureState<ICanDisarm, Disarm, Disarmed>((from, command) => new Disarmed())
-			.ConfigureState<ICanTrigger, Trigger, PreTriggered>((from, command) => new PreTriggered())
-			.ConfigureState<ICanAcknowledge, Acknowledge, Acknowledged>((from, command) => new Acknowledged())
-			.ConfigureState<ICanPause, Pause, ArmPaused>((from, command) => new ArmPaused())
-			.ConfigureState<ICanTimeOutArmed, TimeOutArmed, Armed>((from, command) => new Armed())
-			.ConfigureState<ICanTimeOutTriggered, TimeOutTriggered, Triggered>((from, command) => new Triggered())
+			.AddCommand<Startup>()
+			.AddCommand<Arm>()
+			.AddCommand<Disarm>()
+			.AddCommand<Trigger>()
+			.AddCommand<Acknowledge>()
+			.AddCommand<Pause>()
+			.AddCommand<TimeOutArmed>()
+			.AddCommand<TimeOutTriggered>()
 			.Build(new Undefined());
 	}
 }

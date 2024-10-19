@@ -7,6 +7,13 @@ public interface IState;
 
 public interface ICommand;
 
+public interface ICommand<TFrom, TTo> : ICommand
+	where TFrom : IState
+	where TTo : IState
+{
+	TTo Execute(TFrom from);
+}
+
 public sealed class StateMachine<TState, TCommand>
 	where TState : IState
 	where TCommand : ICommand
@@ -66,6 +73,12 @@ public sealed class StateMachine<TState, TCommand>
 		}
 	}
 
+	internal void Handle<TConcreteCommand>(TConcreteCommand command)
+		where TConcreteCommand : TCommand
+	{
+		throw new NotImplementedException();
+	}
+
 	public void Send<TConcreteCommand>(TConcreteCommand command)
 		where TConcreteCommand : TCommand
 	{
@@ -94,12 +107,10 @@ public sealed class StateMachineBuilder<TState, TCommand>
 		return this;
 	}
 
-	public StateMachineBuilder<TState, TCommand> ConfigureState<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback)
-		where TFrom : TState
+	public StateMachineBuilder<TState, TCommand> AddCommand<TConcreteCommand>()
 		where TConcreteCommand : TCommand
-		where TTo : TState
 	{
-		AddCommandHandler<TConcreteCommand>((stateMachine, command) => stateMachine.Handle(callback, command));
+		AddCommandHandler<TConcreteCommand>((stateMachine, command) => stateMachine.Handle(command));
 		return this;
 	}
 
