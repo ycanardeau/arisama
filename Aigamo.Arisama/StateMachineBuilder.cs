@@ -24,13 +24,41 @@ public sealed class StateMachineBuilder<TState, TCommand>
 		return this;
 	}
 
-	public StateMachineBuilder<TState, TCommand> ConfigureState<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback)
+	private StateMachineBuilder<TState, TCommand> ConfigureState<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback)
 		where TFrom : TState
 		where TConcreteCommand : TCommand
 		where TTo : TState
 	{
 		AddCommandHandler<TConcreteCommand>((stateMachine, command) => stateMachine.Handle(callback, command));
 		return this;
+	}
+
+	public sealed class StateMachineBuilderOn<TFrom, TOn>(StateMachineBuilder<TState, TCommand> builder)
+		where TFrom : TState
+		where TOn : TCommand
+	{
+		public StateMachineBuilder<TState, TCommand> To<TTo>(Func<TFrom, TOn, TTo> callback)
+			where TTo : TState
+		{
+			builder.ConfigureState(callback);
+			return builder;
+		}
+	}
+
+	public sealed class StateMachineBuilderFrom<TFrom>(StateMachineBuilder<TState, TCommand> builder)
+		where TFrom : TState
+	{
+		public StateMachineBuilderOn<TFrom, TOn> On<TOn>()
+			where TOn : TCommand
+		{
+			return new StateMachineBuilderOn<TFrom, TOn>(builder);
+		}
+	}
+
+	public StateMachineBuilderFrom<TFrom> From<TFrom>()
+		where TFrom : TState
+	{
+		return new StateMachineBuilderFrom<TFrom>(this);
 	}
 
 	public StateMachine<TState, TCommand> Build<TInitialState>(TInitialState initialState)

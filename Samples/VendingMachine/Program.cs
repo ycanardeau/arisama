@@ -69,10 +69,18 @@ static class Program
 	static void Main()
 	{
 		var vendingMachine = new StateMachineBuilder<IVendingMachineState, IVendingMachineCommand>()
-			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>((from, command) => new CoinInserted(Amount: command.Amount, TotalAmount: from.TotalAmount + command.Amount))
-			.ConfigureState<ICanChooseProduct, ChooseProduct, ProductChosen>((from, command) => new ProductChosen(ProductId: command.ProductId))
-			.ConfigureState<ICanReturnChange, ReturnChange, ChangeReturned>((from, command) => new ChangeReturned(TotalAmount: from.TotalAmount))
-			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>((from, command) => new ProductDispensed(ProductId: from.ProductId))
+			.From<ICanInsertCoin>()
+				.On<InsertCoin>()
+				.To((from, command) => new CoinInserted(Amount: command.Amount, TotalAmount: from.TotalAmount + command.Amount))
+			.From<ICanChooseProduct>()
+				.On<ChooseProduct>()
+				.To((from, command) => new ProductChosen(ProductId: command.ProductId))
+			.From<ICanReturnChange>()
+				.On<ReturnChange>()
+				.To((from, command) => new ChangeReturned(TotalAmount: from.TotalAmount))
+			.From<ICanDispenseProduct>()
+				.On<DispenseProduct>()
+				.To((from, command) => new ProductDispensed(ProductId: from.ProductId))
 			.Build(new Idle());
 
 		vendingMachine.Send(new InsertCoin(Amount: new(100)));
