@@ -20,6 +20,10 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 	public IReadOnlyCollection<TState> States => _states.AsReadOnly();
 
 	private readonly ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> _commandHandlers;
+	public sealed record StateChangedEventArgs(TState State, TState PreviousState);
+	public delegate void StateChangedEventHandler(StateMachine<TTransition, TCommand, TState> sender, StateChangedEventArgs e);
+
+	public event StateChangedEventHandler? StateChanged;
 
 	private StateMachine(ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers)
 	{
@@ -50,19 +54,21 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 		var lines = new List<string>();
 		try
 		{
-			var latestState = States.Last();
-			if (latestState is not TFrom from)
+			var previousState = States.Last();
+			if (previousState is not TFrom from)
 			{
-				lines.Add($"Invalid transition from {latestState.GetType().Name} to {typeof(TTo).Name}.");
+				lines.Add($"Invalid transition from {previousState.GetType().Name} to {typeof(TTo).Name}.");
 				return;
 			}
 
 			lines.Add($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
 
-			var to = callback(from, command);
-			AddState(to);
+			var state = callback(from, command);
+			AddState(state);
 
-			lines.Add($"Transitioned to {typeof(TTo).Name} (Context: {to}).");
+			lines.Add($"Transitioned to {typeof(TTo).Name} (Context: {state}).");
+
+			StateChanged?.Invoke(this, new StateChangedEventArgs(State: state, PreviousState: previousState));
 		}
 		finally
 		{
