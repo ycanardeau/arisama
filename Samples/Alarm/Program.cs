@@ -1,27 +1,47 @@
 using Aigamo.Arisama;
 using static IAlarmCommand;
 using static IAlarmState;
+using static IAlarmTransition;
 
-partial interface IAlarmState : IState
+interface IAlarmTransition : ITransition
 {
-	public interface ICanStartup : IAlarmState;
+	public interface ICanStartup : IAlarmTransition;
 
-	public interface ICanArm : IAlarmState;
+	public interface ICanArm : IAlarmTransition;
 
-	public interface ICanDisarm : IAlarmState;
+	public interface ICanDisarm : IAlarmTransition;
 
-	public interface ICanTrigger : IAlarmState;
+	public interface ICanTrigger : IAlarmTransition;
 
-	public interface ICanAcknowledge : IAlarmState;
+	public interface ICanAcknowledge : IAlarmTransition;
 
-	public interface ICanPause : IAlarmState;
+	public interface ICanPause : IAlarmTransition;
 
-	public interface ICanTimeOutArmed : IAlarmState;
+	public interface ICanTimeOutArmed : IAlarmTransition;
 
-	public interface ICanTimeOutTriggered : IAlarmState;
+	public interface ICanTimeOutTriggered : IAlarmTransition;
 }
 
-partial interface IAlarmState : IState
+interface IAlarmCommand : ICommand
+{
+	public sealed record Startup : IAlarmCommand;
+
+	public sealed record Arm : IAlarmCommand;
+
+	public sealed record Disarm : IAlarmCommand;
+
+	public sealed record Trigger : IAlarmCommand;
+
+	public sealed record Acknowledge : IAlarmCommand;
+
+	public sealed record Pause : IAlarmCommand;
+
+	public sealed record TimeOutArmed : IAlarmCommand;
+
+	public sealed record TimeOutTriggered : IAlarmCommand;
+}
+
+interface IAlarmState : IState
 {
 	public sealed record Undefined : IAlarmState,
 		ICanStartup;
@@ -54,30 +74,11 @@ partial interface IAlarmState : IState
 		ICanDisarm;
 }
 
-interface IAlarmCommand : ICommand
-{
-	public sealed record Startup : IAlarmCommand;
-
-	public sealed record Arm : IAlarmCommand;
-
-	public sealed record Disarm : IAlarmCommand;
-
-	public sealed record Trigger : IAlarmCommand;
-
-	public sealed record Acknowledge : IAlarmCommand;
-
-	public sealed record Pause : IAlarmCommand;
-
-	public sealed record TimeOutArmed : IAlarmCommand;
-
-	public sealed record TimeOutTriggered : IAlarmCommand;
-}
-
 static class Program
 {
 	static void Main()
 	{
-		var alarm = new StateMachineBuilder<IAlarmState, IAlarmCommand>()
+		var alarm = new StateMachineBuilder<IAlarmTransition, IAlarmCommand, IAlarmState>()
 			.From<ICanStartup>()
 				.On<Startup>()
 				.To((from, command) => new Disarmed())

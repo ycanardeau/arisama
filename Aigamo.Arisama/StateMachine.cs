@@ -2,20 +2,23 @@ using System.Collections.Immutable;
 
 namespace Aigamo.Arisama;
 
+public interface ITransition;
+
 public interface IState;
 
 public interface ICommand;
 
-public sealed class StateMachine<TState, TCommand>
-	where TState : IState
+public sealed class StateMachine<TTransition, TCommand, TState>
+	where TTransition : ITransition
 	where TCommand : ICommand
+	where TState : IState
 {
 	private readonly List<TState> _states = [];
 	public IReadOnlyCollection<TState> States => _states.AsReadOnly();
 
-	private readonly ImmutableDictionary<Type, Action<StateMachine<TState, TCommand>, TCommand>> _commandHandlers;
+	private readonly ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> _commandHandlers;
 
-	private StateMachine(ImmutableDictionary<Type, Action<StateMachine<TState, TCommand>, TCommand>> commandHandlers)
+	private StateMachine(ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers)
 	{
 		_commandHandlers = commandHandlers;
 	}
@@ -25,19 +28,19 @@ public sealed class StateMachine<TState, TCommand>
 		_states.Add(state);
 	}
 
-	internal static StateMachine<TState, TCommand> Create<TInitialState>(
-		ImmutableDictionary<Type, Action<StateMachine<TState, TCommand>, TCommand>> commandHandlers,
+	internal static StateMachine<TTransition, TCommand, TState> Create<TInitialState>(
+		ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers,
 		TInitialState initialState
 	)
 		where TInitialState : TState
 	{
-		var stateMachine = new StateMachine<TState, TCommand>(commandHandlers);
+		var stateMachine = new StateMachine<TTransition, TCommand, TState>(commandHandlers);
 		stateMachine.AddState(initialState);
 		return stateMachine;
 	}
 
 	internal void Handle<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback, TConcreteCommand command)
-		where TFrom : TState
+		where TFrom : TTransition
 		where TConcreteCommand : TCommand
 		where TTo : TState
 	{

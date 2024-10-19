@@ -1,5 +1,6 @@
 using static Aigamo.Arisama.ConsoleApp.IVendingMachineCommand;
 using static Aigamo.Arisama.ConsoleApp.IVendingMachineState;
+using static Aigamo.Arisama.ConsoleApp.IVendingMachineTransition;
 
 namespace Aigamo.Arisama.ConsoleApp;
 
@@ -12,27 +13,27 @@ readonly partial struct Coin
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
 readonly partial struct ProductId;
 
-partial interface IVendingMachineState : IState
+interface IVendingMachineTransition : ITransition
 {
-	public interface ICanInsertCoin : IVendingMachineState
+	public interface ICanInsertCoin : IVendingMachineTransition
 	{
 		Coin TotalAmount { get; }
 	}
 
-	public interface ICanChooseProduct : IVendingMachineState;
+	public interface ICanChooseProduct : IVendingMachineTransition;
 
-	public interface ICanReturnChange : IVendingMachineState
+	public interface ICanReturnChange : IVendingMachineTransition
 	{
 		Coin TotalAmount { get; }
 	}
 
-	public interface ICanDispenseProduct : IVendingMachineState
+	public interface ICanDispenseProduct : IVendingMachineTransition
 	{
 		ProductId ProductId { get; }
 	}
 }
 
-partial interface IVendingMachineState : IState
+interface IVendingMachineState : IState
 {
 	public sealed record Idle : IVendingMachineState,
 		ICanInsertCoin
@@ -68,7 +69,7 @@ static class Program
 {
 	static void Main()
 	{
-		var vendingMachine = new StateMachineBuilder<IVendingMachineState, IVendingMachineCommand>()
+		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, IVendingMachineCommand, IVendingMachineState>()
 			.From<ICanInsertCoin>()
 				.On<InsertCoin>()
 				.To((from, command) => new CoinInserted(Amount: command.Amount, TotalAmount: from.TotalAmount + command.Amount))

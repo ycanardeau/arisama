@@ -3,13 +3,14 @@ using System.Diagnostics;
 
 namespace Aigamo.Arisama;
 
-public sealed class StateMachineBuilder<TState, TCommand>
-	where TState : IState
+public sealed class StateMachineBuilder<TTransition, TCommand, TState>
+	where TTransition : ITransition
 	where TCommand : ICommand
+	where TState : IState
 {
-	private readonly Dictionary<Type, Action<StateMachine<TState, TCommand>, TCommand>> _commandHandlers = [];
+	private readonly Dictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> _commandHandlers = [];
 
-	private StateMachineBuilder<TState, TCommand> AddCommandHandler<TConcreteCommand>(Action<StateMachine<TState, TCommand>, TConcreteCommand> commandHandler)
+	private StateMachineBuilder<TTransition, TCommand, TState> AddCommandHandler<TConcreteCommand>(Action<StateMachine<TTransition, TCommand, TState>, TConcreteCommand> commandHandler)
 		where TConcreteCommand : TCommand
 	{
 		_commandHandlers.Add(typeof(TConcreteCommand), (stateMachine, command) =>
@@ -24,8 +25,8 @@ public sealed class StateMachineBuilder<TState, TCommand>
 		return this;
 	}
 
-	private StateMachineBuilder<TState, TCommand> ConfigureState<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback)
-		where TFrom : TState
+	private StateMachineBuilder<TTransition, TCommand, TState> ConfigureState<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback)
+		where TFrom : TTransition
 		where TConcreteCommand : TCommand
 		where TTo : TState
 	{
@@ -33,11 +34,11 @@ public sealed class StateMachineBuilder<TState, TCommand>
 		return this;
 	}
 
-	public sealed class StateMachineBuilderOn<TFrom, TOn>(StateMachineBuilder<TState, TCommand> builder)
-		where TFrom : TState
+	public sealed class StateMachineBuilderOn<TFrom, TOn>(StateMachineBuilder<TTransition, TCommand, TState> builder)
+		where TFrom : TTransition
 		where TOn : TCommand
 	{
-		public StateMachineBuilder<TState, TCommand> To<TTo>(Func<TFrom, TOn, TTo> callback)
+		public StateMachineBuilder<TTransition, TCommand, TState> To<TTo>(Func<TFrom, TOn, TTo> callback)
 			where TTo : TState
 		{
 			builder.ConfigureState(callback);
@@ -45,8 +46,8 @@ public sealed class StateMachineBuilder<TState, TCommand>
 		}
 	}
 
-	public sealed class StateMachineBuilderFrom<TFrom>(StateMachineBuilder<TState, TCommand> builder)
-		where TFrom : TState
+	public sealed class StateMachineBuilderFrom<TFrom>(StateMachineBuilder<TTransition, TCommand, TState> builder)
+		where TFrom : TTransition
 	{
 		public StateMachineBuilderOn<TFrom, TOn> On<TOn>()
 			where TOn : TCommand
@@ -56,14 +57,14 @@ public sealed class StateMachineBuilder<TState, TCommand>
 	}
 
 	public StateMachineBuilderFrom<TFrom> From<TFrom>()
-		where TFrom : TState
+		where TFrom : TTransition
 	{
 		return new StateMachineBuilderFrom<TFrom>(this);
 	}
 
-	public StateMachine<TState, TCommand> Build<TInitialState>(TInitialState initialState)
+	public StateMachine<TTransition, TCommand, TState> Build<TInitialState>(TInitialState initialState)
 		where TInitialState : TState
 	{
-		return StateMachine<TState, TCommand>.Create(_commandHandlers.ToImmutableDictionary(), initialState);
+		return StateMachine<TTransition, TCommand, TState>.Create(_commandHandlers.ToImmutableDictionary(), initialState);
 	}
 }
