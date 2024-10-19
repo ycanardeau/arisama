@@ -4,15 +4,15 @@ using static Aigamo.Arisama.ConsoleApp.IVendingMachineState;
 namespace Aigamo.Arisama.ConsoleApp;
 
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
-internal readonly partial struct Coin
+readonly partial struct Coin
 {
 	public static Coin operator +(Coin left, Coin right) => new(left.Value + right.Value);
 }
 
 [StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
-internal readonly partial struct ProductId;
+readonly partial struct ProductId;
 
-internal partial interface IVendingMachineState : IState
+partial interface IVendingMachineState : IState
 {
 	public interface ICanInsertCoin : IVendingMachineState
 	{
@@ -32,7 +32,7 @@ internal partial interface IVendingMachineState : IState
 	}
 }
 
-internal partial interface IVendingMachineState : IState
+partial interface IVendingMachineState : IState
 {
 	public sealed record Idle : IVendingMachineState,
 		ICanInsertCoin
@@ -53,7 +53,7 @@ internal partial interface IVendingMachineState : IState
 	public sealed record ProductDispensed(ProductId ProductId) : IVendingMachineState;
 }
 
-internal interface IVendingMachineCommand : ICommand
+interface IVendingMachineCommand : ICommand
 {
 	public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand;
 
@@ -64,7 +64,7 @@ internal interface IVendingMachineCommand : ICommand
 	public sealed record DispenseProduct : IVendingMachineCommand;
 }
 
-internal static class Program
+static class Program
 {
 	static void Main()
 	{
