@@ -24,21 +24,21 @@ interface IAlarmTransition : ITransition
 
 interface IAlarmCommand : ICommand
 {
-	public sealed record Startup : IAlarmCommand, ICommand<ICanStartup>;
+	public sealed record Startup : IAlarmCommand;
 
-	public sealed record Arm : IAlarmCommand, ICommand<ICanArm>;
+	public sealed record Arm : IAlarmCommand;
 
-	public sealed record Disarm : IAlarmCommand, ICommand<ICanDisarm>;
+	public sealed record Disarm : IAlarmCommand;
 
-	public sealed record Trigger : IAlarmCommand, ICommand<ICanTrigger>;
+	public sealed record Trigger : IAlarmCommand;
 
-	public sealed record Acknowledge : IAlarmCommand, ICommand<ICanAcknowledge>;
+	public sealed record Acknowledge : IAlarmCommand;
 
-	public sealed record Pause : IAlarmCommand, ICommand<ICanPause>;
+	public sealed record Pause : IAlarmCommand;
 
-	public sealed record TimeOutArmed : IAlarmCommand, ICommand<ICanTimeOutArmed>;
+	public sealed record TimeOutArmed : IAlarmCommand;
 
-	public sealed record TimeOutTriggered : IAlarmCommand, ICommand<ICanTimeOutTriggered>;
+	public sealed record TimeOutTriggered : IAlarmCommand;
 }
 
 interface IAlarmState : IState
