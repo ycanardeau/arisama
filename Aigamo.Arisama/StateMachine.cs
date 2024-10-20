@@ -39,14 +39,16 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 		_states.Add(state);
 	}
 
-	internal static StateMachine<TTransition, TCommand, TState> Create<TInitialState>(
+	internal static StateMachine<TTransition, TCommand, TState> Create(
 		ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers,
-		TInitialState initialState
+		IEnumerable<TState> initialStates
 	)
-		where TInitialState : TState
 	{
 		var stateMachine = new StateMachine<TTransition, TCommand, TState>(commandHandlers);
-		stateMachine.AddState(initialState);
+		foreach (var initialState in initialStates)
+		{
+			stateMachine.AddState(initialState);
+		}
 		return stateMachine;
 	}
 

@@ -22,7 +22,7 @@ static class Program
 			.From<ICanDispenseProduct>()
 				.To<ProductDispensed>()
 				.On<DispenseProduct>()
-			.Build(new Idle());
+			.Build([new Idle()]);
 
 		vendingMachine.Send(new InsertCoin(Amount: new(100)));
 		vendingMachine.Send(new InsertCoin(Amount: new(50)));

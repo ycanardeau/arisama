@@ -70,9 +70,8 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>
 		return new StateMachineBuilderFrom<TFrom>(this);
 	}
 
-	public StateMachine<TTransition, TCommand, TState> Build<TInitialState>(TInitialState initialState)
-		where TInitialState : TState
+	public StateMachine<TTransition, TCommand, TState> Build(IEnumerable<TState> initialStates)
 	{
-		return StateMachine<TTransition, TCommand, TState>.Create(_commandHandlers.ToImmutableDictionary(), initialState);
+		return StateMachine<TTransition, TCommand, TState>.Create(_commandHandlers.ToImmutableDictionary(), initialStates);
 	}
 }

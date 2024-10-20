@@ -18,6 +18,6 @@ static class Program
 			.ConfigureState<ICanPause, Pause, ArmPaused>()
 			.ConfigureState<ICanTimeOutArmed, TimeOutArmed, Armed>()
 			.ConfigureState<ICanTimeOutTriggered, TimeOutTriggered, Triggered>()
-			.Build(new Undefined());
+			.Build([new Undefined()]);
 	}
 }
