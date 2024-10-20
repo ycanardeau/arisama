@@ -8,6 +8,10 @@ public interface IState;
 
 public interface ICommand;
 
+public interface ICommand<TFrom, TTo> : ICommand
+	where TFrom : ITransition
+	where TTo : IState;
+
 public sealed class StateMachine<TTransition, TCommand, TState>
 	where TTransition : ITransition
 	where TCommand : ICommand

@@ -56,13 +56,13 @@ interface IVendingMachineState : IState
 
 interface IVendingMachineCommand : ICommand
 {
-	public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand;
+	public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand, ICommand<ICanInsertCoin, CoinInserted>;
 
-	public sealed record ChooseProduct(ProductId ProductId) : IVendingMachineCommand;
+	public sealed record ChooseProduct(ProductId ProductId) : IVendingMachineCommand, ICommand<ICanChooseProduct, ProductChosen>;
 
-	public sealed record ReturnChange : IVendingMachineCommand;
+	public sealed record ReturnChange : IVendingMachineCommand, ICommand<ICanReturnChange, ChangeReturned>;
 
-	public sealed record DispenseProduct : IVendingMachineCommand;
+	public sealed record DispenseProduct : IVendingMachineCommand, ICommand<ICanDispenseProduct, ProductDispensed>;
 }
 
 static class Program
