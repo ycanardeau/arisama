@@ -94,10 +94,10 @@ static class Program
 	static void Main()
 	{
 		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, IVendingMachineCommand, IVendingMachineState>()
-			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>((from, command) => command.Execute(from))
-			.ConfigureState<ICanChooseProduct, ChooseProduct, ProductChosen>((from, command) => command.Execute(from))
-			.ConfigureState<ICanReturnChange, ReturnChange, ChangeReturned>((from, command) => command.Execute(from))
-			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>((from, command) => command.Execute(from))
+			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>()
+			.ConfigureState<ICanChooseProduct, ChooseProduct, ProductChosen>()
+			.ConfigureState<ICanReturnChange, ReturnChange, ChangeReturned>()
+			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>()
 			.Build(new Idle());
 
 		vendingMachine.Send(new InsertCoin(Amount: new(100)));

@@ -127,14 +127,14 @@ static class Program
 	static void Main()
 	{
 		var alarm = new StateMachineBuilder<IAlarmTransition, IAlarmCommand, IAlarmState>()
-			.ConfigureState<ICanStartup, Startup, Disarmed>((from, command) => command.Execute(from))
-			.ConfigureState<ICanArm, Arm, PreArmed>((from, command) => command.Execute(from))
-			.ConfigureState<ICanDisarm, Disarm, Disarmed>((from, command) => command.Execute(from))
-			.ConfigureState<ICanTrigger, Trigger, PreTriggered>((from, command) => command.Execute(from))
-			.ConfigureState<ICanAcknowledge, Acknowledge, Acknowledged>((from, command) => command.Execute(from))
-			.ConfigureState<ICanPause, Pause, ArmPaused>((from, command) => command.Execute(from))
-			.ConfigureState<ICanTimeOutArmed, TimeOutArmed, Armed>((from, command) => command.Execute(from))
-			.ConfigureState<ICanTimeOutTriggered, TimeOutTriggered, Triggered>((from, command) => command.Execute(from))
+			.ConfigureState<ICanStartup, Startup, Disarmed>()
+			.ConfigureState<ICanArm, Arm, PreArmed>()
+			.ConfigureState<ICanDisarm, Disarm, Disarmed>()
+			.ConfigureState<ICanTrigger, Trigger, PreTriggered>()
+			.ConfigureState<ICanAcknowledge, Acknowledge, Acknowledged>()
+			.ConfigureState<ICanPause, Pause, ArmPaused>()
+			.ConfigureState<ICanTimeOutArmed, TimeOutArmed, Armed>()
+			.ConfigureState<ICanTimeOutTriggered, TimeOutTriggered, Triggered>()
 			.Build(new Undefined());
 	}
 }

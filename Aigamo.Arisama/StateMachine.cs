@@ -50,9 +50,9 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 		return stateMachine;
 	}
 
-	internal void Handle<TFrom, TConcreteCommand, TTo>(Func<TFrom, TConcreteCommand, TTo> callback, TConcreteCommand command)
+	internal void Handle<TFrom, TOn, TTo>(Func<TFrom, TOn, TTo> callback, TOn command)
 		where TFrom : TTransition
-		where TConcreteCommand : TCommand
+		where TOn : TCommand, ICommand<TFrom, TTo>
 		where TTo : TState
 	{
 		var lines = new List<string>();
@@ -81,9 +81,9 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 		}
 	}
 
-	public void Send<TConcreteCommand>(TConcreteCommand command)
-		where TConcreteCommand : TCommand
+	public void Send<TOn>(TOn command)
+		where TOn : TCommand
 	{
-		_commandHandlers[typeof(TConcreteCommand)](this, command);
+		_commandHandlers[typeof(TOn)](this, command);
 	}
 }
