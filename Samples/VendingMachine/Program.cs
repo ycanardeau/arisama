@@ -56,13 +56,37 @@ interface IVendingMachineState : IState
 
 interface IVendingMachineCommand : ICommand
 {
-	public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand, ICommand<ICanInsertCoin, CoinInserted>;
+	public sealed record InsertCoin(Coin Amount) : IVendingMachineCommand, ICommand<ICanInsertCoin, CoinInserted>
+	{
+		public CoinInserted Execute(ICanInsertCoin from)
+		{
+			return new CoinInserted(Amount: Amount, TotalAmount: from.TotalAmount + Amount);
+		}
+	}
 
-	public sealed record ChooseProduct(ProductId ProductId) : IVendingMachineCommand, ICommand<ICanChooseProduct, ProductChosen>;
+	public sealed record ChooseProduct(ProductId ProductId) : IVendingMachineCommand, ICommand<ICanChooseProduct, ProductChosen>
+	{
+		public ProductChosen Execute(ICanChooseProduct from)
+		{
+			return new ProductChosen(ProductId: ProductId);
+		}
+	}
 
-	public sealed record ReturnChange : IVendingMachineCommand, ICommand<ICanReturnChange, ChangeReturned>;
+	public sealed record ReturnChange : IVendingMachineCommand, ICommand<ICanReturnChange, ChangeReturned>
+	{
+		public ChangeReturned Execute(ICanReturnChange from)
+		{
+			return new ChangeReturned(TotalAmount: from.TotalAmount);
+		}
+	}
 
-	public sealed record DispenseProduct : IVendingMachineCommand, ICommand<ICanDispenseProduct, ProductDispensed>;
+	public sealed record DispenseProduct : IVendingMachineCommand, ICommand<ICanDispenseProduct, ProductDispensed>
+	{
+		public ProductDispensed Execute(ICanDispenseProduct from)
+		{
+			return new ProductDispensed(ProductId: from.ProductId);
+		}
+	}
 }
 
 static class Program
@@ -70,18 +94,10 @@ static class Program
 	static void Main()
 	{
 		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, IVendingMachineCommand, IVendingMachineState>()
-			.From<ICanInsertCoin>()
-				.On<InsertCoin>()
-				.To((from, command) => new CoinInserted(Amount: command.Amount, TotalAmount: from.TotalAmount + command.Amount))
-			.From<ICanChooseProduct>()
-				.On<ChooseProduct>()
-				.To((from, command) => new ProductChosen(ProductId: command.ProductId))
-			.From<ICanReturnChange>()
-				.On<ReturnChange>()
-				.To((from, command) => new ChangeReturned(TotalAmount: from.TotalAmount))
-			.From<ICanDispenseProduct>()
-				.On<DispenseProduct>()
-				.To((from, command) => new ProductDispensed(ProductId: from.ProductId))
+			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>((from, command) => command.Execute(from))
+			.ConfigureState<ICanChooseProduct, ChooseProduct, ProductChosen>((from, command) => command.Execute(from))
+			.ConfigureState<ICanReturnChange, ReturnChange, ChangeReturned>((from, command) => command.Execute(from))
+			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>((from, command) => command.Execute(from))
 			.Build(new Idle());
 
 		vendingMachine.Send(new InsertCoin(Amount: new(100)));

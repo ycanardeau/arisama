@@ -10,7 +10,10 @@ public interface ICommand;
 
 public interface ICommand<TFrom, TTo> : ICommand
 	where TFrom : ITransition
-	where TTo : IState;
+	where TTo : IState
+{
+	TTo Execute(TFrom from);
+}
 
 public sealed class StateMachine<TTransition, TCommand, TState>
 	where TTransition : ITransition
