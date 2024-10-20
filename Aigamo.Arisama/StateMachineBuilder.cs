@@ -42,6 +42,34 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>
 		return ConfigureState<TFrom, TOn, TTo>((from, command) => command.Execute(from));
 	}
 
+	public sealed class StateMachineBuilderTo<TFrom, TTo>(StateMachineBuilder<TTransition, TCommand, TState> builder)
+		where TFrom : TTransition
+		where TTo : TState
+	{
+		public StateMachineBuilder<TTransition, TCommand, TState> On<TOn>()
+			where TOn : TCommand, ICommand<TFrom, TTo>
+		{
+			builder.ConfigureState<TFrom, TOn, TTo>();
+			return builder;
+		}
+	}
+
+	public sealed class StateMachineBuilderFrom<TFrom>(StateMachineBuilder<TTransition, TCommand, TState> builder)
+		where TFrom : TTransition
+	{
+		public StateMachineBuilderTo<TFrom, TTo> To<TTo>()
+			where TTo : TState
+		{
+			return new StateMachineBuilderTo<TFrom, TTo>(builder);
+		}
+	}
+
+	public StateMachineBuilderFrom<TFrom> From<TFrom>()
+		where TFrom : TTransition
+	{
+		return new StateMachineBuilderFrom<TFrom>(this);
+	}
+
 	public StateMachine<TTransition, TCommand, TState> Build<TInitialState>(TInitialState initialState)
 		where TInitialState : TState
 	{
