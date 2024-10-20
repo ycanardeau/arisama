@@ -1,4 +1,5 @@
 using Aigamo.Arisama;
+using Microsoft.Extensions.Logging;
 using static Alarm.IAlarmCommand;
 using static Alarm.IAlarmState;
 using static Alarm.IAlarmTransition;
@@ -9,7 +10,17 @@ static class Program
 {
 	static void Main()
 	{
-		var alarm = new StateMachineBuilder<IAlarmTransition, IAlarmCommand, IAlarmState>()
+		var loggerFactory = LoggerFactory.Create(builder =>
+		{
+			builder.AddSimpleConsole(options =>
+			{
+				options.IncludeScopes = true;
+				options.SingleLine = true;
+				options.TimestampFormat = "HH:mm:ss ";
+			});
+		});
+
+		var alarm = new StateMachineBuilder<IAlarmTransition, IAlarmCommand, IAlarmState>(loggerFactory)
 			.ConfigureState<ICanStartup, Startup, Disarmed>()
 			.ConfigureState<ICanArm, Arm, PreArmed>()
 			.ConfigureState<ICanDisarm, Disarm, Disarmed>()

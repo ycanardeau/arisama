@@ -1,9 +1,10 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Aigamo.Arisama;
 
-public sealed class StateMachineBuilder<TTransition, TCommand, TState>
+public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFactory loggerFactory)
 	where TTransition : ITransition
 	where TCommand : ICommand
 	where TState : IState
@@ -72,6 +73,10 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>
 
 	public StateMachine<TTransition, TCommand, TState> Build(IEnumerable<TState> initialStates)
 	{
-		return StateMachine<TTransition, TCommand, TState>.Create(_commandHandlers.ToImmutableDictionary(), initialStates);
+		return StateMachine<TTransition, TCommand, TState>.Create(
+			loggerFactory.CreateLogger<StateMachine<TTransition, TCommand, TState>>(),
+			_commandHandlers.ToImmutableDictionary(),
+			initialStates
+		);
 	}
 }

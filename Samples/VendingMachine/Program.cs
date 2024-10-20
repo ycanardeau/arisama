@@ -1,4 +1,5 @@
 using Aigamo.Arisama;
+using Microsoft.Extensions.Logging;
 using static VendingMachine.IVendingMachineCommand;
 using static VendingMachine.IVendingMachineState;
 using static VendingMachine.IVendingMachineTransition;
@@ -9,7 +10,17 @@ static class Program
 {
 	static void Main()
 	{
-		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, IVendingMachineCommand, IVendingMachineState>()
+		var loggerFactory = LoggerFactory.Create(builder =>
+		{
+			builder.AddSimpleConsole(options =>
+			{
+				options.IncludeScopes = true;
+				options.SingleLine = true;
+				options.TimestampFormat = "HH:mm:ss ";
+			});
+		});
+
+		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, IVendingMachineCommand, IVendingMachineState>(loggerFactory)
 			.From<ICanInsertCoin>()
 				.To<CoinInserted>()
 				.On<InsertCoin>()
@@ -28,8 +39,8 @@ static class Program
 		vendingMachine.Send(new InsertCoin(Amount: new(50)));
 		vendingMachine.Send(new InsertCoin(Amount: new(10)));
 		vendingMachine.Send(new ReturnChange());
-		vendingMachine.Send(new ChooseProduct(ProductId: new(1)));
-		vendingMachine.Send(new DispenseProduct());
+		//vendingMachine.Send(new ChooseProduct(ProductId: new(1)));
+		//vendingMachine.Send(new DispenseProduct());
 
 		foreach (var state in vendingMachine.States)
 		{

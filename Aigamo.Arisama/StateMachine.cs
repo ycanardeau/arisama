@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using Microsoft.Extensions.Logging;
 
 namespace Aigamo.Arisama;
 
@@ -20,17 +21,22 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 	where TCommand : ICommand
 	where TState : IState
 {
+	private readonly ILogger<StateMachine<TTransition, TCommand, TState>> _logger;
+	private readonly ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> _commandHandlers;
+
 	private readonly List<TState> _states = [];
 	public IReadOnlyCollection<TState> States => _states.AsReadOnly();
 
-	private readonly ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> _commandHandlers;
 	public sealed record StateChangedEventArgs(TState State, TState PreviousState);
 	public delegate void StateChangedEventHandler(StateMachine<TTransition, TCommand, TState> sender, StateChangedEventArgs e);
-
 	public event StateChangedEventHandler? StateChanged;
 
-	private StateMachine(ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers)
+	private StateMachine(
+		ILogger<StateMachine<TTransition, TCommand, TState>> logger,
+		ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers
+	)
 	{
+		_logger = logger;
 		_commandHandlers = commandHandlers;
 	}
 
@@ -40,11 +46,12 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 	}
 
 	internal static StateMachine<TTransition, TCommand, TState> Create(
+		ILogger<StateMachine<TTransition, TCommand, TState>> logger,
 		ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers,
 		IEnumerable<TState> initialStates
 	)
 	{
-		var stateMachine = new StateMachine<TTransition, TCommand, TState>(commandHandlers);
+		var stateMachine = new StateMachine<TTransition, TCommand, TState>(logger, commandHandlers);
 		foreach (var initialState in initialStates)
 		{
 			stateMachine.AddState(initialState);
@@ -57,30 +64,21 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 		where TOn : TCommand, ICommand<TFrom, TTo>
 		where TTo : TState
 	{
-		var lines = new List<string>();
-		try
+		var previousState = States.Last();
+		if (previousState is not TFrom from)
 		{
-			var previousState = States.Last();
-			if (previousState is not TFrom from)
-			{
-				lines.Add($"Invalid transition from {previousState.GetType().Name} to {typeof(TTo).Name}.");
-				return;
-			}
-
-			lines.Add($"Transitioning from {typeof(TFrom).Name} (Context: {from}).");
-
-			var state = callback(from, command);
-			AddState(state);
-
-			lines.Add($"Transitioned to {typeof(TTo).Name} (Context: {state}).");
-
-			StateChanged?.Invoke(this, new StateChangedEventArgs(State: state, PreviousState: previousState));
+			_logger.LogError("Invalid transition from {} to {}", previousState.GetType().Name, typeof(TTo).Name);
+			throw new InvalidOperationException($"Invalid transition from {previousState.GetType().Name} to {typeof(TTo).Name}");
 		}
-		finally
-		{
-			Console.WriteLine(string.Join('\n', lines));
-			Console.WriteLine();
-		}
+
+		_logger.LogInformation("Transitioning from {}", typeof(TFrom).Name);
+
+		var state = callback(from, command);
+		AddState(state);
+
+		_logger.LogInformation("Transitioned to {}", typeof(TTo).Name);
+
+		StateChanged?.Invoke(this, new StateChangedEventArgs(State: state, PreviousState: previousState));
 	}
 
 	public void Send<TOn>(TOn command)
