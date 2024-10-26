@@ -59,7 +59,7 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 		return stateMachine;
 	}
 
-	internal void Handle<TFrom, TOn, TTo>(Func<TFrom, TOn, TTo> callback, TOn command)
+	internal Task HandleAsync<TFrom, TOn, TTo>(Func<TFrom, TOn, TTo> callback, TOn command)
 		where TFrom : TTransition
 		where TOn : TCommand, ICommand<TFrom, TTo>
 		where TTo : TState
@@ -79,11 +79,13 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 		_logger.LogInformation("Transitioned to {}", typeof(TTo).Name);
 
 		StateChanged?.Invoke(this, new StateChangedEventArgs(State: state, PreviousState: previousState));
+
+		return Task.CompletedTask;
 	}
 
-	public void Send<TOn>(TOn command)
+	public Task SendAsync<TOn>(TOn command)
 		where TOn : TCommand
 	{
-		_configurations[typeof(TOn)].CommandHandler(this, command);
+		return _configurations[typeof(TOn)].CommandHandler(this, command);
 	}
 }

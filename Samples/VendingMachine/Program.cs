@@ -8,7 +8,7 @@ namespace VendingMachine;
 
 static class Program
 {
-	static void Main()
+	static async Task Main()
 	{
 		var loggerFactory = LoggerFactory.Create(builder =>
 		{
@@ -35,12 +35,12 @@ static class Program
 				.On<DispenseProduct>()
 			.Build([new Idle()]);
 
-		vendingMachine.Send(new InsertCoin(Amount: new(100)));
-		vendingMachine.Send(new InsertCoin(Amount: new(50)));
-		vendingMachine.Send(new InsertCoin(Amount: new(10)));
-		vendingMachine.Send(new ReturnChange());
-		//vendingMachine.Send(new ChooseProduct(ProductId: new(1)));
-		//vendingMachine.Send(new DispenseProduct());
+		await vendingMachine.SendAsync(new InsertCoin(Amount: new(100)));
+		await vendingMachine.SendAsync(new InsertCoin(Amount: new(50)));
+		await vendingMachine.SendAsync(new InsertCoin(Amount: new(10)));
+		await vendingMachine.SendAsync(new ReturnChange());
+		//await vendingMachine.Send(new ChooseProduct(ProductId: new(1)));
+		//await vendingMachine.Send(new DispenseProduct());
 
 		foreach (var state in vendingMachine.States)
 		{

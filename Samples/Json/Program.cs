@@ -9,7 +9,7 @@ namespace Json;
 
 static class Program
 {
-	static void Main()
+	static async Task Main()
 	{
 		var loggerFactory = LoggerFactory.Create(builder => { });
 		var builder = new StateMachineBuilder<IMembershipTransition, IMembershipCommand, IMembershipState>(loggerFactory)
@@ -22,9 +22,9 @@ static class Program
 
 		Console.WriteLine($"Member created, membership state is {aMember.States.Last()}");
 
-		aMember.Send(new Suspend());
-		aMember.Send(new Reactivate());
-		aMember.Send(new Terminate());
+		await aMember.SendAsync(new Suspend());
+		await aMember.SendAsync(new Reactivate());
+		await aMember.SendAsync(new Terminate());
 
 		Console.WriteLine("Member JSON:");
 
