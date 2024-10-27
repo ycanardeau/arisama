@@ -51,11 +51,34 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 		return ConfigureState<TFrom, TOn, TTo>((from, command) => command.Execute(from));
 	}
 
+	public StateMachine<TTransition, TCommand, TState> Build(IEnumerable<TState> initialStates, StateMachine<TTransition, TCommand, TState>.StateMachineOptions options)
+	{
+		return StateMachine<TTransition, TCommand, TState>.Create(
+			loggerFactory.CreateLogger<StateMachine<TTransition, TCommand, TState>>(),
+			_configurations.ToImmutableDictionary(),
+			options,
+			initialStates
+		);
+	}
+
 	public StateMachine<TTransition, TCommand, TState> Build(IEnumerable<TState> initialStates)
 	{
 		return StateMachine<TTransition, TCommand, TState>.Create(
 			loggerFactory.CreateLogger<StateMachine<TTransition, TCommand, TState>>(),
 			_configurations.ToImmutableDictionary(),
+			options: new StateMachine<TTransition, TCommand, TState>.StateMachineOptions(),
+			initialStates
+		);
+	}
+
+	public StateMachine<TTransition, TCommand, TState> Build(IEnumerable<TState> initialStates, Action<StateMachine<TTransition, TCommand, TState>.StateMachineOptions> configureOptions)
+	{
+		var options = new StateMachine<TTransition, TCommand, TState>.StateMachineOptions();
+		configureOptions(options);
+		return StateMachine<TTransition, TCommand, TState>.Create(
+			loggerFactory.CreateLogger<StateMachine<TTransition, TCommand, TState>>(),
+			_configurations.ToImmutableDictionary(),
+			options,
 			initialStates
 		);
 	}
