@@ -22,7 +22,7 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 	where TState : IState
 {
 	private readonly ILogger<StateMachine<TTransition, TCommand, TState>> _logger;
-	private readonly ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> _commandHandlers;
+	private readonly ImmutableDictionary<Type, StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration> _configurations;
 
 	private readonly List<TState> _states = [];
 	public IReadOnlyCollection<TState> States => _states.AsReadOnly();
@@ -33,11 +33,11 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 
 	private StateMachine(
 		ILogger<StateMachine<TTransition, TCommand, TState>> logger,
-		ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers
+		ImmutableDictionary<Type, StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration> configurations
 	)
 	{
 		_logger = logger;
-		_commandHandlers = commandHandlers;
+		_configurations = configurations;
 	}
 
 	private void AddState(TState state)
@@ -47,11 +47,11 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 
 	internal static StateMachine<TTransition, TCommand, TState> Create(
 		ILogger<StateMachine<TTransition, TCommand, TState>> logger,
-		ImmutableDictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> commandHandlers,
+		ImmutableDictionary<Type, StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration> configurations,
 		IEnumerable<TState> initialStates
 	)
 	{
-		var stateMachine = new StateMachine<TTransition, TCommand, TState>(logger, commandHandlers);
+		var stateMachine = new StateMachine<TTransition, TCommand, TState>(logger, configurations);
 		foreach (var initialState in initialStates)
 		{
 			stateMachine.AddState(initialState);
@@ -84,6 +84,6 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 	public void Send<TOn>(TOn command)
 		where TOn : TCommand
 	{
-		_commandHandlers[typeof(TOn)](this, command);
+		_configurations[typeof(TOn)].CommandHandler(this, command);
 	}
 }

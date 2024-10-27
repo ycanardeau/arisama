@@ -9,19 +9,27 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 	where TCommand : ICommand
 	where TState : IState
 {
-	private readonly Dictionary<Type, Action<StateMachine<TTransition, TCommand, TState>, TCommand>> _commandHandlers = [];
+	public sealed class StateConfiguration
+	{
+		public required Action<StateMachine<TTransition, TCommand, TState>, TCommand> CommandHandler { get; init; }
+	}
+
+	private readonly Dictionary<Type, StateConfiguration> _configurations = [];
 
 	private StateMachineBuilder<TTransition, TCommand, TState> AddCommandHandler<TOn>(Action<StateMachine<TTransition, TCommand, TState>, TOn> commandHandler)
 		where TOn : TCommand
 	{
-		_commandHandlers.Add(typeof(TOn), (stateMachine, command) =>
+		_configurations.Add(typeof(TOn), new StateConfiguration
 		{
-			if (command is not TOn concreteCommand)
+			CommandHandler = (stateMachine, command) =>
 			{
-				throw new UnreachableException($"Invalid command type. Expected: {nameof(TOn)}, Actual: {command.GetType().Name}");
-			}
+				if (command is not TOn concreteCommand)
+				{
+					throw new UnreachableException($"Invalid command type. Expected: {nameof(TOn)}, Actual: {command.GetType().Name}");
+				}
 
-			commandHandler(stateMachine, concreteCommand);
+				commandHandler(stateMachine, concreteCommand);
+			},
 		});
 		return this;
 	}
@@ -75,7 +83,7 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 	{
 		return StateMachine<TTransition, TCommand, TState>.Create(
 			loggerFactory.CreateLogger<StateMachine<TTransition, TCommand, TState>>(),
-			_commandHandlers.ToImmutableDictionary(),
+			_configurations.ToImmutableDictionary(),
 			initialStates
 		);
 	}
