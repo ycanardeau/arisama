@@ -21,18 +21,10 @@ static class Program
 		});
 
 		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, IVendingMachineCommand, IVendingMachineState>(loggerFactory)
-			.From<ICanInsertCoin>()
-				.To<CoinInserted>()
-				.On<InsertCoin>()
-			.From<ICanChooseProduct>()
-				.To<ProductChosen>()
-				.On<ChooseProduct>()
-			.From<ICanReturnChange>()
-				.To<ChangeReturned>()
-				.On<ReturnChange>()
-			.From<ICanDispenseProduct>()
-				.To<ProductDispensed>()
-				.On<DispenseProduct>()
+			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>()
+			.ConfigureState<ICanChooseProduct, ChooseProduct, ProductChosen>()
+			.ConfigureState<ICanReturnChange, ReturnChange, ChangeReturned>()
+			.ConfigureState<ICanDispenseProduct, DispenseProduct, ProductDispensed>()
 			.Build([new Idle()]);
 
 		await vendingMachine.SendAsync(new InsertCoin(Amount: new(100)));
