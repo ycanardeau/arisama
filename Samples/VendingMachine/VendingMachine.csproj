@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
-    <PackageReference Include="StronglyTypedId" Version="0.2.1" />
+    <PackageReference Include="StronglyTypedId" Version="1.0.0-beta08" />
   </ItemGroup>
 
   <ItemGroup>

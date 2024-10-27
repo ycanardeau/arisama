@@ -1,15 +1,16 @@
 using Aigamo.Arisama;
+using StronglyTypedIds;
 using static VendingMachine.IVendingMachineTransition;
 
 namespace VendingMachine;
 
-[StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
+[StronglyTypedId(Template.Int)]
 readonly partial struct Coin
 {
 	public static Coin operator +(Coin left, Coin right) => new(left.Value + right.Value);
 }
 
-[StronglyTypedId(backingType: StronglyTypedIdBackingType.Int, jsonConverter: StronglyTypedIdJsonConverter.SystemTextJson)]
+[StronglyTypedId(Template.Int)]
 readonly partial struct ProductId;
 
 interface IVendingMachineState : IState
