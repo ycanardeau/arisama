@@ -15,19 +15,19 @@ readonly partial struct ProductId;
 
 interface IVendingMachineState : IState
 {
-	public sealed record Idle : IVendingMachineState,
-		ICanInsertCoin
+	public sealed record Idle : IVendingMachineState
+		, ICanInsertCoin
 	{
 		public Coin TotalAmount { get; } = Coin.Empty;
 	}
 
-	public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : IVendingMachineState,
-		ICanInsertCoin,
-		ICanChooseProduct,
-		ICanReturnChange;
+	public sealed record CoinInserted(Coin Amount, Coin TotalAmount) : IVendingMachineState
+		, ICanInsertCoin
+		, ICanChooseProduct
+		, ICanReturnChange;
 
-	public sealed record ProductChosen(ProductId ProductId) : IVendingMachineState,
-		ICanDispenseProduct;
+	public sealed record ProductChosen(ProductId ProductId) : IVendingMachineState
+		, ICanDispenseProduct;
 
 	public sealed record ChangeReturned(Coin TotalAmount) : IVendingMachineState;
 
