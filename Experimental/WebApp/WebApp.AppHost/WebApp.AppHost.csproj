@@ -13,9 +13,11 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.MySql" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Modules\CivilRegistration\WebApp.CivilRegistration.MigrationService\WebApp.CivilRegistration.MigrationService.csproj" />
     <ProjectReference Include="..\WebApp\WebApp.csproj" />
   </ItemGroup>
 

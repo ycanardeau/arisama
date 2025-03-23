@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.En
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.Module", "Experimental\WebApp\Modules\CivilRegistration\WebApp.CivilRegistration.Module\WebApp.CivilRegistration.Module.csproj", "{0262B7C7-9A89-4BB2-C792-3D2E55841E19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.MigrationService", "Experimental\WebApp\Modules\CivilRegistration\WebApp.CivilRegistration.MigrationService\WebApp.CivilRegistration.MigrationService.csproj", "{6A0B3ED1-8CFC-2C11-22EB-9352F48023BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,10 @@ Global
 		{0262B7C7-9A89-4BB2-C792-3D2E55841E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0262B7C7-9A89-4BB2-C792-3D2E55841E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0262B7C7-9A89-4BB2-C792-3D2E55841E19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A0B3ED1-8CFC-2C11-22EB-9352F48023BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A0B3ED1-8CFC-2C11-22EB-9352F48023BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A0B3ED1-8CFC-2C11-22EB-9352F48023BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A0B3ED1-8CFC-2C11-22EB-9352F48023BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{AEB01771-A2D6-4729-FEFD-A5AE9B0A99FD} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
 		{94EA2256-7818-40D5-4C2F-FA1F32CCAA79} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
 		{0262B7C7-9A89-4BB2-C792-3D2E55841E19} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
+		{6A0B3ED1-8CFC-2C11-22EB-9352F48023BF} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {03FD678C-6DEC-45F9-B4AC-510A5614710E}
