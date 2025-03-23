@@ -22,6 +22,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.ServiceDefaults", "E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "Experimental\WebApp\WebApp\WebApp.csproj", "{9CF54E6C-59C1-B09E-4171-3D28FF331549}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{06F1C366-2A80-4A80-99ED-B644832DE2AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CivilRegistration", "CivilRegistration", "{13698ED7-539A-4FB0-B48C-0C7F13304C8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.Contracts", "Experimental\WebApp\Modules\CivilRegistration\WebApp.CivilRegistration.Contracts\WebApp.CivilRegistration.Contracts.csproj", "{08E9AF0C-875B-B8EF-4863-DD63C50B9B39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.Domain", "Experimental\WebApp\Modules\CivilRegistration\WebApp.CivilRegistration.Domain\WebApp.CivilRegistration.Domain.csproj", "{D5C076E3-386A-AA6D-A324-EC7F241B5222}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.Application", "Experimental\WebApp\Modules\CivilRegistration\WebApp.CivilRegistration.Application\WebApp.CivilRegistration.Application.csproj", "{DB1B2B13-D0EC-60CE-31F2-F77DCD694F7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.Infrastructure", "Experimental\WebApp\Modules\CivilRegistration\WebApp.CivilRegistration.Infrastructure\WebApp.CivilRegistration.Infrastructure.csproj", "{AEB01771-A2D6-4729-FEFD-A5AE9B0A99FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.Endpoints", "Experimental\WebApp\Modules\CivilRegistration\WebApp.CivilRegistration.Endpoints\WebApp.CivilRegistration.Endpoints.csproj", "{94EA2256-7818-40D5-4C2F-FA1F32CCAA79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp.CivilRegistration.Module", "Experimental\WebApp\Modules\CivilRegistration\WebApp.CivilRegistration.Module\WebApp.CivilRegistration.Module.csproj", "{0262B7C7-9A89-4BB2-C792-3D2E55841E19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +72,30 @@ Global
 		{9CF54E6C-59C1-B09E-4171-3D28FF331549}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CF54E6C-59C1-B09E-4171-3D28FF331549}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CF54E6C-59C1-B09E-4171-3D28FF331549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08E9AF0C-875B-B8EF-4863-DD63C50B9B39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08E9AF0C-875B-B8EF-4863-DD63C50B9B39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08E9AF0C-875B-B8EF-4863-DD63C50B9B39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08E9AF0C-875B-B8EF-4863-DD63C50B9B39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5C076E3-386A-AA6D-A324-EC7F241B5222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5C076E3-386A-AA6D-A324-EC7F241B5222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5C076E3-386A-AA6D-A324-EC7F241B5222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5C076E3-386A-AA6D-A324-EC7F241B5222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB1B2B13-D0EC-60CE-31F2-F77DCD694F7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB1B2B13-D0EC-60CE-31F2-F77DCD694F7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB1B2B13-D0EC-60CE-31F2-F77DCD694F7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB1B2B13-D0EC-60CE-31F2-F77DCD694F7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEB01771-A2D6-4729-FEFD-A5AE9B0A99FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEB01771-A2D6-4729-FEFD-A5AE9B0A99FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEB01771-A2D6-4729-FEFD-A5AE9B0A99FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEB01771-A2D6-4729-FEFD-A5AE9B0A99FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94EA2256-7818-40D5-4C2F-FA1F32CCAA79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94EA2256-7818-40D5-4C2F-FA1F32CCAA79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94EA2256-7818-40D5-4C2F-FA1F32CCAA79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94EA2256-7818-40D5-4C2F-FA1F32CCAA79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0262B7C7-9A89-4BB2-C792-3D2E55841E19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0262B7C7-9A89-4BB2-C792-3D2E55841E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0262B7C7-9A89-4BB2-C792-3D2E55841E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0262B7C7-9A89-4BB2-C792-3D2E55841E19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +108,14 @@ Global
 		{5DA2E7B5-1F0C-42C6-B7BD-E52D634DB1B5} = {3B4F273D-F7D3-44DA-BC71-7E3E1AD16390}
 		{7EB2DE9A-6CDD-898E-A702-5D4EC8A3CF75} = {3B4F273D-F7D3-44DA-BC71-7E3E1AD16390}
 		{9CF54E6C-59C1-B09E-4171-3D28FF331549} = {3B4F273D-F7D3-44DA-BC71-7E3E1AD16390}
+		{06F1C366-2A80-4A80-99ED-B644832DE2AC} = {3B4F273D-F7D3-44DA-BC71-7E3E1AD16390}
+		{13698ED7-539A-4FB0-B48C-0C7F13304C8E} = {06F1C366-2A80-4A80-99ED-B644832DE2AC}
+		{08E9AF0C-875B-B8EF-4863-DD63C50B9B39} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
+		{D5C076E3-386A-AA6D-A324-EC7F241B5222} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
+		{DB1B2B13-D0EC-60CE-31F2-F77DCD694F7E} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
+		{AEB01771-A2D6-4729-FEFD-A5AE9B0A99FD} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
+		{94EA2256-7818-40D5-4C2F-FA1F32CCAA79} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
+		{0262B7C7-9A89-4BB2-C792-3D2E55841E19} = {13698ED7-539A-4FB0-B48C-0C7F13304C8E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {03FD678C-6DEC-45F9-B4AC-510A5614710E}
