@@ -10,11 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FastEndpoints.Swagger" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Modules\CivilRegistration\WebApp.CivilRegistration.Module\WebApp.CivilRegistration.Module.csproj" />
     <ProjectReference Include="..\WebApp.ServiceDefaults\WebApp.ServiceDefaults.csproj" />
   </ItemGroup>
 
