@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 using static WebApp.CivilRegistration.Domain.Persons.Entities.IMaritalTransition;
 
@@ -24,4 +25,21 @@ internal abstract class MaritalStatus
 
 	public sealed class Widowed : MaritalStatus
 		, ICanMarry;
+
+	public U Match<U>(
+		Func<Single, U> onSingle,
+		Func<Married, U> onMarried,
+		Func<Divorced, U> onDivorced,
+		Func<Widowed, U> onWidowed
+	)
+	{
+		return this switch
+		{
+			Single x => onSingle(x),
+			Married x => onMarried(x),
+			Divorced x => onDivorced(x),
+			Widowed x => onWidowed(x),
+			_ => throw new UnreachableException(),
+		};
+	}
 }
