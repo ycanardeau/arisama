@@ -6,48 +6,34 @@ namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
 internal interface IMaritalTransition
 {
-	public interface ICanMarry : IMaritalTransition<MarryCommand>
+	public interface ICanMarry : IMaritalTransition<MarryCommand, Married>
 	{
-		Result<MaritalStateMachine, InvalidOperationException> IMaritalTransition<MarryCommand>.Execute(MaritalStateMachine stateMachine, MarryCommand command)
+		Result<Married, InvalidOperationException> IMaritalTransition<MarryCommand, Married>.Execute(MaritalStateMachine stateMachine, MarryCommand command)
 		{
-			stateMachine.AddState(x => new Married
-			{
-				Version = x,
-			});
-
-			return Result.Ok(stateMachine);
+			return Result.Ok(new Married());
 		}
 	}
 
-	public interface ICanDivorce : IMaritalTransition<DivorceCommand>
+	public interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
 	{
-		Result<MaritalStateMachine, InvalidOperationException> IMaritalTransition<DivorceCommand>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)
+		Result<Divorced, InvalidOperationException> IMaritalTransition<DivorceCommand, Divorced>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)
 		{
-			stateMachine.AddState(x => new Divorced
-			{
-				Version = x,
-			});
-
-			return Result.Ok(stateMachine);
+			return Result.Ok(new Divorced());
 		}
 	}
 
-	public interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand>
+	public interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, Widowed>
 	{
-		Result<MaritalStateMachine, InvalidOperationException> IMaritalTransition<BecomeWidowedCommand>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)
+		Result<Widowed, InvalidOperationException> IMaritalTransition<BecomeWidowedCommand, Widowed>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)
 		{
-			stateMachine.AddState(x => new Widowed
-			{
-				Version = x,
-			});
-
-			return Result.Ok(stateMachine);
+			return Result.Ok(new Widowed());
 		}
 	}
 }
 
-internal interface IMaritalTransition<TCommand> : IMaritalTransition
+internal interface IMaritalTransition<TCommand, TNextState> : IMaritalTransition
 	where TCommand : MaritalCommand
+	where TNextState : MaritalStatus
 {
-	Result<MaritalStateMachine, InvalidOperationException> Execute(MaritalStateMachine stateMachine, TCommand command);
+	Result<TNextState, InvalidOperationException> Execute(MaritalStateMachine stateMachine, TCommand command);
 }

@@ -9,7 +9,7 @@ internal abstract class MaritalStatus
 	public MaritalStatusId Id { get; set; }
 	public MaritalStateMachineId StateMachineId { get; set; }
 	public MaritalStateMachine StateMachine { get; set; } = default!;
-	public required MaritalStatusVersion Version { get; set; }
+	public MaritalStatusVersion Version { get; set; }
 
 	private MaritalStatus() { }
 

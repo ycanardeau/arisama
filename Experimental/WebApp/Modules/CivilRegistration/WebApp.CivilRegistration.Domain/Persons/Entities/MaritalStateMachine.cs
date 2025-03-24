@@ -2,6 +2,7 @@ using DiscriminatedOnions;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 using static WebApp.CivilRegistration.Domain.Persons.Entities.IMaritalTransition;
 using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalCommand;
+using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStatus;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
@@ -14,40 +15,56 @@ internal class MaritalStateMachine
 
 	public ICollection<MaritalStatus> States { get; set; } = [];
 
+	public MaritalStatus CurrentState => States.MaxBy(x => x.Version) ?? throw new InvalidOperationException("Sequence contains no elements");
+
 	private MaritalStatusVersion IncrementVersion()
 	{
 		Version++;
 		return Version;
 	}
 
-	public void AddState(Func<MaritalStatusVersion, MaritalStatus> stateFactory)
+	private TNextState AddState<TNextState>(TNextState nextState)
+		where TNextState : MaritalStatus
 	{
-		States.Add(stateFactory(IncrementVersion()));
+		nextState.Version = IncrementVersion();
+
+		States.Add(nextState);
+
+		return nextState;
 	}
 
-	public MaritalStatus CurrentState => States.MaxBy(x => x.Version) ?? throw new InvalidOperationException("Sequence contains no elements");
-
-	private Result<MaritalStateMachine, InvalidOperationException> ExecuteIf<TTransition, TCommand>(TCommand command)
+	private Result<TNextState, InvalidOperationException> ExecuteIf<TTransition, TCommand, TNextState>(TCommand command)
 		where TCommand : MaritalCommand
-		where TTransition : IMaritalTransition<TCommand>
+		where TNextState : MaritalStatus
+		where TTransition : IMaritalTransition<TCommand, TNextState>
 	{
 		return CurrentState is not TTransition transition
 			? Result.Error(new InvalidOperationException($"{nameof(CurrentState)} is not {typeof(TTransition).Name}"))
-			: transition.Execute(this, command);
+			: transition.Execute(this, command)
+				.Map(AddState);
 	}
 
-	public Result<MaritalStateMachine, InvalidOperationException> Marry(MarryCommand command)
+	public Result<MaritalStatus.Single, InvalidOperationException> Initialize()
 	{
-		return ExecuteIf<ICanMarry, MarryCommand>(command);
+		var initialState = new MaritalStatus.Single();
+
+		AddState(initialState);
+
+		return Result.Ok(initialState);
 	}
 
-	public Result<MaritalStateMachine, InvalidOperationException> Divorce(DivorceCommand command)
+	public Result<Married, InvalidOperationException> Marry(MarryCommand command)
 	{
-		return ExecuteIf<ICanDivorce, DivorceCommand>(command);
+		return ExecuteIf<ICanMarry, MarryCommand, Married>(command);
 	}
 
-	public Result<MaritalStateMachine, InvalidOperationException> BecomeWidowed(BecomeWidowedCommand command)
+	public Result<Divorced, InvalidOperationException> Divorce(DivorceCommand command)
 	{
-		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand>(command);
+		return ExecuteIf<ICanDivorce, DivorceCommand, Divorced>(command);
+	}
+
+	public Result<Widowed, InvalidOperationException> BecomeWidowed(BecomeWidowedCommand command)
+	{
+		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand, Widowed>(command);
 	}
 }

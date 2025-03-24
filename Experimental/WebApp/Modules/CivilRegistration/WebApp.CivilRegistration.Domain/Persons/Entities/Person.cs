@@ -18,12 +18,8 @@ internal class Person
 			MaritalStateMachine = new(),
 		};
 
-		person.MaritalStateMachine.AddState(x => new MaritalStatus.Single
-		{
-			Version = x,
-		});
-
-		return Result.Ok(person);
+		return person.MaritalStateMachine.Initialize()
+			.Map(x => person);
 	}
 
 	public Result<Person, InvalidOperationException> Marry(MarryCommand command)
