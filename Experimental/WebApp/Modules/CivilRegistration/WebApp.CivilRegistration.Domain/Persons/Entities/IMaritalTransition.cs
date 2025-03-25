@@ -12,7 +12,7 @@ internal interface IMaritalTransition
 		{
 			return Result.Ok(new Married
 			{
-				Payload = new(),
+				Payload = new(MarriedWithId: command.MarryWith.Id),
 			});
 		}
 	}

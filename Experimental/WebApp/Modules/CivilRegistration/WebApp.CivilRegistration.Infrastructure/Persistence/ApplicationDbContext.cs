@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
 
 namespace WebApp.CivilRegistration.Infrastructure.Persistence;
@@ -12,6 +13,8 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
 	public DbSet<MaritalStateMachine> MaritalStateMachines { get; set; }
 
 	public DbSet<MaritalStatus> MaritalStatuses { get; set; }
+
+	public DbSet<MarriageCertificate> MarriageCertificates { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

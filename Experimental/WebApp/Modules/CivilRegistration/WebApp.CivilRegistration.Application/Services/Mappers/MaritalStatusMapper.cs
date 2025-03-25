@@ -21,6 +21,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new MarriedDto
 		{
 			Version = value.Version.Value,
+			MarriedWithId = value.Payload.MarriedWithId.Value,
 		};
 	}
 

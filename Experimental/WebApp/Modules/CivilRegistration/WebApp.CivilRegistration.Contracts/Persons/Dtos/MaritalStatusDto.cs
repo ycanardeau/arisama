@@ -14,7 +14,10 @@ public abstract record MaritalStatusDto
 
 	public sealed record SingleDto : MaritalStatusDto;
 
-	public sealed record MarriedDto : MaritalStatusDto;
+	public sealed record MarriedDto : MaritalStatusDto
+	{
+		public required int MarriedWithId { get; init; }
+	}
 
 	public sealed record DivorcedDto : MaritalStatusDto;
 
