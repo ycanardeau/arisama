@@ -15,7 +15,7 @@ internal class MaritalStateMachine
 
 	public ICollection<MaritalStatus> States { get; set; } = [];
 
-	public MaritalStatus CurrentState => States.MaxBy(x => x.Version) ?? throw new InvalidOperationException("Sequence contains no elements");
+	private MaritalStateMachine() { }
 
 	private MaritalStatusVersion IncrementVersion()
 	{
@@ -33,6 +33,17 @@ internal class MaritalStateMachine
 		return nextState;
 	}
 
+	public static Result<MaritalStateMachine, InvalidOperationException> Create()
+	{
+		var stateMachine = new MaritalStateMachine();
+
+		stateMachine.AddState(new MaritalStatus.Single());
+
+		return Result.Ok(stateMachine);
+	}
+
+	public MaritalStatus CurrentState => States.MaxBy(x => x.Version) ?? throw new InvalidOperationException("Sequence contains no elements");
+
 	private Result<TNextState, InvalidOperationException> ExecuteIf<TTransition, TCommand, TNextState>(TCommand command)
 		where TCommand : MaritalCommand
 		where TNextState : MaritalStatus
@@ -42,15 +53,6 @@ internal class MaritalStateMachine
 			? Result.Error(new InvalidOperationException($"{nameof(CurrentState)} is not {typeof(TTransition).Name}"))
 			: transition.Execute(this, command)
 				.Map(AddState);
-	}
-
-	public Result<MaritalStatus.Single, InvalidOperationException> Initialize()
-	{
-		var initialState = new MaritalStatus.Single();
-
-		AddState(initialState);
-
-		return Result.Ok(initialState);
 	}
 
 	public Result<Married, InvalidOperationException> Marry(MarryCommand command)

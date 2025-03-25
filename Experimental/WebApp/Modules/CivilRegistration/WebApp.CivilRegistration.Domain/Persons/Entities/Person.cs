@@ -11,15 +11,28 @@ internal class Person
 
 	private Person() { }
 
+	private sealed record CreatePersonContext
+	{
+		public MaritalStateMachine MaritalStateMachine { get; init; } = default!;
+	}
+
+	private static Result<CreatePersonContext, InvalidOperationException> CreateMaritalStateMachine(CreatePersonContext context)
+	{
+		return MaritalStateMachine.Create()
+			.Map(x => context with
+			{
+				MaritalStateMachine = x,
+			});
+	}
+
 	public static Result<Person, InvalidOperationException> Create()
 	{
-		var person = new Person
-		{
-			MaritalStateMachine = new(),
-		};
-
-		return person.MaritalStateMachine.Initialize()
-			.Map(x => person);
+		return Result.Ok<CreatePersonContext, InvalidOperationException>(new CreatePersonContext())
+			.Bind(CreateMaritalStateMachine)
+			.Map(x => new Person
+			{
+				MaritalStateMachine = x.MaritalStateMachine,
+			});
 	}
 
 	public Result<Person, InvalidOperationException> Marry(MarryCommand command)
