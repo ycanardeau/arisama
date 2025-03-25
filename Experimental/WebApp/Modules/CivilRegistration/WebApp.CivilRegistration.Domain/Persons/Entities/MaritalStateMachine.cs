@@ -37,7 +37,10 @@ internal class MaritalStateMachine
 	{
 		var stateMachine = new MaritalStateMachine();
 
-		stateMachine.AddState(new MaritalStatus.Single());
+		stateMachine.AddState(new MaritalStatus.Single
+		{
+			Payload = new(),
+		});
 
 		return Result.Ok(stateMachine);
 	}

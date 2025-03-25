@@ -1,29 +1,29 @@
 using System.Diagnostics;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 using static WebApp.CivilRegistration.Domain.Persons.Entities.IMaritalTransition;
+using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStatusPayload;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
 internal abstract class MaritalStatus
 {
-	public MaritalStatusId Id { get; set; }
-	public MaritalStateMachineId StateMachineId { get; set; }
-	public MaritalStateMachine StateMachine { get; set; } = default!;
-	public MaritalStatusVersion Version { get; set; }
+	public abstract class WithPayload<TPayload> : MaritalStatus
+		where TPayload : MaritalStatusPayload
+	{
+		public required TPayload Payload { get; init; }
+	}
 
-	private MaritalStatus() { }
-
-	public sealed class Single : MaritalStatus
+	public sealed class Single : WithPayload<SinglePayload>
 		, ICanMarry;
 
-	public sealed class Married : MaritalStatus
+	public sealed class Married : WithPayload<MarriedPayload>
 		, ICanDivorce
 		, ICanBecomeWidowed;
 
-	public sealed class Divorced : MaritalStatus
+	public sealed class Divorced : WithPayload<DivorcedPayload>
 		, ICanMarry;
 
-	public sealed class Widowed : MaritalStatus
+	public sealed class Widowed : WithPayload<WidowedPayload>
 		, ICanMarry;
 
 	public U Match<U>(
@@ -42,4 +42,11 @@ internal abstract class MaritalStatus
 			_ => throw new UnreachableException(),
 		};
 	}
+
+	public MaritalStatusId Id { get; set; }
+	public MaritalStateMachineId StateMachineId { get; set; }
+	public MaritalStateMachine StateMachine { get; set; } = default!;
+	public MaritalStatusVersion Version { get; set; }
+
+	private MaritalStatus() { }
 }

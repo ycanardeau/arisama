@@ -10,7 +10,10 @@ internal interface IMaritalTransition
 	{
 		Result<Married, InvalidOperationException> IMaritalTransition<MarryCommand, Married>.Execute(MaritalStateMachine stateMachine, MarryCommand command)
 		{
-			return Result.Ok(new Married());
+			return Result.Ok(new Married
+			{
+				Payload = new(),
+			});
 		}
 	}
 
@@ -18,7 +21,10 @@ internal interface IMaritalTransition
 	{
 		Result<Divorced, InvalidOperationException> IMaritalTransition<DivorceCommand, Divorced>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)
 		{
-			return Result.Ok(new Divorced());
+			return Result.Ok(new Divorced
+			{
+				Payload = new(),
+			});
 		}
 	}
 
@@ -26,7 +32,10 @@ internal interface IMaritalTransition
 	{
 		Result<Widowed, InvalidOperationException> IMaritalTransition<BecomeWidowedCommand, Widowed>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)
 		{
-			return Result.Ok(new Widowed());
+			return Result.Ok(new Widowed
+			{
+				Payload = new(),
+			});
 		}
 	}
 }
