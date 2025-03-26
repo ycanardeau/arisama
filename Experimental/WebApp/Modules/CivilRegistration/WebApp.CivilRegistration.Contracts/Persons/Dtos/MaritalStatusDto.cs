@@ -9,9 +9,7 @@ namespace WebApp.CivilRegistration.Contracts.Persons.Dtos;
 public abstract record MaritalStatusDto
 {
 	public required int Version { get; init; }
-
-	protected MaritalStatusDto() { }
-};
+}
 
 public sealed record SingleDto : MaritalStatusDto;
 

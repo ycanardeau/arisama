@@ -9,8 +9,6 @@ internal abstract class MaritalStatus
 	public MaritalStateMachineId StateMachineId { get; set; }
 	public MaritalStateMachine StateMachine { get; set; } = default!;
 	public MaritalStatusVersion Version { get; set; }
-
-	protected MaritalStatus() { }
 }
 
 internal abstract class MaritalStatus<TPayload> : MaritalStatus
