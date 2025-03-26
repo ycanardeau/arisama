@@ -1,4 +1,5 @@
 using DiscriminatedOnions;
+using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalCommand;
 using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStatus;
 
@@ -19,11 +20,13 @@ internal interface IMaritalTransition
 
 	public interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
 	{
+		PersonId DivorcedFromId { get; }
+
 		Result<Divorced, InvalidOperationException> IMaritalTransition<DivorceCommand, Divorced>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)
 		{
 			return Result.Ok(new Divorced
 			{
-				Payload = new(),
+				Payload = new(DivorcedFromId),
 			});
 		}
 	}

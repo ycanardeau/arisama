@@ -1,3 +1,3 @@
 namespace WebApp.CivilRegistration.Contracts.MarriageCertificates.Dtos;
 
-public sealed record CreateMarriageCertificateResponseDto();
+public sealed record CreateMarriageCertificateResponseDto(int Id);

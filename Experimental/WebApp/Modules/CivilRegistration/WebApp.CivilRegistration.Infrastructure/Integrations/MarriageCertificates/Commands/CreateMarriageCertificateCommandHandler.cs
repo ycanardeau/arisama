@@ -37,9 +37,9 @@ internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbCo
 			{
 				dbContext.MarriageCertificates.Add(x);
 
-				await dbContext.SaveChangesAsync();
+				await dbContext.SaveChangesAsync(cancellationToken);
 
-				return new CreateMarriageCertificateResponseDto();
+				return new CreateMarriageCertificateResponseDto(Id: x.Id.Value);
 			});
 	}
 }

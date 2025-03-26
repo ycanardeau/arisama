@@ -18,7 +18,10 @@ internal abstract class MaritalStatus
 
 	public sealed class Married : WithPayload<MarriedPayload>
 		, ICanDivorce
-		, ICanBecomeWidowed;
+		, ICanBecomeWidowed
+	{
+		PersonId ICanDivorce.DivorcedFromId => Payload.MarriedWithId;
+	}
 
 	public sealed class Divorced : WithPayload<DivorcedPayload>
 		, ICanMarry;

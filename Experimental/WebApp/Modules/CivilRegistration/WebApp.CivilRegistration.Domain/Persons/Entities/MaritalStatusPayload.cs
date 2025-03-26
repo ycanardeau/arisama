@@ -8,7 +8,7 @@ internal abstract record MaritalStatusPayload
 
 	public sealed record MarriedPayload(PersonId MarriedWithId) : MaritalStatusPayload;
 
-	public sealed record DivorcedPayload : MaritalStatusPayload;
+	public sealed record DivorcedPayload(PersonId DivorcedFromId) : MaritalStatusPayload;
 
 	public sealed record WidowedPayload : MaritalStatusPayload;
 

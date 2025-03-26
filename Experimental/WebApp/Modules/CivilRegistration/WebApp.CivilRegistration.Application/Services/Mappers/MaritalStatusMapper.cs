@@ -30,6 +30,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new DivorcedDto
 		{
 			Version = value.Version.Value,
+			DivorcedFromId = value.Payload.DivorcedFromId.Value,
 		};
 	}
 
