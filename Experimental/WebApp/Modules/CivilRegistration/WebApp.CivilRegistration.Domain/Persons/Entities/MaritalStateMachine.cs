@@ -1,8 +1,5 @@
 using DiscriminatedOnions;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.IMaritalTransition;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalCommand;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStatus;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
@@ -37,7 +34,7 @@ internal class MaritalStateMachine
 	{
 		var stateMachine = new MaritalStateMachine();
 
-		stateMachine.AddState(new MaritalStatus.Single
+		stateMachine.AddState(new Single
 		{
 			Payload = new(),
 		});

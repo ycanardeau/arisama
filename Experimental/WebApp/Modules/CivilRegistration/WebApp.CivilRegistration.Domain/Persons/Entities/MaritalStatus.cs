@@ -1,42 +1,51 @@
 using System.Diagnostics;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.IMaritalTransition;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStatusPayload;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
 internal abstract class MaritalStatus
 {
-	public abstract class WithPayload<TPayload> : MaritalStatus
-		where TPayload : MaritalStatusPayload
-	{
-		public required TPayload Payload { get; init; }
-	}
+	public MaritalStatusId Id { get; set; }
+	public MaritalStateMachineId StateMachineId { get; set; }
+	public MaritalStateMachine StateMachine { get; set; } = default!;
+	public MaritalStatusVersion Version { get; set; }
 
-	public sealed class Single : WithPayload<SinglePayload>
-		, ICanMarry;
+	protected MaritalStatus() { }
+}
 
-	public sealed class Married : WithPayload<MarriedPayload>
-		, ICanDivorce
-		, ICanBecomeWidowed
-	{
-		PersonId ICanDivorce.DivorcedFromId => Payload.MarriedWithId;
-	}
+internal abstract class MaritalStatus<TPayload> : MaritalStatus
+	where TPayload : MaritalStatusPayload
+{
+	public required TPayload Payload { get; init; }
+}
 
-	public sealed class Divorced : WithPayload<DivorcedPayload>
-		, ICanMarry;
+internal sealed class Single : MaritalStatus<SinglePayload>
+	, ICanMarry;
 
-	public sealed class Widowed : WithPayload<WidowedPayload>
-		, ICanMarry;
+internal sealed class Married : MaritalStatus<MarriedPayload>
+	, ICanDivorce
+	, ICanBecomeWidowed
+{
+	PersonId ICanDivorce.DivorcedFromId => Payload.MarriedWithId;
+}
 
-	public U Match<U>(
+internal sealed class Divorced : MaritalStatus<DivorcedPayload>
+	, ICanMarry;
+
+internal sealed class Widowed : MaritalStatus<WidowedPayload>
+	, ICanMarry;
+
+internal static class MaritalStatusExtensions
+{
+	public static U Match<U>(
+		this MaritalStatus state,
 		Func<Single, U> onSingle,
 		Func<Married, U> onMarried,
 		Func<Divorced, U> onDivorced,
 		Func<Widowed, U> onWidowed
 	)
 	{
-		return this switch
+		return state switch
 		{
 			Single x => onSingle(x),
 			Married x => onMarried(x),
@@ -45,11 +54,4 @@ internal abstract class MaritalStatus
 			_ => throw new UnreachableException(),
 		};
 	}
-
-	public MaritalStatusId Id { get; set; }
-	public MaritalStateMachineId StateMachineId { get; set; }
-	public MaritalStateMachine StateMachine { get; set; } = default!;
-	public MaritalStatusVersion Version { get; set; }
-
-	private MaritalStatus() { }
 }

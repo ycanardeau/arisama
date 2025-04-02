@@ -1,6 +1,5 @@
 using DiscriminatedOnions;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalCommand;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 

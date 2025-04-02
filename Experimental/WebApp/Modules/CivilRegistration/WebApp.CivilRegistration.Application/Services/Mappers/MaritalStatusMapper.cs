@@ -1,14 +1,13 @@
 using WebApp.CivilRegistration.Application.Interfaces.Mappers;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
-using static WebApp.CivilRegistration.Contracts.Persons.Dtos.MaritalStatusDto;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStatus;
+using Single = WebApp.CivilRegistration.Domain.Persons.Entities.Single;
 
 namespace WebApp.CivilRegistration.Application.Services.Mappers;
 
 internal class MaritalStatusMapper : IMaritalStatusMapper
 {
-	private static MaritalStatusDto Map(MaritalStatus.Single value)
+	private static MaritalStatusDto Map(Single value)
 	{
 		return new SingleDto
 		{

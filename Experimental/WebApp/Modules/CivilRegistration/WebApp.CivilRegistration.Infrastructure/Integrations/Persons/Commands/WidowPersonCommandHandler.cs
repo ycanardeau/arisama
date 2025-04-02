@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using WebApp.CivilRegistration.Contracts.Persons.Commands;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
+using WebApp.CivilRegistration.Domain.Persons.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 using WebApp.CivilRegistration.Infrastructure.Persistence;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalCommand;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Commands;
 

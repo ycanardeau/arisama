@@ -2,8 +2,7 @@ using DiscriminatedOnions;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.ValueObjects;
-using static WebApp.CivilRegistration.Domain.DivorceCertificates.Entities.DivorceCertificateCommand;
-using static WebApp.CivilRegistration.Domain.Persons.Entities.MaritalCommand;
+using WebApp.CivilRegistration.Domain.Persons.Entities;
 
 namespace WebApp.CivilRegistration.Domain.DivorceCertificates.Entities;
 

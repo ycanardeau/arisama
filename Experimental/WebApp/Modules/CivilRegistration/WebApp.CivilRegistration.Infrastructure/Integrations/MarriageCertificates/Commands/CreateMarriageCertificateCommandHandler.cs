@@ -6,7 +6,6 @@ using WebApp.CivilRegistration.Contracts.MarriageCertificates.Dtos;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 using WebApp.CivilRegistration.Infrastructure.Persistence;
-using static WebApp.CivilRegistration.Domain.MarriageCertificates.Entities.MarriageCertificateCommand;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.MarriageCertificates.Commands;
 

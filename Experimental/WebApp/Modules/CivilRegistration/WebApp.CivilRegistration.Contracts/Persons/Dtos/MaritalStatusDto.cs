@@ -10,19 +10,19 @@ public abstract record MaritalStatusDto
 {
 	public required int Version { get; init; }
 
-	private MaritalStatusDto() { }
-
-	public sealed record SingleDto : MaritalStatusDto;
-
-	public sealed record MarriedDto : MaritalStatusDto
-	{
-		public required int MarriedWithId { get; init; }
-	}
-
-	public sealed record DivorcedDto : MaritalStatusDto
-	{
-		public required int DivorcedFromId { get; init; }
-	}
-
-	public sealed record WidowedDto : MaritalStatusDto;
+	protected MaritalStatusDto() { }
 };
+
+public sealed record SingleDto : MaritalStatusDto;
+
+public sealed record MarriedDto : MaritalStatusDto
+{
+	public required int MarriedWithId { get; init; }
+}
+
+public sealed record DivorcedDto : MaritalStatusDto
+{
+	public required int DivorcedFromId { get; init; }
+}
+
+public sealed record WidowedDto : MaritalStatusDto;
