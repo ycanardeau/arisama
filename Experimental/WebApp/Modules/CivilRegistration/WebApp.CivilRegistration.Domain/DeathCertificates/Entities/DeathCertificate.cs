@@ -10,12 +10,15 @@ internal class DeathCertificate
 	public DeathCertificateId Id { get; set; }
 	public PersonId DeceasedId { get; set; }
 	public required Person Deceased { get; set; }
+	public PersonId? WidowedId { get; set; }
+	public required Person? Widowed { get; set; }
 
 	private DeathCertificate() { }
 
 	private Result<DeathCertificate, InvalidOperationException> Decease()
 	{
 		return Deceased.Decease(new DeceaseCommand())
+			.Map(x => Widowed?.BecomeWidowed(new BecomeWidowedCommand()))
 			.Map(x => this);
 	}
 
@@ -24,6 +27,7 @@ internal class DeathCertificate
 		var deathCertificate = new DeathCertificate
 		{
 			Deceased = command.Deceased,
+			Widowed = command.Widowed,
 		};
 
 		return deathCertificate.Decease();

@@ -16,7 +16,10 @@ internal class DeathCertificateConfiguration : IEntityTypeConfiguration<DeathCer
 
 		builder.HasOne(x => x.Deceased)
 			.WithMany()
-			.HasForeignKey(x => x.DeceasedId)
-			.IsRequired();
+			.HasForeignKey(x => x.DeceasedId);
+
+		builder.HasOne(x => x.Widowed)
+			.WithMany()
+			.HasForeignKey(x => x.WidowedId);
 	}
 }

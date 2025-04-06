@@ -24,6 +24,12 @@ public sealed record DivorcedDto : MaritalStatusDto
 	public required int DivorcedFromId { get; init; }
 }
 
-public sealed record WidowedDto : MaritalStatusDto;
+public sealed record WidowedDto : MaritalStatusDto
+{
+	public required int WidowedFromId { get; init; }
+}
 
-public sealed record DeceasedDto : MaritalStatusDto;
+public sealed record DeceasedDto : MaritalStatusDto
+{
+	public required int? WidowedId { get; init; }
+}

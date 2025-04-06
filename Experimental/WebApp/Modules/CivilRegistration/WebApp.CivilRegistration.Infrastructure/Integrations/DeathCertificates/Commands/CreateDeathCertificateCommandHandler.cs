@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Commands;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Dtos;
 using WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
+using WebApp.CivilRegistration.Domain.Persons.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 using WebApp.CivilRegistration.Infrastructure.Persistence;
 
@@ -22,7 +23,13 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 			return Result.Error(new InvalidOperationException($"Person {request.DeceasedId} not found"));
 		}
 
-		return await DeathCertificate.Create(new CreateCommand(Deceased: deceased))
+		var widowed = deceased.MaritalStateMachine.CurrentState is not Married state
+			? null
+			: await dbContext.Persons
+				.Include(x => x.MaritalStateMachine.States)
+				.SingleAsync(x => x.Id == state.Payload.MarriedWithId, cancellationToken);
+
+		return await DeathCertificate.Create(new CreateCommand(Deceased: deceased, Widowed: widowed))
 			.MapAsync(async x =>
 			{
 				dbContext.DeathCertificates.Add(x);

@@ -16,7 +16,6 @@ internal class DivorceCertificateConfiguration : IEntityTypeConfiguration<Divorc
 
 		builder.HasOne(x => x.MarriageCertificate)
 			.WithMany()
-			.HasForeignKey(x => x.MarriageCertificateId)
-			.IsRequired();
+			.HasForeignKey(x => x.MarriageCertificateId);
 	}
 }

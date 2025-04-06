@@ -38,6 +38,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new WidowedDto
 		{
 			Version = value.Version.Value,
+			WidowedFromId = value.Payload.WidowedFromId.Value,
 		};
 	}
 
@@ -46,6 +47,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new DeceasedDto
 		{
 			Version = value.Version.Value,
+			WidowedId = value.Payload.WidowedId?.Value,
 		};
 	}
 

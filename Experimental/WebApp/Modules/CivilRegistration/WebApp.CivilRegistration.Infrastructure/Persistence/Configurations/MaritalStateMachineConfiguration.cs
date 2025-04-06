@@ -16,8 +16,7 @@ internal class MaritalStateMachineConfiguration : IEntityTypeConfiguration<Marit
 
 		builder.HasOne(x => x.Person)
 			.WithOne(x => x.MaritalStateMachine)
-			.HasForeignKey<MaritalStateMachine>(x => x.PersonId)
-			.IsRequired();
+			.HasForeignKey<MaritalStateMachine>(x => x.PersonId);
 
 		builder.Property(x => x.Version)
 			.HasConversion(x => x.Value, x => new(x));

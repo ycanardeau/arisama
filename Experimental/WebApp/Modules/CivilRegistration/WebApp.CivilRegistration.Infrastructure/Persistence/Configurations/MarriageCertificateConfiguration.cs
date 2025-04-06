@@ -16,12 +16,10 @@ internal class MarriageCertificateConfiguration : IEntityTypeConfiguration<Marri
 
 		builder.HasOne(x => x.Person1)
 			.WithMany()
-			.HasForeignKey(x => x.Person1Id)
-			.IsRequired();
+			.HasForeignKey(x => x.Person1Id);
 
 		builder.HasOne(x => x.Person2)
 			.WithMany()
-			.HasForeignKey(x => x.Person2Id)
-			.IsRequired();
+			.HasForeignKey(x => x.Person2Id);
 	}
 }
