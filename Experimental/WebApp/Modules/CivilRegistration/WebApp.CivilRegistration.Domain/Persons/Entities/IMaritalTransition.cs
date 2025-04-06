@@ -38,11 +38,26 @@ internal interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
 
 internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, Widowed>
 {
+	PersonId WidowedFromId { get; }
+
 	Result<Widowed, InvalidOperationException> IMaritalTransition<BecomeWidowedCommand, Widowed>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)
 	{
 		return Result.Ok(new Widowed
 		{
-			Payload = new(),
+			Payload = new(WidowedFromId),
+		});
+	}
+}
+
+internal interface ICanDecease : IMaritalTransition<DeceaseCommand, Deceased>
+{
+	PersonId? WidowedId { get; }
+
+	Result<Deceased, InvalidOperationException> IMaritalTransition<DeceaseCommand, Deceased>.Execute(MaritalStateMachine stateMachine, DeceaseCommand command)
+	{
+		return Result.Ok(new Deceased
+		{
+			Payload = new(WidowedId),
 		});
 	}
 }

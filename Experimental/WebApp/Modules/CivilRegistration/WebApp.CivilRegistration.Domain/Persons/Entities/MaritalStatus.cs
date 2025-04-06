@@ -18,20 +18,39 @@ internal abstract class MaritalStatus<TPayload> : MaritalStatus
 }
 
 internal sealed class Single : MaritalStatus<SinglePayload>
-	, ICanMarry;
+	, ICanDecease
+	, ICanMarry
+{
+	PersonId? ICanDecease.WidowedId => null;
+}
 
 internal sealed class Married : MaritalStatus<MarriedPayload>
+	, ICanDecease
 	, ICanDivorce
 	, ICanBecomeWidowed
 {
+	PersonId? ICanDecease.WidowedId => Payload.MarriedWithId;
+
 	PersonId ICanDivorce.DivorcedFromId => Payload.MarriedWithId;
+
+	PersonId ICanBecomeWidowed.WidowedFromId => Payload.MarriedWithId;
 }
 
 internal sealed class Divorced : MaritalStatus<DivorcedPayload>
-	, ICanMarry;
+	, ICanDecease
+	, ICanMarry
+{
+	PersonId? ICanDecease.WidowedId => null;
+}
 
 internal sealed class Widowed : MaritalStatus<WidowedPayload>
-	, ICanMarry;
+	, ICanDecease
+	, ICanMarry
+{
+	PersonId? ICanDecease.WidowedId => null;
+}
+
+internal sealed class Deceased : MaritalStatus<DeceasedPayload>;
 
 internal static class MaritalStatusExtensions
 {
@@ -40,7 +59,8 @@ internal static class MaritalStatusExtensions
 		Func<Single, U> onSingle,
 		Func<Married, U> onMarried,
 		Func<Divorced, U> onDivorced,
-		Func<Widowed, U> onWidowed
+		Func<Widowed, U> onWidowed,
+		Func<Deceased, U> onDeceased
 	)
 	{
 		return state switch
@@ -49,6 +69,7 @@ internal static class MaritalStatusExtensions
 			Married x => onMarried(x),
 			Divorced x => onDivorced(x),
 			Widowed x => onWidowed(x),
+			Deceased x => onDeceased(x),
 			_ => throw new UnreachableException(),
 		};
 	}

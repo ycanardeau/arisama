@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="DiscriminatedOnions" />
+    <PackageReference Include="MediatR" />
     <PackageReference Include="StronglyTypedId" />
   </ItemGroup>
 

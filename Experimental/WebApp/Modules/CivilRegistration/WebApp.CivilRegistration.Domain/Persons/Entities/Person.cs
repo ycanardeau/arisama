@@ -51,4 +51,10 @@ internal class Person
 		return MaritalStateMachine.BecomeWidowed(command)
 			.Map(x => this);
 	}
+
+	public Result<Person, InvalidOperationException> Decease(DeceaseCommand command)
+	{
+		return MaritalStateMachine.Decease(command)
+			.Map(x => this);
+	}
 }

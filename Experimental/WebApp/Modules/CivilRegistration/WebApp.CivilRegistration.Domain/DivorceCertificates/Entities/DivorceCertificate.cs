@@ -17,7 +17,7 @@ internal class DivorceCertificate
 	private Result<DivorceCertificate, InvalidOperationException> Divorce()
 	{
 		return MarriageCertificate.Person1.Divorce(new DivorceCommand())
-			.Bind(x => MarriageCertificate.Person2.Divorce(new DivorceCommand()))
+			.Map(x => MarriageCertificate.Person2.Divorce(new DivorceCommand()))
 			.Map(x => this);
 	}
 

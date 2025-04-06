@@ -10,4 +10,6 @@ internal sealed record MarriedPayload(PersonId MarriedWithId) : MaritalStatusPay
 
 internal sealed record DivorcedPayload(PersonId DivorcedFromId) : MaritalStatusPayload;
 
-internal sealed record WidowedPayload : MaritalStatusPayload;
+internal sealed record WidowedPayload(PersonId WidowedFromId) : MaritalStatusPayload;
+
+internal sealed record DeceasedPayload(PersonId? WidowedId) : MaritalStatusPayload;

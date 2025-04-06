@@ -1,9 +1,11 @@
 using DiscriminatedOnions;
+using WebApp.CivilRegistration.Domain.Common.Entities;
+using WebApp.CivilRegistration.Domain.Persons.Events;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
-internal class MaritalStateMachine
+internal class MaritalStateMachine : Entity
 {
 	public MaritalStateMachineId Id { get; set; }
 	public PersonId PersonId { get; set; }
@@ -26,6 +28,8 @@ internal class MaritalStateMachine
 		nextState.Version = IncrementVersion();
 
 		States.Add(nextState);
+
+		AddDomainEvent(new MaritalStatusChangedDomainEvent(this, nextState));
 
 		return nextState;
 	}
@@ -68,5 +72,10 @@ internal class MaritalStateMachine
 	public Result<Widowed, InvalidOperationException> BecomeWidowed(BecomeWidowedCommand command)
 	{
 		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand, Widowed>(command);
+	}
+
+	public Result<Deceased, InvalidOperationException> Decease(DeceaseCommand command)
+	{
+		return ExecuteIf<ICanDecease, DeceaseCommand, Deceased>(command);
 	}
 }

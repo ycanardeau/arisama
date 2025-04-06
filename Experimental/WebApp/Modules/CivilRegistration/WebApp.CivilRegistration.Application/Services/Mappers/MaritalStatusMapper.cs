@@ -41,9 +41,18 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		};
 	}
 
+	private static MaritalStatusDto Map(Deceased value)
+	{
+		return new DeceasedDto
+		{
+			Version = value.Version.Value,
+		};
+	}
+
 	public MaritalStatusDto Map(MaritalStatus value)
 	{
 		return value.Match(
+			Map,
 			Map,
 			Map,
 			Map,

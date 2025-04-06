@@ -57,3 +57,4 @@ internal class SingleConfiguration : MaritalStatusConfiguration<Single, SinglePa
 internal class MarriedConfiguration : MaritalStatusConfiguration<Married, MarriedPayload>;
 internal class DivorcedConfiguration : MaritalStatusConfiguration<Divorced, DivorcedPayload>;
 internal class WidowedConfiguration : MaritalStatusConfiguration<Widowed, WidowedPayload>;
+internal class DeceasedConfiguration : MaritalStatusConfiguration<Deceased, DeceasedPayload>;

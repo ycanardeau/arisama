@@ -6,6 +6,7 @@ namespace WebApp.CivilRegistration.Contracts.Persons.Dtos;
 [JsonDerivedType(typeof(MarriedDto), typeDiscriminator: "Married")]
 [JsonDerivedType(typeof(DivorcedDto), typeDiscriminator: "Divorced")]
 [JsonDerivedType(typeof(WidowedDto), typeDiscriminator: "Widowed")]
+[JsonDerivedType(typeof(DeceasedDto), typeDiscriminator: "Deceased")]
 public abstract record MaritalStatusDto
 {
 	public required int Version { get; init; }
@@ -24,3 +25,5 @@ public sealed record DivorcedDto : MaritalStatusDto
 }
 
 public sealed record WidowedDto : MaritalStatusDto;
+
+public sealed record DeceasedDto : MaritalStatusDto;

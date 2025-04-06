@@ -13,6 +13,12 @@ internal class DeathCertificate
 
 	private DeathCertificate() { }
 
+	private Result<DeathCertificate, InvalidOperationException> Decease()
+	{
+		return Deceased.Decease(new DeceaseCommand())
+			.Map(x => this);
+	}
+
 	public static Result<DeathCertificate, InvalidOperationException> Create(CreateCommand command)
 	{
 		var deathCertificate = new DeathCertificate
@@ -20,6 +26,6 @@ internal class DeathCertificate
 			Deceased = command.Deceased,
 		};
 
-		return Result.Ok(deathCertificate);
+		return deathCertificate.Decease();
 	}
 }

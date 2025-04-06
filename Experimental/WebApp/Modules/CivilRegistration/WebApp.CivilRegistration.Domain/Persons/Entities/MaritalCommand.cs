@@ -7,3 +7,5 @@ internal sealed record MarryCommand(Person MarryWith) : MaritalCommand;
 internal sealed record DivorceCommand : MaritalCommand;
 
 internal sealed record BecomeWidowedCommand : MaritalCommand;
+
+internal sealed record DeceaseCommand : MaritalCommand;
