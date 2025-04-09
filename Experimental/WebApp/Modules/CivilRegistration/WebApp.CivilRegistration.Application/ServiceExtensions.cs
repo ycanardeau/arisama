@@ -15,6 +15,7 @@ internal static class ServiceExtensions
 		builder.Services.AddValidatorsFromAssemblyContaining<IApplication>(includeInternalTypes: true);
 
 		builder.Services.AddScoped<IMaritalStatusMapper, MaritalStatusMapper>();
+		builder.Services.AddScoped<IPersonMapper, PersonMapper>();
 
 		return builder;
 	}

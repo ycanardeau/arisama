@@ -3,8 +3,8 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using WebApp.CivilRegistration.Application.Interfaces.Mappers;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
-using WebApp.CivilRegistration.Contracts.Persons.Enums;
 using WebApp.CivilRegistration.Contracts.Persons.Queries;
+using WebApp.CivilRegistration.Domain.Persons.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 using WebApp.CivilRegistration.Infrastructure.Persistence;
 
@@ -12,10 +12,10 @@ namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Queries;
 
 internal class GetPersonQueryHandler(
 	ApplicationDbContext dbContext,
-	IMaritalStatusMapper maritalStatusMapper
+	IPersonMapper personMapper
 ) : IRequestHandler<GetPersonQuery, Result<GetPersonResponseDto, InvalidOperationException>>
 {
-	public async Task<Result<GetPersonResponseDto, InvalidOperationException>> Handle(GetPersonQuery request, CancellationToken cancellationToken)
+	private async Task<Result<Person, InvalidOperationException>> GetPerson(GetPersonQuery request, CancellationToken cancellationToken)
 	{
 		var person = await dbContext.Persons
 			.Include(x => x.MaritalStateMachine.States)
@@ -27,22 +27,12 @@ internal class GetPersonQueryHandler(
 			return Result.Error(new InvalidOperationException($"Person {request.Id} not found"));
 		}
 
-		return Result.Ok(new GetPersonResponseDto(
-			Person: new PersonDto(
-				Gender: person.Gender.Match(
-					onMale: x => ApiGender.Male,
-					onFemale: x => ApiGender.Female
-				),
-				Age: person.Age.Value,
-				MaritalStateMachine: new MaritalStateMachineDto(
-					Version: person.MaritalStateMachine.Version.Value,
-					States: [
-						.. person.MaritalStateMachine.States
-							.OrderBy(x => x.Version)
-							.Select(maritalStatusMapper.Map)
-					]
-				)
-			)
-		));
+		return Result.Ok(person);
+	}
+
+	public Task<Result<GetPersonResponseDto, InvalidOperationException>> Handle(GetPersonQuery request, CancellationToken cancellationToken)
+	{
+		return GetPerson(request, cancellationToken)
+			.Pipe(x => x.Map(x => new GetPersonResponseDto(Person: personMapper.Map(x))));
 	}
 }
