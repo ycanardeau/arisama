@@ -7,7 +7,7 @@ using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 
 namespace WebApp.CivilRegistration.Endpoints.Persons;
 
-internal class CreatePersonEndpoint(ISender sender) : EndpointWithoutRequest<CreatePersonResponseDto>
+internal class CreatePersonEndpoint(ISender sender) : Endpoint<CreatePersonCommand, CreatePersonResponseDto>
 {
 	public override void Configure()
 	{
@@ -20,9 +20,9 @@ internal class CreatePersonEndpoint(ISender sender) : EndpointWithoutRequest<Cre
 		);
 	}
 
-	public override Task HandleAsync(CancellationToken ct)
+	public override Task HandleAsync(CreatePersonCommand req, CancellationToken ct)
 	{
-		return sender.Send(new CreatePersonCommand(), ct)
+		return sender.Send(req, ct)
 			.Pipe(ResultExtensions.ToApiResult)
 			.Pipe(SendResultAsync);
 	}

@@ -16,10 +16,15 @@ internal interface ICanMarry : IMaritalTransition<MarryCommand, Married>
 {
 	Result<Married, InvalidOperationException> IMaritalTransition<MarryCommand, Married>.Execute(MaritalStateMachine stateMachine, MarryCommand command)
 	{
-		return Result.Ok(new Married
-		{
-			Payload = new(MarriedWithId: command.MarryWith.Id),
-		});
+		return !stateMachine.Person.CanMarryAtCurrentAge
+			? Result.Error(new InvalidOperationException("Not of marriageable age"))
+			: Result.Ok(new Married
+			{
+				Payload = new(
+					MarriedAtAge: stateMachine.Person.Age,
+					MarriedWithId: command.MarryWith.Id
+				),
+			});
 	}
 }
 
@@ -31,7 +36,10 @@ internal interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
 	{
 		return Result.Ok(new Divorced
 		{
-			Payload = new(DivorcedFromId),
+			Payload = new(
+				DivorcedAtAge: stateMachine.Person.Age,
+				DivorcedFromId
+			),
 		});
 	}
 }
@@ -44,7 +52,10 @@ internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, 
 	{
 		return Result.Ok(new Widowed
 		{
-			Payload = new(WidowedFromId),
+			Payload = new(
+				WidowedAtAge: stateMachine.Person.Age,
+				WidowedFromId
+			),
 		});
 	}
 }
@@ -57,7 +68,10 @@ internal interface ICanDecease : IMaritalTransition<DeceaseCommand, Deceased>
 	{
 		return Result.Ok(new Deceased
 		{
-			Payload = new(WidowedId),
+			Payload = new(
+				DeceasedAtAge: stateMachine.Person.Age,
+				WidowedId
+			),
 		});
 	}
 }

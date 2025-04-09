@@ -16,20 +16,24 @@ public sealed record SingleDto : MaritalStatusDto;
 
 public sealed record MarriedDto : MaritalStatusDto
 {
+	public required int MarriedAtAge { get; init; }
 	public required int MarriedWithId { get; init; }
 }
 
 public sealed record DivorcedDto : MaritalStatusDto
 {
+	public required int DivorcedAtAge { get; init; }
 	public required int DivorcedFromId { get; init; }
 }
 
 public sealed record WidowedDto : MaritalStatusDto
 {
+	public required int WidowedAtAge { get; init; }
 	public required int WidowedFromId { get; init; }
 }
 
 public sealed record DeceasedDto : MaritalStatusDto
 {
+	public required int DeceasedAtAge { get; init;}
 	public required int? WidowedId { get; init; }
 }

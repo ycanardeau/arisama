@@ -6,9 +6,13 @@ namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 internal class Person
 {
 	public PersonId Id { get; set; }
+	public required Gender Gender { get; set; }
+	public required Age Age { get; set; }
 	public required MaritalStateMachine MaritalStateMachine { get; set; }
 
 	private Person() { }
+
+	public bool CanMarryAtCurrentAge => Gender.CanMarryAtAge(Age);
 
 	private sealed record CreatePersonContext
 	{
@@ -24,12 +28,14 @@ internal class Person
 			});
 	}
 
-	public static Result<Person, InvalidOperationException> Create()
+	public static Result<Person, InvalidOperationException> Create(Age age, Gender gender)
 	{
 		return Result.Ok<CreatePersonContext, InvalidOperationException>(new CreatePersonContext())
 			.Bind(CreateMaritalStateMachine)
 			.Map(x => new Person
 			{
+				Age = age,
+				Gender = gender,
 				MaritalStateMachine = x.MaritalStateMachine,
 			});
 	}
