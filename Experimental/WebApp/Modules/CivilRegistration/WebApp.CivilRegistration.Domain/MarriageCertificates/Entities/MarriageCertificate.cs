@@ -17,9 +17,13 @@ internal class MarriageCertificate
 
 	private Result<MarriageCertificate, InvalidOperationException> Marry()
 	{
-		return Person1.Marry(new MarryCommand(Person2))
-			.Map(x => Person2.Marry(new MarryCommand(Person1)))
-			.Map(x => this);
+		return Person1 == Person2
+			? Result.Error(new InvalidOperationException("A marriage requires two individuals"))
+			: Person1.Gender == Person2.Gender
+			? Result.Error(new InvalidOperationException("Same-sex marriage is not allowed in Japan as of writing"))
+			: Person1.Marry(new MarryCommand(Person2))
+				.Map(x => Person2.Marry(new MarryCommand(Person1)))
+				.Map(x => this);
 	}
 
 	public static Result<MarriageCertificate, InvalidOperationException> Create(CreateCommand command)
