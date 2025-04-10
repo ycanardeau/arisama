@@ -20,6 +20,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new MarriedDto
 		{
 			Version = value.Version.Value,
+			MarriageCertificateId = value.Payload.MarriageCertificateId.Value,
 			MarriedAtAge = value.Payload.MarriedAtAge.Value,
 			MarriedWithId = value.Payload.MarriedWithId.Value,
 		};
@@ -30,6 +31,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new DivorcedDto
 		{
 			Version = value.Version.Value,
+			DivorceCertificateId = value.Payload.DivorceCertificateId.Value,
 			DivorcedAtAge = value.Payload.DivorcedAtAge.Value,
 			DivorcedFromId = value.Payload.DivorcedFromId.Value,
 		};
@@ -50,6 +52,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new DeceasedDto
 		{
 			Version = value.Version.Value,
+			DeathCertificateId = value.Payload.DeathCertificateId.Value,
 			DeceasedAtAge = value.Payload.DeceasedAtAge.Value,
 			WidowedId = value.Payload.WidowedId?.Value,
 		};

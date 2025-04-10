@@ -21,8 +21,8 @@ internal class MarriageCertificate : Entity<MarriageCertificateId>
 			? Result.Error(new InvalidOperationException("A marriage requires two individuals"))
 			: Person1.Gender == Person2.Gender
 			? Result.Error(new InvalidOperationException("Same-sex marriage is not allowed in Japan as of writing"))
-			: Person1.Marry(new MarryCommand(Person2))
-				.Map(x => Person2.Marry(new MarryCommand(Person1)))
+			: Person1.Marry(new MarryCommand(this, Person2))
+				.Map(x => Person2.Marry(new MarryCommand(this, Person1)))
 				.Map(x => this);
 	}
 
