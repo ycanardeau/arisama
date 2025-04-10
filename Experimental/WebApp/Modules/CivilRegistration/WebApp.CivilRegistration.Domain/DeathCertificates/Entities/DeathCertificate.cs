@@ -1,13 +1,13 @@
 using DiscriminatedOnions;
+using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
 
-internal class DeathCertificate
+internal class DeathCertificate : Entity<DeathCertificateId>
 {
-	public DeathCertificateId Id { get; set; }
 	public PersonId DeceasedId { get; set; }
 	public required Person Deceased { get; set; }
 	public PersonId? WidowedId { get; set; }

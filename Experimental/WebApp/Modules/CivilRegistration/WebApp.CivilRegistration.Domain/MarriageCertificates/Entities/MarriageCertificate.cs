@@ -1,13 +1,13 @@
 using DiscriminatedOnions;
+using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
 
-internal class MarriageCertificate
+internal class MarriageCertificate : Entity<MarriageCertificateId>
 {
-	public MarriageCertificateId Id { get; set; }
 	public PersonId Person1Id { get; set; }
 	public required Person Person1 { get; set; }
 	public PersonId Person2Id { get; set; }

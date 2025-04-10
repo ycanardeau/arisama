@@ -1,11 +1,11 @@
 using DiscriminatedOnions;
+using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
-internal class Person
+internal class Person : Entity<PersonId>
 {
-	public PersonId Id { get; set; }
 	public required Gender Gender { get; set; }
 	public required Age Age { get; set; }
 	public required MaritalStateMachine MaritalStateMachine { get; set; }

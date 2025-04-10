@@ -5,9 +5,8 @@ using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
-internal class MaritalStateMachine : Entity
+internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 {
-	public MaritalStateMachineId Id { get; set; }
 	public PersonId PersonId { get; set; }
 	public Person Person { get; set; } = default!;
 	public MaritalStatusVersion Version { get; set; }

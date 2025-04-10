@@ -17,3 +17,9 @@ internal abstract class Entity
 		_domainEvents.Clear();
 	}
 }
+
+internal abstract class Entity<TId> : Entity
+	where TId : struct
+{
+	public TId Id { get; set; }
+}

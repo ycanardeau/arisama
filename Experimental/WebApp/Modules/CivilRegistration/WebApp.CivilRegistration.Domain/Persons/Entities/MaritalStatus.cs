@@ -1,11 +1,11 @@
 using System.Diagnostics;
+using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
-internal abstract class MaritalStatus
+internal abstract class MaritalStatus : Entity<MaritalStatusId>
 {
-	public MaritalStatusId Id { get; set; }
 	public MaritalStateMachineId StateMachineId { get; set; }
 	public MaritalStateMachine StateMachine { get; set; } = default!;
 	public MaritalStatusVersion Version { get; set; }
