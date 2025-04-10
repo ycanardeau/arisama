@@ -11,6 +11,7 @@ internal class PersonMapper(IMaritalStatusMapper maritalStatusMapper) : IPersonM
 	public PersonDto Map(Person person)
 	{
 		return new PersonDto(
+			Id: person.Id.Value,
 			Gender: person.Gender.Match(
 				onMale: x => ApiGender.Male,
 				onFemale: x => ApiGender.Female
