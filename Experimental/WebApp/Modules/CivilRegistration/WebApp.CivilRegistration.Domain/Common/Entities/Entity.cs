@@ -21,5 +21,5 @@ internal abstract class Entity
 internal abstract class Entity<TId> : Entity
 	where TId : struct
 {
-	public TId Id { get; set; }
+	public TId Id { get; set; } = new();
 }

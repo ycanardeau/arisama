@@ -1,3 +1,3 @@
 namespace WebApp.CivilRegistration.Contracts.DivorceCertificates.Dtos;
 
-public sealed record CreateDivorceCertificateResponseDto(int Id);
+public sealed record CreateDivorceCertificateResponseDto(Guid Id);

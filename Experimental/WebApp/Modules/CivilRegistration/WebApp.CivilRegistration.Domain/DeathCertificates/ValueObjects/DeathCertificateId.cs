@@ -2,5 +2,11 @@ using StronglyTypedIds;
 
 namespace WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
 
-[StronglyTypedId(Template.Int)]
-internal readonly partial struct DeathCertificateId;
+[StronglyTypedId(Template.Guid)]
+internal readonly partial struct DeathCertificateId
+{
+	public DeathCertificateId()
+	{
+		Value = Guid.CreateVersion7();
+	}
+}

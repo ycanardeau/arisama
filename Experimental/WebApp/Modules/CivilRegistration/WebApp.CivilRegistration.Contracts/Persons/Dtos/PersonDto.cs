@@ -5,7 +5,7 @@ namespace WebApp.CivilRegistration.Contracts.Persons.Dtos;
 public sealed record MaritalStateMachineDto(int Version, MaritalStatusDto[] States);
 
 public sealed record PersonDto(
-	int Id,
+	Guid Id,
 	ApiGender Gender,
 	int Age,
 	MaritalStateMachineDto MaritalStateMachine

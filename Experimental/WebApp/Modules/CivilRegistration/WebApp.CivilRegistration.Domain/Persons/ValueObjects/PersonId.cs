@@ -2,5 +2,11 @@ using StronglyTypedIds;
 
 namespace WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
-[StronglyTypedId(Template.Int)]
-internal readonly partial struct PersonId;
+[StronglyTypedId(Template.Guid)]
+internal readonly partial struct PersonId
+{
+	public PersonId()
+	{
+		Value = Guid.CreateVersion7();
+	}
+}
