@@ -21,7 +21,4 @@ internal sealed record WidowedPayload(
 	PersonId WidowedFromId
 ) : MaritalStatusPayload;
 
-internal sealed record DeceasedPayload(
-	Age DeceasedAtAge,
-	PersonId? WidowedId
-) : MaritalStatusPayload;
+internal sealed record DeceasedPayload(Age DeceasedAtAge) : MaritalStatusPayload;

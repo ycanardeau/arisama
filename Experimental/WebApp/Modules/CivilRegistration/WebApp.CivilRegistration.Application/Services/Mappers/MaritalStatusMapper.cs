@@ -51,7 +51,6 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		{
 			Version = value.Version.Value,
 			DeceasedAtAge = value.Payload.DeceasedAtAge.Value,
-			WidowedId = value.Payload.WidowedId?.Value,
 		};
 	}
 

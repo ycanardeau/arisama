@@ -21,7 +21,6 @@ internal sealed class Single : MaritalStatus<SinglePayload>
 	, ICanDecease
 	, ICanMarry
 {
-	PersonId? ICanDecease.WidowedId => null;
 }
 
 internal sealed class Married : MaritalStatus<MarriedPayload>
@@ -29,8 +28,6 @@ internal sealed class Married : MaritalStatus<MarriedPayload>
 	, ICanDivorce
 	, ICanBecomeWidowed
 {
-	PersonId? ICanDecease.WidowedId => Payload.MarriedWithId;
-
 	PersonId ICanDivorce.DivorcedFromId => Payload.MarriedWithId;
 
 	PersonId ICanBecomeWidowed.WidowedFromId => Payload.MarriedWithId;
@@ -40,14 +37,12 @@ internal sealed class Divorced : MaritalStatus<DivorcedPayload>
 	, ICanDecease
 	, ICanMarry
 {
-	PersonId? ICanDecease.WidowedId => null;
 }
 
 internal sealed class Widowed : MaritalStatus<WidowedPayload>
 	, ICanDecease
 	, ICanMarry
 {
-	PersonId? ICanDecease.WidowedId => null;
 }
 
 internal sealed class Deceased : MaritalStatus<DeceasedPayload>;

@@ -62,16 +62,11 @@ internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, 
 
 internal interface ICanDecease : IMaritalTransition<DeceaseCommand, Deceased>
 {
-	PersonId? WidowedId { get; }
-
 	Result<Deceased, InvalidOperationException> IMaritalTransition<DeceaseCommand, Deceased>.Execute(MaritalStateMachine stateMachine, DeceaseCommand command)
 	{
 		return Result.Ok(new Deceased
 		{
-			Payload = new(
-				DeceasedAtAge: stateMachine.Person.Age,
-				WidowedId
-			),
+			Payload = new(DeceasedAtAge: stateMachine.Person.Age),
 		});
 	}
 }

@@ -35,5 +35,4 @@ public sealed record WidowedDto : MaritalStatusDto
 public sealed record DeceasedDto : MaritalStatusDto
 {
 	public required int DeceasedAtAge { get; init;}
-	public required int? WidowedId { get; init; }
 }
