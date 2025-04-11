@@ -7,6 +7,35 @@ namespace WebApp.CivilRegistration.Application.Services.Mappers;
 
 internal class MaritalStatusMapper : IMaritalStatusMapper
 {
+	private static MarriageInformationDto Map(MarriageInformation value)
+	{
+		return new MarriageInformationDto(
+			MarriedAtAge: value.MarriedAtAge.Value,
+			MarriedWithId: value.MarriedWithId.Value
+		);
+	}
+
+	private static DivorceInformationDto Map(DivorceInformation value)
+	{
+		return new DivorceInformationDto(
+			DivorcedAtAge: value.DivorcedAtAge.Value,
+			DivorcedFromId: value.DivorcedFromId.Value
+		);
+	}
+
+	private static WidowhoodInformationDto Map(WidowhoodInformation value)
+	{
+		return new WidowhoodInformationDto(
+			WidowedAtAge: value.WidowedAtAge.Value,
+			WidowedFromId: value.WidowedFromId.Value
+		);
+	}
+
+	private static DeathInformationDto Map(DeathInformation value)
+	{
+		return new DeathInformationDto(DeceasedAtAge: value.DeceasedAtAge.Value);
+	}
+
 	private static MaritalStatusDto Map(Single value)
 	{
 		return new SingleDto
@@ -20,8 +49,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new MarriedDto
 		{
 			Version = value.Version.Value,
-			MarriedAtAge = value.Payload.MarriedAtAge.Value,
-			MarriedWithId = value.Payload.MarriedWithId.Value,
+			MarriageInformation = Map(value.Payload.MarriageInformation),
 		};
 	}
 
@@ -30,8 +58,8 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new DivorcedDto
 		{
 			Version = value.Version.Value,
-			DivorcedAtAge = value.Payload.DivorcedAtAge.Value,
-			DivorcedFromId = value.Payload.DivorcedFromId.Value,
+			MarriageInformation = Map(value.Payload.MarriageInformation),
+			DivorceInformation = Map(value.Payload.DivorceInformation),
 		};
 	}
 
@@ -40,8 +68,8 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new WidowedDto
 		{
 			Version = value.Version.Value,
-			WidowedAtAge = value.Payload.WidowedAtAge.Value,
-			WidowedFromId = value.Payload.WidowedFromId.Value,
+			MarriageInformation = Map(value.Payload.MarriageInformation),
+			WidowhoodInformation = Map(value.Payload.WidowhoodInformation),
 		};
 	}
 
@@ -50,7 +78,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new DeceasedDto
 		{
 			Version = value.Version.Value,
-			DeceasedAtAge = value.Payload.DeceasedAtAge.Value,
+			DeathInformation = Map(value.Payload.DeathInformation),
 		};
 	}
 

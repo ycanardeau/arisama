@@ -2,6 +2,23 @@ using System.Text.Json.Serialization;
 
 namespace WebApp.CivilRegistration.Contracts.Persons.Dtos;
 
+public sealed record MarriageInformationDto(
+	int MarriedAtAge,
+	int MarriedWithId
+);
+
+public sealed record DivorceInformationDto(
+	int DivorcedAtAge,
+	int DivorcedFromId
+);
+
+public sealed record WidowhoodInformationDto(
+	int WidowedAtAge,
+	int WidowedFromId
+);
+
+public sealed record DeathInformationDto(int DeceasedAtAge);
+
 [JsonDerivedType(typeof(SingleDto), typeDiscriminator: "Single")]
 [JsonDerivedType(typeof(MarriedDto), typeDiscriminator: "Married")]
 [JsonDerivedType(typeof(DivorcedDto), typeDiscriminator: "Divorced")]
@@ -16,23 +33,22 @@ public sealed record SingleDto : MaritalStatusDto;
 
 public sealed record MarriedDto : MaritalStatusDto
 {
-	public required int MarriedAtAge { get; init; }
-	public required int MarriedWithId { get; init; }
+	public required MarriageInformationDto MarriageInformation { get; init; }
 }
 
 public sealed record DivorcedDto : MaritalStatusDto
 {
-	public required int DivorcedAtAge { get; init; }
-	public required int DivorcedFromId { get; init; }
+	public required MarriageInformationDto MarriageInformation { get; init; }
+	public required DivorceInformationDto DivorceInformation { get; init; }
 }
 
 public sealed record WidowedDto : MaritalStatusDto
 {
-	public required int WidowedAtAge { get; init; }
-	public required int WidowedFromId { get; init; }
+	public required MarriageInformationDto MarriageInformation { get; init; }
+	public required WidowhoodInformationDto WidowhoodInformation { get; init; }
 }
 
 public sealed record DeceasedDto : MaritalStatusDto
 {
-	public required int DeceasedAtAge { get; init;}
+	public required DeathInformationDto DeathInformation { get; init; }
 }

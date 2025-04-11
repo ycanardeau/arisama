@@ -1,5 +1,4 @@
 using DiscriminatedOnions;
-using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
@@ -20,41 +19,45 @@ internal interface ICanMarry : IMaritalTransition<MarryCommand, Married>
 			? Result.Error(new InvalidOperationException("Not of marriageable age"))
 			: Result.Ok(new Married
 			{
-				Payload = new(
+				Payload = new(MarriageInformation: new(
 					MarriedAtAge: stateMachine.Person.Age,
 					MarriedWithId: command.MarryWith.Id
-				),
+				)),
 			});
 	}
 }
 
 internal interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
+	, IHasMarriageInformation
 {
-	PersonId DivorcedFromId { get; }
-
 	Result<Divorced, InvalidOperationException> IMaritalTransition<DivorceCommand, Divorced>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)
 	{
 		return Result.Ok(new Divorced
 		{
 			Payload = new(
-				DivorcedAtAge: stateMachine.Person.Age,
-				DivorcedFromId
+				MarriageInformation,
+				DivorceInformation: new(
+					DivorcedAtAge: stateMachine.Person.Age,
+					DivorcedFromId: MarriageInformation.MarriedWithId
+				)
 			),
 		});
 	}
 }
 
 internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, Widowed>
+	, IHasMarriageInformation
 {
-	PersonId WidowedFromId { get; }
-
 	Result<Widowed, InvalidOperationException> IMaritalTransition<BecomeWidowedCommand, Widowed>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)
 	{
 		return Result.Ok(new Widowed
 		{
 			Payload = new(
-				WidowedAtAge: stateMachine.Person.Age,
-				WidowedFromId
+				MarriageInformation,
+				WidowhoodInformation: new(
+					WidowedAtAge: stateMachine.Person.Age,
+					WidowedFromId: MarriageInformation.MarriedWithId
+				)
 			),
 		});
 	}
@@ -66,7 +69,7 @@ internal interface ICanDecease : IMaritalTransition<DeceaseCommand, Deceased>
 	{
 		return Result.Ok(new Deceased
 		{
-			Payload = new(DeceasedAtAge: stateMachine.Person.Age),
+			Payload = new(new(DeceasedAtAge: stateMachine.Person.Age)),
 		});
 	}
 }

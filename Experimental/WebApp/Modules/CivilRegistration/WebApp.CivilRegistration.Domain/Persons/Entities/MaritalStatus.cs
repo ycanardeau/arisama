@@ -4,7 +4,7 @@ using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
-internal abstract class MaritalStatus : Entity<MaritalStatusId>
+internal abstract class MaritalStatus : Entity<MaritalStatusId>, IMaritalStatus
 {
 	public MaritalStateMachineId StateMachineId { get; set; }
 	public MaritalStateMachine StateMachine { get; set; } = default!;
@@ -24,28 +24,41 @@ internal sealed class Single : MaritalStatus<SinglePayload>
 }
 
 internal sealed class Married : MaritalStatus<MarriedPayload>
+	, IHasMarriageInformation
 	, ICanDecease
 	, ICanDivorce
 	, ICanBecomeWidowed
 {
-	PersonId ICanDivorce.DivorcedFromId => Payload.MarriedWithId;
-
-	PersonId ICanBecomeWidowed.WidowedFromId => Payload.MarriedWithId;
+	MarriageInformation IHasMarriageInformation.MarriageInformation => Payload.MarriageInformation;
 }
 
 internal sealed class Divorced : MaritalStatus<DivorcedPayload>
+	, IHasMarriageInformation
+	, IHasDivorceInformation
 	, ICanDecease
 	, ICanMarry
 {
+	MarriageInformation IHasMarriageInformation.MarriageInformation => Payload.MarriageInformation;
+
+	DivorceInformation IHasDivorceInformation.DivorceInformation => Payload.DivorceInformation;
 }
 
 internal sealed class Widowed : MaritalStatus<WidowedPayload>
+	, IHasMarriageInformation
+	, IHasWidowhoodInformation
 	, ICanDecease
 	, ICanMarry
 {
+	MarriageInformation IHasMarriageInformation.MarriageInformation => Payload.MarriageInformation;
+
+	WidowhoodInformation IHasWidowhoodInformation.WidowhoodInformation => Payload.WidowhoodInformation;
 }
 
-internal sealed class Deceased : MaritalStatus<DeceasedPayload>;
+internal sealed class Deceased : MaritalStatus<DeceasedPayload>
+	, IHasDeathInformation
+{
+	DeathInformation IHasDeathInformation.DeathInformation => Payload.DeathInformation;
+}
 
 internal static class MaritalStatusExtensions
 {

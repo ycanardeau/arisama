@@ -27,7 +27,7 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 			? null
 			: await dbContext.Persons
 				.Include(x => x.MaritalStateMachine.States)
-				.SingleAsync(x => x.Id == state.Payload.MarriedWithId, cancellationToken);
+				.SingleAsync(x => x.Id == state.Payload.MarriageInformation.MarriedWithId, cancellationToken);
 
 		return await DeathCertificate.Create(new CreateCommand(Deceased: deceased, Widowed: widowed))
 			.MapAsync(async x =>
