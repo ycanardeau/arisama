@@ -10,6 +10,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 	private static MarriageInformationDto Map(MarriageInformation value)
 	{
 		return new MarriageInformationDto(
+			MarriageCertificateGuid: value.MarriageCertificateGuid.Value,
 			MarriedAtAge: value.MarriedAtAge.Value,
 			MarriedWithId: value.MarriedWithId.Value
 		);
@@ -18,6 +19,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 	private static DivorceInformationDto Map(DivorceInformation value)
 	{
 		return new DivorceInformationDto(
+			DivorceCertificateGuid: value.DivorceCertificateGuid.Value,
 			DivorcedAtAge: value.DivorcedAtAge.Value,
 			DivorcedFromId: value.DivorcedFromId.Value
 		);
@@ -33,7 +35,10 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 
 	private static DeathInformationDto Map(DeathInformation value)
 	{
-		return new DeathInformationDto(DeceasedAtAge: value.DeceasedAtAge.Value);
+		return new DeathInformationDto(
+			DeathCertificateGuid: value.DeathCertificateGuid.Value,
+			DeceasedAtAge: value.DeceasedAtAge.Value
+		);
 	}
 
 	private static MaritalStatusDto Map(Single value)

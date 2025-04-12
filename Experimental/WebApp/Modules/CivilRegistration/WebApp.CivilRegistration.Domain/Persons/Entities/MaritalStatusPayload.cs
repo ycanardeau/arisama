@@ -1,13 +1,18 @@
+using WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
+using WebApp.CivilRegistration.Domain.DivorceCertificates.ValueObjects;
+using WebApp.CivilRegistration.Domain.MarriageCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
 internal sealed record MarriageInformation(
+	MarriageCertificateGuid MarriageCertificateGuid,
 	Age MarriedAtAge,
 	PersonId MarriedWithId
 );
 
 internal sealed record DivorceInformation(
+	DivorceCertificateGuid DivorceCertificateGuid,
 	Age DivorcedAtAge,
 	PersonId DivorcedFromId
 );
@@ -17,7 +22,10 @@ internal sealed record WidowhoodInformation(
 	PersonId WidowedFromId
 );
 
-internal sealed record DeathInformation(Age DeceasedAtAge);
+internal sealed record DeathInformation(
+	DeathCertificateGuid DeathCertificateGuid,
+	Age DeceasedAtAge
+);
 
 internal abstract record MaritalStatusPayload;
 

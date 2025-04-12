@@ -8,6 +8,7 @@ namespace WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
 
 internal class DeathCertificate : Entity<DeathCertificateId>
 {
+	public required DeathCertificateGuid Guid { get; set; }
 	public PersonId DeceasedId { get; set; }
 	public required Person Deceased { get; set; }
 	public PersonId? WidowedId { get; set; }
@@ -26,6 +27,7 @@ internal class DeathCertificate : Entity<DeathCertificateId>
 	{
 		var deathCertificate = new DeathCertificate
 		{
+			Guid = DeathCertificateGuid.CreateVersion7(),
 			Deceased = command.Deceased,
 			Widowed = command.Widowed,
 		};

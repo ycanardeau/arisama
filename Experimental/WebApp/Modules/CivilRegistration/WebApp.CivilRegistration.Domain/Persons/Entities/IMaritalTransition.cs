@@ -20,6 +20,7 @@ internal interface ICanMarry : IMaritalTransition<MarryCommand, Married>
 			: Result.Ok(new Married
 			{
 				Payload = new(MarriageInformation: new(
+					MarriageCertificateGuid: command.MarriageCertificate.Guid,
 					MarriedAtAge: stateMachine.Person.Age,
 					MarriedWithId: command.MarryWith.Id
 				)),
@@ -37,6 +38,7 @@ internal interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
 			Payload = new(
 				MarriageInformation,
 				DivorceInformation: new(
+					DivorceCertificateGuid: command.DivorceCertificate.Guid,
 					DivorcedAtAge: stateMachine.Person.Age,
 					DivorcedFromId: MarriageInformation.MarriedWithId
 				)
@@ -69,7 +71,10 @@ internal interface ICanDecease : IMaritalTransition<DeceaseCommand, Deceased>
 	{
 		return Result.Ok(new Deceased
 		{
-			Payload = new(new(DeceasedAtAge: stateMachine.Person.Age)),
+			Payload = new(new(
+				DeathCertificateGuid: command.DeathCertificate.Guid,
+				DeceasedAtAge: stateMachine.Person.Age
+			)),
 		});
 	}
 }
