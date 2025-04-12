@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules\CivilRegistration\WebApp.CivilRegistration.Module\WebApp.CivilRegistration.Module.csproj" />
+    <ProjectReference Include="..\Modules\UrlShortener\WebApp.UrlShortener.Module\WebApp.UrlShortener.Module.csproj" />
     <ProjectReference Include="..\WebApp.ServiceDefaults\WebApp.ServiceDefaults.csproj" />
   </ItemGroup>
 
