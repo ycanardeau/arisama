@@ -17,7 +17,7 @@ internal class DeathCertificate : Entity<DeathCertificateId>
 
 	private Result<DeathCertificate, InvalidOperationException> Decease()
 	{
-		return Deceased.Decease(new DeceaseCommand())
+		return Deceased.Decease(new DeceaseCommand(this))
 			.Map(x => Widowed?.BecomeWidowed(new BecomeWidowedCommand()))
 			.Map(x => this);
 	}
