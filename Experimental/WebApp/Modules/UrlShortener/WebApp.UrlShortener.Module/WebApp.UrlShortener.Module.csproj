@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebApp.UrlShortener.Application\WebApp.UrlShortener.Application.csproj" />
+    <ProjectReference Include="..\WebApp.UrlShortener.Endpoints\WebApp.UrlShortener.Endpoints.csproj" />
+    <ProjectReference Include="..\WebApp.UrlShortener.Infrastructure\WebApp.UrlShortener.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
