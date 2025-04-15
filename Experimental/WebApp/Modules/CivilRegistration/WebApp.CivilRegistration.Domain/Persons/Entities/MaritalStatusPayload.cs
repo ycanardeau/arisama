@@ -42,26 +42,26 @@ internal sealed class DeathInformation
 
 internal abstract class MaritalStatusPayload;
 
-internal sealed class SinglePayload : MaritalStatusPayload;
+internal sealed class SingleStatePayload : MaritalStatusPayload;
 
-internal sealed class MarriedPayload : MaritalStatusPayload
+internal sealed class MarriedStatePayload : MaritalStatusPayload
 {
 	public required MarriageInformation MarriageInformation { get; set; }
 }
 
-internal sealed class DivorcedPayload : MaritalStatusPayload
+internal sealed class DivorcedStatePayload : MaritalStatusPayload
 {
 	public required MarriageInformation MarriageInformation { get; set; }
 	public required DivorceInformation DivorceInformation { get; set; }
 }
 
-internal sealed class WidowedPayload : MaritalStatusPayload
+internal sealed class WidowedStatePayload : MaritalStatusPayload
 {
 	public required MarriageInformation MarriageInformation { get; set; }
 	public required WidowhoodInformation WidowhoodInformation { get; set; }
 }
 
-internal sealed class DeceasedPayload : MaritalStatusPayload
+internal sealed class DeceasedStatePayload : MaritalStatusPayload
 {
 	public required DeathInformation DeathInformation { get; set; }
 }

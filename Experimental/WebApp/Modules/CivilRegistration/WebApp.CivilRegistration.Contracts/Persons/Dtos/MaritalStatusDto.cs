@@ -24,36 +24,36 @@ public sealed record DeathInformationDto(
 	int DeceasedAtAge
 );
 
-[JsonDerivedType(typeof(SingleDto), typeDiscriminator: "Single")]
-[JsonDerivedType(typeof(MarriedDto), typeDiscriminator: "Married")]
-[JsonDerivedType(typeof(DivorcedDto), typeDiscriminator: "Divorced")]
-[JsonDerivedType(typeof(WidowedDto), typeDiscriminator: "Widowed")]
-[JsonDerivedType(typeof(DeceasedDto), typeDiscriminator: "Deceased")]
+[JsonDerivedType(typeof(SingleStateDto), typeDiscriminator: "Single")]
+[JsonDerivedType(typeof(MarriedStateDto), typeDiscriminator: "Married")]
+[JsonDerivedType(typeof(DivorcedStateDto), typeDiscriminator: "Divorced")]
+[JsonDerivedType(typeof(WidowedStateDto), typeDiscriminator: "Widowed")]
+[JsonDerivedType(typeof(DeceasedStateDto), typeDiscriminator: "Deceased")]
 public abstract record MaritalStatusDto
 {
 	public required int Version { get; init; }
 }
 
-public sealed record SingleDto : MaritalStatusDto;
+public sealed record SingleStateDto : MaritalStatusDto;
 
-public sealed record MarriedDto : MaritalStatusDto
+public sealed record MarriedStateDto : MaritalStatusDto
 {
 	public required MarriageInformationDto MarriageInformation { get; init; }
 }
 
-public sealed record DivorcedDto : MaritalStatusDto
+public sealed record DivorcedStateDto : MaritalStatusDto
 {
 	public required MarriageInformationDto MarriageInformation { get; init; }
 	public required DivorceInformationDto DivorceInformation { get; init; }
 }
 
-public sealed record WidowedDto : MaritalStatusDto
+public sealed record WidowedStateDto : MaritalStatusDto
 {
 	public required MarriageInformationDto MarriageInformation { get; init; }
 	public required WidowhoodInformationDto WidowhoodInformation { get; init; }
 }
 
-public sealed record DeceasedDto : MaritalStatusDto
+public sealed record DeceasedStateDto : MaritalStatusDto
 {
 	public required DeathInformationDto DeathInformation { get; init; }
 }

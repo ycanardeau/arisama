@@ -1,7 +1,7 @@
 using WebApp.CivilRegistration.Application.Interfaces.Mappers;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
-using Single = WebApp.CivilRegistration.Domain.Persons.Entities.Single;
+using SingleState = WebApp.CivilRegistration.Domain.Persons.Entities.SingleState;
 
 namespace WebApp.CivilRegistration.Application.Services.Mappers;
 
@@ -41,26 +41,26 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		);
 	}
 
-	private static MaritalStatusDto Map(Single value)
+	private static MaritalStatusDto Map(SingleState value)
 	{
-		return new SingleDto
+		return new SingleStateDto
 		{
 			Version = value.Version.Value,
 		};
 	}
 
-	private static MaritalStatusDto Map(Married value)
+	private static MaritalStatusDto Map(MarriedState value)
 	{
-		return new MarriedDto
+		return new MarriedStateDto
 		{
 			Version = value.Version.Value,
 			MarriageInformation = Map(value.Payload.MarriageInformation),
 		};
 	}
 
-	private static MaritalStatusDto Map(Divorced value)
+	private static MaritalStatusDto Map(DivorcedState value)
 	{
-		return new DivorcedDto
+		return new DivorcedStateDto
 		{
 			Version = value.Version.Value,
 			MarriageInformation = Map(value.Payload.MarriageInformation),
@@ -68,9 +68,9 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		};
 	}
 
-	private static MaritalStatusDto Map(Widowed value)
+	private static MaritalStatusDto Map(WidowedState value)
 	{
-		return new WidowedDto
+		return new WidowedStateDto
 		{
 			Version = value.Version.Value,
 			MarriageInformation = Map(value.Payload.MarriageInformation),
@@ -78,9 +78,9 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		};
 	}
 
-	private static MaritalStatusDto Map(Deceased value)
+	private static MaritalStatusDto Map(DeceasedState value)
 	{
-		return new DeceasedDto
+		return new DeceasedStateDto
 		{
 			Version = value.Version.Value,
 			DeathInformation = Map(value.Payload.DeathInformation),

@@ -11,13 +11,13 @@ internal interface IMaritalTransition<TCommand, TNextState> : IMaritalTransition
 	Result<TNextState, InvalidOperationException> Execute(MaritalStateMachine stateMachine, TCommand command);
 }
 
-internal interface ICanMarry : IMaritalTransition<MarryCommand, Married>
+internal interface ICanMarry : IMaritalTransition<MarryCommand, MarriedState>
 {
-	Result<Married, InvalidOperationException> IMaritalTransition<MarryCommand, Married>.Execute(MaritalStateMachine stateMachine, MarryCommand command)
+	Result<MarriedState, InvalidOperationException> IMaritalTransition<MarryCommand, MarriedState>.Execute(MaritalStateMachine stateMachine, MarryCommand command)
 	{
 		return !stateMachine.Person.CanMarryAtCurrentAge
 			? Result.Error(new InvalidOperationException("Not of marriageable age"))
-			: Result.Ok(new Married
+			: Result.Ok(new MarriedState
 			{
 				Payload = new()
 				{
@@ -32,12 +32,12 @@ internal interface ICanMarry : IMaritalTransition<MarryCommand, Married>
 	}
 }
 
-internal interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
+internal interface ICanDivorce : IMaritalTransition<DivorceCommand, DivorcedState>
 	, IHasMarriageInformation
 {
-	Result<Divorced, InvalidOperationException> IMaritalTransition<DivorceCommand, Divorced>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)
+	Result<DivorcedState, InvalidOperationException> IMaritalTransition<DivorceCommand, DivorcedState>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)
 	{
-		return Result.Ok(new Divorced
+		return Result.Ok(new DivorcedState
 		{
 			Payload = new()
 			{
@@ -53,12 +53,12 @@ internal interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
 	}
 }
 
-internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, Widowed>
+internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, WidowedState>
 	, IHasMarriageInformation
 {
-	Result<Widowed, InvalidOperationException> IMaritalTransition<BecomeWidowedCommand, Widowed>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)
+	Result<WidowedState, InvalidOperationException> IMaritalTransition<BecomeWidowedCommand, WidowedState>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)
 	{
-		return Result.Ok(new Widowed
+		return Result.Ok(new WidowedState
 		{
 			Payload = new()
 			{
@@ -73,11 +73,11 @@ internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, 
 	}
 }
 
-internal interface ICanDecease : IMaritalTransition<DeceaseCommand, Deceased>
+internal interface ICanDecease : IMaritalTransition<DeceaseCommand, DeceasedState>
 {
-	Result<Deceased, InvalidOperationException> IMaritalTransition<DeceaseCommand, Deceased>.Execute(MaritalStateMachine stateMachine, DeceaseCommand command)
+	Result<DeceasedState, InvalidOperationException> IMaritalTransition<DeceaseCommand, DeceasedState>.Execute(MaritalStateMachine stateMachine, DeceaseCommand command)
 	{
-		return Result.Ok(new Deceased
+		return Result.Ok(new DeceasedState
 		{
 			Payload = new()
 			{
