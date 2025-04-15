@@ -14,9 +14,6 @@ internal class DeathCertificateConfiguration : IEntityTypeConfiguration<DeathCer
 			.HasConversion(x => x.Value, x => new(x))
 			.ValueGeneratedOnAdd();
 
-		builder.Property(x => x.Guid)
-			.HasConversion(x => x.Value, x => new(x));
-
 		builder.HasOne(x => x.Deceased)
 			.WithMany()
 			.HasForeignKey(x => x.DeceasedId);

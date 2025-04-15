@@ -14,9 +14,6 @@ internal class MarriageCertificateConfiguration : IEntityTypeConfiguration<Marri
 			.HasConversion(x => x.Value, x => new(x))
 			.ValueGeneratedOnAdd();
 
-		builder.Property(x => x.Guid)
-			.HasConversion(x => x.Value, x => new(x));
-
 		builder.HasOne(x => x.Person1)
 			.WithMany()
 			.HasForeignKey(x => x.Person1Id);
