@@ -12,6 +12,10 @@ internal class Person : Entity<PersonId>
 
 	private Person() { }
 
+	public bool CanBeHusband => Gender.CanBeHusband;
+
+	public bool CanBeWife => Gender.CanBeWife;
+
 	public bool CanMarryAtCurrentAge => Gender.CanMarryAtAge(Age);
 
 	private sealed record CreatePersonContext
