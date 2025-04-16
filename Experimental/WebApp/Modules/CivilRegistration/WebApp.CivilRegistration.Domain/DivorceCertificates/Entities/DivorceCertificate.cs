@@ -16,8 +16,8 @@ internal class DivorceCertificate : Entity<DivorceCertificateId>
 
 	private Result<DivorceCertificate, InvalidOperationException> Divorce()
 	{
-		return MarriageCertificate.Person1.Divorce(new DivorceCommand(this))
-			.Map(x => MarriageCertificate.Person2.Divorce(new DivorceCommand(this)))
+		return MarriageCertificate.Husband.Divorce(new DivorceCommand(this))
+			.Map(x => MarriageCertificate.Wife.Divorce(new DivorceCommand(this)))
 			.Map(x => this);
 	}
 

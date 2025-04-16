@@ -8,21 +8,21 @@ namespace WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
 
 internal class MarriageCertificate : Entity<MarriageCertificateId>
 {
-	public PersonId Person1Id { get; set; }
-	public required Person Person1 { get; set; }
-	public PersonId Person2Id { get; set; }
-	public required Person Person2 { get; set; }
+	public PersonId HusbandId { get; set; }
+	public required Person Husband { get; set; }
+	public PersonId WifeId { get; set; }
+	public required Person Wife { get; set; }
 
 	private MarriageCertificate() { }
 
 	private Result<MarriageCertificate, InvalidOperationException> Marry()
 	{
-		return Person1 == Person2
+		return Husband == Wife
 			? Result.Error(new InvalidOperationException("A marriage requires two individuals"))
-			: Person1.Gender == Person2.Gender
+			: Husband.Gender == Wife.Gender
 			? Result.Error(new InvalidOperationException("Same-sex marriage is not allowed in Japan as of writing"))
-			: Person1.Marry(new MarryCommand(this, Person2))
-				.Map(x => Person2.Marry(new MarryCommand(this, Person1)))
+			: Husband.Marry(new MarryCommand(this, Wife))
+				.Map(x => Wife.Marry(new MarryCommand(this, Husband)))
 				.Map(x => this);
 	}
 
@@ -30,8 +30,8 @@ internal class MarriageCertificate : Entity<MarriageCertificateId>
 	{
 		var marriageCertificate = new MarriageCertificate
 		{
-			Person1 = command.Person1,
-			Person2 = command.Person2,
+			Husband = command.Husband,
+			Wife = command.Wife,
 		};
 
 		return marriageCertificate.Marry();

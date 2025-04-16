@@ -4,4 +4,4 @@ namespace WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
 
 internal abstract record MarriageCertificateCommand;
 
-internal sealed record CreateCommand(Person Person1, Person Person2) : MarriageCertificateCommand;
+internal sealed record CreateCommand(Person Husband, Person Wife) : MarriageCertificateCommand;

@@ -13,25 +13,25 @@ internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbCo
 {
 	public async Task<Result<CreateMarriageCertificateResponseDto, InvalidOperationException>> Handle(CreateMarriageCertificateCommand request, CancellationToken cancellationToken)
 	{
-		var person1 = await dbContext.Persons
+		var husband = await dbContext.Persons
 			.Include(x => x.MaritalStateMachine.States)
-			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.Person1Id), cancellationToken);
+			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.HusbandId), cancellationToken);
 
-		if (person1 is null)
+		if (husband is null)
 		{
-			return Result.Error(new InvalidOperationException($"Person {request.Person1Id} not found"));
+			return Result.Error(new InvalidOperationException($"Person {request.HusbandId} not found"));
 		}
 
-		var person2 = await dbContext.Persons
+		var wife = await dbContext.Persons
 			.Include(x => x.MaritalStateMachine.States)
-			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.Person2Id), cancellationToken);
+			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.WifeId), cancellationToken);
 
-		if (person2 is null)
+		if (wife is null)
 		{
-			return Result.Error(new InvalidOperationException($"Person {request.Person2Id} not found"));
+			return Result.Error(new InvalidOperationException($"Person {request.WifeId} not found"));
 		}
 
-		return await MarriageCertificate.Create(new CreateCommand(person1, person2))
+		return await MarriageCertificate.Create(new CreateCommand(husband, wife))
 			.MapAsync(async x =>
 			{
 				dbContext.MarriageCertificates.Add(x);

@@ -14,12 +14,12 @@ internal class MarriageCertificateConfiguration : IEntityTypeConfiguration<Marri
 			.HasConversion(x => x.Value, x => new(x))
 			.ValueGeneratedOnAdd();
 
-		builder.HasOne(x => x.Person1)
+		builder.HasOne(x => x.Husband)
 			.WithMany()
-			.HasForeignKey(x => x.Person1Id);
+			.HasForeignKey(x => x.HusbandId);
 
-		builder.HasOne(x => x.Person2)
+		builder.HasOne(x => x.Wife)
 			.WithMany()
-			.HasForeignKey(x => x.Person2Id);
+			.HasForeignKey(x => x.WifeId);
 	}
 }
