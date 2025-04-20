@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using WebApp.UrlShortener.Contracts.Urls.Dtos;
 using WebApp.UrlShortener.Contracts.Urls.Queries;
 
-namespace WebApp.UrlShortener.Infrastructure.Integrations.Urls;
+namespace WebApp.UrlShortener.Infrastructure.Integrations.Urls.Queries;
 
 internal interface IUrlShortenerGrain : IGrainWithStringKey
 {
