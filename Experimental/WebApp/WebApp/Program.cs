@@ -1,5 +1,6 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using Orleans;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,8 @@ builder.Services
 		config.RegisterServicesFromAssemblyContaining<Program>();
 	});
 
+builder.UseOrleans(o => o.UseDashboard(options => { }));
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
@@ -44,5 +47,7 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwaggerGen();
 }
+
+app.Map("/dashboard", x => x.UseOrleansDashboard());
 
 app.Run();
