@@ -44,6 +44,8 @@ internal static class ServiceExtensions
 			siloBuilder.UseLocalhostClustering();
 			siloBuilder.AddMemoryGrainStorage("urls");
 			siloBuilder.AddMemoryGrainStorage("robotStateStore");
+			siloBuilder.AddMemoryGrainStorage("PubSubStore");
+			siloBuilder.AddMemoryStreams("SMSProvider");
 		});
 
 		return builder;
