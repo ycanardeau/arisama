@@ -43,6 +43,7 @@ internal static class ServiceExtensions
 		{
 			siloBuilder.UseLocalhostClustering();
 			siloBuilder.AddMemoryGrainStorage("urls");
+			siloBuilder.AddMemoryGrainStorage("robotStateStore");
 		});
 
 		return builder;

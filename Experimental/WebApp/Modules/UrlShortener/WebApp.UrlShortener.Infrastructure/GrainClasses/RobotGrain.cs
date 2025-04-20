@@ -3,33 +3,40 @@ using WebApp.UrlShortener.Infrastructure.GrainInterfaces;
 
 namespace WebApp.UrlShortener.Infrastructure.GrainClasses;
 
-internal class RobotGrain(ILogger<RobotGrain> logger) : Grain, IRobotGrain
+internal class RobotGrain(
+	ILogger<RobotGrain> logger,
+	[PersistentState(stateName: "robotState", storageName: "robotStateStore")]
+	IPersistentState<RobotState> state
+) : Grain, IRobotGrain
 {
-	private readonly Queue<string> _instructions = new();
-
-	public Task AddInstruction(string instruction)
+	public async Task AddInstruction(string instruction)
 	{
 		var key = this.GetPrimaryKeyString();
+
 		logger.LogWarning("{Key} adding '{Instruction}'", key, instruction);
-		_instructions.Enqueue(instruction);
-		return Task.CompletedTask;
+
+		state.State.Instructions.Enqueue(instruction);
+		await state.WriteStateAsync();
 	}
 
 	public Task<int> GetInstructionCount()
 	{
-		return Task.FromResult(_instructions.Count);
+		return Task.FromResult(state.State.Instructions.Count);
 	}
 
-	public Task<string?> GetNextInstruction()
+	public async Task<string?> GetNextInstruction()
 	{
-		if (_instructions.Count == 0)
+		if (state.State.Instructions.Count == 0)
 		{
-			return Task.FromResult<string?>(null);
+			return null;
 		}
 
-		var instruction = _instructions.Dequeue();
+		var instruction = state.State.Instructions.Dequeue();
 		var key = this.GetPrimaryKeyString();
+
 		logger.LogWarning("{Key} adding '{Instruction}'", key, instruction);
-		return Task.FromResult<string?>(instruction);
+
+		await state.WriteStateAsync();
+		return instruction;
 	}
 }
