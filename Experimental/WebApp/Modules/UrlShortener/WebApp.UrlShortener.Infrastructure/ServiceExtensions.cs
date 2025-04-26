@@ -46,6 +46,7 @@ internal static class ServiceExtensions
 			siloBuilder.AddMemoryGrainStorage("robotStateStore");
 			siloBuilder.AddMemoryGrainStorage("PubSubStore");
 			siloBuilder.AddMemoryStreams("SMSProvider");
+			siloBuilder.UseTransactions();
 		});
 
 		return builder;
