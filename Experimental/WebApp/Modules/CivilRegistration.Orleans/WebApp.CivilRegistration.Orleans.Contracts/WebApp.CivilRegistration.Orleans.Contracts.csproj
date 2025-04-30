@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DiscriminatedOnions" />
     <PackageReference Include="MediatR" />
   </ItemGroup>
 
