@@ -39,6 +39,12 @@ internal static class ServiceExtensions
 
 		builder.AddDbContext();
 
+		builder.UseOrleans(static siloBuilder =>
+		{
+			siloBuilder.UseLocalhostClustering();
+			siloBuilder.AddMemoryGrainStorage("persons");
+		});
+
 		return builder;
 	}
 }
