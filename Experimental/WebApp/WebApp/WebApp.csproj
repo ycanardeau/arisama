@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Modules\CivilRegistration.Orleans\WebApp.CivilRegistration.Orleans.Module\WebApp.CivilRegistration.Orleans.Module.csproj" />
     <ProjectReference Include="..\Modules\CivilRegistration\WebApp.CivilRegistration.Module\WebApp.CivilRegistration.Module.csproj" />
     <ProjectReference Include="..\WebApp.ServiceDefaults\WebApp.ServiceDefaults.csproj" />
   </ItemGroup>

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Application\WebApp.CivilRegistration.Orleans.Application.csproj" />
+    <ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Endpoints\WebApp.CivilRegistration.Orleans.Endpoints.csproj" />
+    <ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Infrastructure\WebApp.CivilRegistration.Orleans.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

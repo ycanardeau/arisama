@@ -10,6 +10,7 @@ builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
 
 WebApp.CivilRegistration.Module.ServiceExtensions.AddModule(builder);
+WebApp.CivilRegistration.Orleans.Module.ServiceExtensions.AddModule(builder);
 
 builder.Services
 	.AddFastEndpoints()
