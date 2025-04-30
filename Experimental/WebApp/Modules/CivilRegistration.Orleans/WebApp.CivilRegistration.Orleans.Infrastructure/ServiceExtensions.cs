@@ -43,6 +43,7 @@ internal static class ServiceExtensions
 		{
 			siloBuilder.UseLocalhostClustering();
 			siloBuilder.AddMemoryGrainStorage("persons");
+			siloBuilder.AddMemoryGrainStorage("maritalStateMachines");
 		});
 
 		return builder;
