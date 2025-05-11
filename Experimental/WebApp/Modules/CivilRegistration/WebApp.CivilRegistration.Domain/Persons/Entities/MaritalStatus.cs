@@ -17,13 +17,13 @@ internal abstract class MaritalStatus<TPayload> : MaritalStatus
 	public required TPayload Payload { get; init; }
 }
 
-internal sealed class SingleState : MaritalStatus<SingleStatePayload>
+internal sealed class Single : MaritalStatus<SinglePayload>
 	, ICanDecease
 	, ICanMarry
 {
 }
 
-internal sealed class MarriedState : MaritalStatus<MarriedStatePayload>
+internal sealed class Married : MaritalStatus<MarriedPayload>
 	, IHasMarriageInformation
 	, ICanDecease
 	, ICanDivorce
@@ -32,7 +32,7 @@ internal sealed class MarriedState : MaritalStatus<MarriedStatePayload>
 	MarriageInformation IHasMarriageInformation.MarriageInformation => Payload.MarriageInformation;
 }
 
-internal sealed class DivorcedState : MaritalStatus<DivorcedStatePayload>
+internal sealed class Divorced : MaritalStatus<DivorcedPayload>
 	, IHasMarriageInformation
 	, IHasDivorceInformation
 	, ICanDecease
@@ -43,7 +43,7 @@ internal sealed class DivorcedState : MaritalStatus<DivorcedStatePayload>
 	DivorceInformation IHasDivorceInformation.DivorceInformation => Payload.DivorceInformation;
 }
 
-internal sealed class WidowedState : MaritalStatus<WidowedStatePayload>
+internal sealed class Widowed : MaritalStatus<WidowedPayload>
 	, IHasMarriageInformation
 	, IHasWidowhoodInformation
 	, ICanDecease
@@ -54,7 +54,7 @@ internal sealed class WidowedState : MaritalStatus<WidowedStatePayload>
 	WidowhoodInformation IHasWidowhoodInformation.WidowhoodInformation => Payload.WidowhoodInformation;
 }
 
-internal sealed class DeceasedState : MaritalStatus<DeceasedStatePayload>
+internal sealed class Deceased : MaritalStatus<DeceasedPayload>
 	, IHasDeathInformation
 {
 	DeathInformation IHasDeathInformation.DeathInformation => Payload.DeathInformation;
@@ -64,20 +64,20 @@ internal static class MaritalStatusExtensions
 {
 	public static U Match<U>(
 		this MaritalStatus state,
-		Func<SingleState, U> onSingleState,
-		Func<MarriedState, U> onMarriedState,
-		Func<DivorcedState, U> onDivorcedState,
-		Func<WidowedState, U> onWidowedState,
-		Func<DeceasedState, U> onDeceasedState
+		Func<Single, U> onSingle,
+		Func<Married, U> onMarried,
+		Func<Divorced, U> onDivorced,
+		Func<Widowed, U> onWidowed,
+		Func<Deceased, U> onDeceased
 	)
 	{
 		return state switch
 		{
-			SingleState x => onSingleState(x),
-			MarriedState x => onMarriedState(x),
-			DivorcedState x => onDivorcedState(x),
-			WidowedState x => onWidowedState(x),
-			DeceasedState x => onDeceasedState(x),
+			Single x => onSingle(x),
+			Married x => onMarried(x),
+			Divorced x => onDivorced(x),
+			Widowed x => onWidowed(x),
+			Deceased x => onDeceased(x),
 			_ => throw new UnreachableException(),
 		};
 	}

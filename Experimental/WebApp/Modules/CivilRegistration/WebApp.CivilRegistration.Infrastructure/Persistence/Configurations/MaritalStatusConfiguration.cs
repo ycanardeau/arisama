@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
-using SingleState = WebApp.CivilRegistration.Domain.Persons.Entities.SingleState;
+using Single = WebApp.CivilRegistration.Domain.Persons.Entities.Single;
 
 namespace WebApp.CivilRegistration.Infrastructure.Persistence.Configurations;
 
@@ -9,8 +9,6 @@ internal class MaritalStatusConfiguration : IEntityTypeConfiguration<MaritalStat
 {
 	public void Configure(EntityTypeBuilder<MaritalStatus> builder)
 	{
-		builder.UseTptMappingStrategy();
-
 		builder.HasKey(x => x.Id);
 
 		builder.Property(x => x.Id)
@@ -26,6 +24,13 @@ internal class MaritalStatusConfiguration : IEntityTypeConfiguration<MaritalStat
 
 		builder.HasIndex(x => new { x.StateMachineId, x.Version })
 			.IsUnique();
+
+		builder.HasDiscriminator()
+			.HasValue<Single>("Single")
+			.HasValue<Married>("Married")
+			.HasValue<Divorced>("Divorced")
+			.HasValue<Widowed>("Widowed")
+			;
 	}
 }
 
@@ -36,9 +41,9 @@ internal abstract class MaritalStatusConfiguration<TState, TPayload> : IEntityTy
 	public abstract void Configure(EntityTypeBuilder<TState> builder);
 }
 
-internal class SingleConfiguration : MaritalStatusConfiguration<SingleState, SingleStatePayload>
+internal class SingleConfiguration : MaritalStatusConfiguration<Single, SinglePayload>
 {
-	public override void Configure(EntityTypeBuilder<SingleState> builder)
+	public override void Configure(EntityTypeBuilder<Single> builder)
 	{
 		builder.OwnsOne(x => x.Payload, builder =>
 		{
@@ -46,9 +51,9 @@ internal class SingleConfiguration : MaritalStatusConfiguration<SingleState, Sin
 	}
 }
 
-internal class MarriedConfiguration : MaritalStatusConfiguration<MarriedState, MarriedStatePayload>
+internal class MarriedConfiguration : MaritalStatusConfiguration<Married, MarriedPayload>
 {
-	public override void Configure(EntityTypeBuilder<MarriedState> builder)
+	public override void Configure(EntityTypeBuilder<Married> builder)
 	{
 		builder.OwnsOne(x => x.Payload, builder =>
 		{
@@ -69,9 +74,9 @@ internal class MarriedConfiguration : MaritalStatusConfiguration<MarriedState, M
 	}
 }
 
-internal class DivorcedConfiguration : MaritalStatusConfiguration<DivorcedState, DivorcedStatePayload>
+internal class DivorcedConfiguration : MaritalStatusConfiguration<Divorced, DivorcedPayload>
 {
-	public override void Configure(EntityTypeBuilder<DivorcedState> builder)
+	public override void Configure(EntityTypeBuilder<Divorced> builder)
 	{
 		builder.OwnsOne(x => x.Payload, builder =>
 		{
@@ -106,9 +111,9 @@ internal class DivorcedConfiguration : MaritalStatusConfiguration<DivorcedState,
 	}
 }
 
-internal class WidowedConfiguration : MaritalStatusConfiguration<WidowedState, WidowedStatePayload>
+internal class WidowedConfiguration : MaritalStatusConfiguration<Widowed, WidowedPayload>
 {
-	public override void Configure(EntityTypeBuilder<WidowedState> builder)
+	public override void Configure(EntityTypeBuilder<Widowed> builder)
 	{
 		builder.OwnsOne(x => x.Payload, builder =>
 		{
@@ -139,9 +144,9 @@ internal class WidowedConfiguration : MaritalStatusConfiguration<WidowedState, W
 	}
 }
 
-internal class DeceasedConfiguration : MaritalStatusConfiguration<DeceasedState, DeceasedStatePayload>
+internal class DeceasedConfiguration : MaritalStatusConfiguration<Deceased, DeceasedPayload>
 {
-	public override void Configure(EntityTypeBuilder<DeceasedState> builder)
+	public override void Configure(EntityTypeBuilder<Deceased> builder)
 	{
 		builder.OwnsOne(x => x.Payload, builder =>
 		{

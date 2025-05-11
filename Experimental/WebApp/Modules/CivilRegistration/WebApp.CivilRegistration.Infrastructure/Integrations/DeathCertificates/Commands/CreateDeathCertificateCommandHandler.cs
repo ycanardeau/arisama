@@ -23,7 +23,7 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 			return Result.Error(new InvalidOperationException($"Person {request.DeceasedId} not found"));
 		}
 
-		var widowed = deceased.MaritalStateMachine.CurrentState is not MarriedState state
+		var widowed = deceased.MaritalStateMachine.CurrentState is not Married state
 			? null
 			: await dbContext.Persons
 				.Include(x => x.MaritalStateMachine.States)

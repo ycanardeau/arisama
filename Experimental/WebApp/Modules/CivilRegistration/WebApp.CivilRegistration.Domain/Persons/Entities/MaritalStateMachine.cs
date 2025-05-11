@@ -37,7 +37,7 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 	{
 		var stateMachine = new MaritalStateMachine();
 
-		stateMachine.AddState(new SingleState
+		stateMachine.AddState(new Single
 		{
 			Payload = new(),
 		});
@@ -58,23 +58,23 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 				.Map(AddState);
 	}
 
-	public Result<MarriedState, InvalidOperationException> Marry(MarryCommand command)
+	public Result<Married, InvalidOperationException> Marry(MarryCommand command)
 	{
-		return ExecuteIf<ICanMarry, MarryCommand, MarriedState>(command);
+		return ExecuteIf<ICanMarry, MarryCommand, Married>(command);
 	}
 
-	public Result<DivorcedState, InvalidOperationException> Divorce(DivorceCommand command)
+	public Result<Divorced, InvalidOperationException> Divorce(DivorceCommand command)
 	{
-		return ExecuteIf<ICanDivorce, DivorceCommand, DivorcedState>(command);
+		return ExecuteIf<ICanDivorce, DivorceCommand, Divorced>(command);
 	}
 
-	public Result<WidowedState, InvalidOperationException> BecomeWidowed(BecomeWidowedCommand command)
+	public Result<Widowed, InvalidOperationException> BecomeWidowed(BecomeWidowedCommand command)
 	{
-		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand, WidowedState>(command);
+		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand, Widowed>(command);
 	}
 
-	public Result<DeceasedState, InvalidOperationException> Decease(DeceaseCommand command)
+	public Result<Deceased, InvalidOperationException> Decease(DeceaseCommand command)
 	{
-		return ExecuteIf<ICanDecease, DeceaseCommand, DeceasedState>(command);
+		return ExecuteIf<ICanDecease, DeceaseCommand, Deceased>(command);
 	}
 }
