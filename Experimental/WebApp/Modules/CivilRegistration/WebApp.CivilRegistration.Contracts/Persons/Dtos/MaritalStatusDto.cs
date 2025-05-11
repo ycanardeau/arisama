@@ -3,13 +3,13 @@ using System.Text.Json.Serialization;
 namespace WebApp.CivilRegistration.Contracts.Persons.Dtos;
 
 public sealed record MarriageInformationDto(
-	int MarriageCertificateId,
+	Guid MarriageCertificateGuid,
 	int MarriedAtAge,
 	int MarriedWithId
 );
 
 public sealed record DivorceInformationDto(
-	int DivorceCertificateId,
+	Guid DivorceCertificateGuid,
 	int DivorcedAtAge,
 	int DivorcedFromId
 );
@@ -20,7 +20,7 @@ public sealed record WidowhoodInformationDto(
 );
 
 public sealed record DeathInformationDto(
-	int DeathCertificateId,
+	Guid DeathCertificateGuid,
 	int DeceasedAtAge
 );
 

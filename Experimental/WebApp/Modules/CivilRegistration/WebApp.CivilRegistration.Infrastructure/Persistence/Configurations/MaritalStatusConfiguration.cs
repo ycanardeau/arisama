@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
@@ -38,126 +39,21 @@ internal abstract class MaritalStatusConfiguration<TState, TPayload> : IEntityTy
 	where TPayload : MaritalStatusPayload
 	where TState : MaritalStatus<TPayload>
 {
-	public abstract void Configure(EntityTypeBuilder<TState> builder);
-}
+	private static readonly JsonSerializerOptions s_jsonSerializerOptions = new();
 
-internal class SingleConfiguration : MaritalStatusConfiguration<Single, SinglePayload>
-{
-	public override void Configure(EntityTypeBuilder<Single> builder)
+	public void Configure(EntityTypeBuilder<TState> builder)
 	{
-		builder.OwnsOne(x => x.Payload, builder =>
-		{
-		});
+		builder.Property(x => x.Payload)
+			.HasColumnName("Payload")
+			.HasConversion(
+				x => JsonSerializer.Serialize(x, s_jsonSerializerOptions),
+				x => JsonSerializer.Deserialize<TPayload>(x, s_jsonSerializerOptions)!
+			);
 	}
 }
 
-internal class MarriedConfiguration : MaritalStatusConfiguration<Married, MarriedPayload>
-{
-	public override void Configure(EntityTypeBuilder<Married> builder)
-	{
-		builder.OwnsOne(x => x.Payload, builder =>
-		{
-			builder.OwnsOne(x => x.MarriageInformation, builder =>
-			{
-				builder.HasOne(x => x.MarriageCertificate)
-					.WithMany()
-					.HasForeignKey(x => x.MarriageCertificateId);
-
-				builder.Property(x => x.MarriedAtAge)
-					.HasConversion(x => x.Value, x => new(x));
-
-				builder.HasOne(x => x.MarriedWith)
-					.WithMany()
-					.HasForeignKey(x => x.MarriedWithId);
-			});
-		});
-	}
-}
-
-internal class DivorcedConfiguration : MaritalStatusConfiguration<Divorced, DivorcedPayload>
-{
-	public override void Configure(EntityTypeBuilder<Divorced> builder)
-	{
-		builder.OwnsOne(x => x.Payload, builder =>
-		{
-			builder.OwnsOne(x => x.MarriageInformation, builder =>
-			{
-				builder.HasOne(x => x.MarriageCertificate)
-					.WithMany()
-					.HasForeignKey(x => x.MarriageCertificateId);
-
-				builder.Property(x => x.MarriedAtAge)
-					.HasConversion(x => x.Value, x => new(x));
-
-				builder.HasOne(x => x.MarriedWith)
-					.WithMany()
-					.HasForeignKey(x => x.MarriedWithId);
-			});
-
-			builder.OwnsOne(x => x.DivorceInformation, builder =>
-			{
-				builder.HasOne(x => x.DivorceCertificate)
-					.WithMany()
-					.HasForeignKey(x => x.DivorceCertificateId);
-
-				builder.Property(x => x.DivorcedAtAge)
-					.HasConversion(x => x.Value, x => new(x));
-
-				builder.HasOne(x => x.DivorcedFrom)
-					.WithMany()
-					.HasForeignKey(x => x.DivorcedFromId);
-			});
-		});
-	}
-}
-
-internal class WidowedConfiguration : MaritalStatusConfiguration<Widowed, WidowedPayload>
-{
-	public override void Configure(EntityTypeBuilder<Widowed> builder)
-	{
-		builder.OwnsOne(x => x.Payload, builder =>
-		{
-			builder.OwnsOne(x => x.MarriageInformation, builder =>
-			{
-				builder.HasOne(x => x.MarriageCertificate)
-					.WithMany()
-					.HasForeignKey(x => x.MarriageCertificateId);
-
-				builder.Property(x => x.MarriedAtAge)
-					.HasConversion(x => x.Value, x => new(x));
-
-				builder.HasOne(x => x.MarriedWith)
-					.WithMany()
-					.HasForeignKey(x => x.MarriedWithId);
-			});
-
-			builder.OwnsOne(x => x.WidowhoodInformation, builder =>
-			{
-				builder.Property(x => x.WidowedAtAge)
-					.HasConversion(x => x.Value, x => new(x));
-
-				builder.HasOne(x => x.WidowedFrom)
-					.WithMany()
-					.HasForeignKey(x => x.WidowedFromId);
-			});
-		});
-	}
-}
-
-internal class DeceasedConfiguration : MaritalStatusConfiguration<Deceased, DeceasedPayload>
-{
-	public override void Configure(EntityTypeBuilder<Deceased> builder)
-	{
-		builder.OwnsOne(x => x.Payload, builder =>
-		{
-			builder.OwnsOne(x => x.DeathInformation, builder =>
-			{
-				builder.Property(x => x.DeathCertificateId)
-					.HasConversion(x => x.Value, x => new(x));
-
-				builder.Property(x => x.DeceasedAtAge)
-					.HasConversion(x => x.Value, x => new(x));
-			});
-		});
-	}
-}
+internal class SingleConfiguration : MaritalStatusConfiguration<Single, SinglePayload>;
+internal class MarriedConfiguration : MaritalStatusConfiguration<Married, MarriedPayload>;
+internal class DivorcedConfiguration : MaritalStatusConfiguration<Divorced, DivorcedPayload>;
+internal class WidowedConfiguration : MaritalStatusConfiguration<Widowed, WidowedPayload>;
+internal class DeceasedConfiguration : MaritalStatusConfiguration<Deceased, DeceasedPayload>;

@@ -19,15 +19,11 @@ internal interface ICanMarry : IMaritalTransition<MarryCommand, Married>
 			? Result.Error(new InvalidOperationException("Not of marriageable age"))
 			: Result.Ok(new Married
 			{
-				Payload = new()
-				{
-					MarriageInformation = new()
-					{
-						MarriageCertificate = command.MarriageCertificate,
-						MarriedAtAge = stateMachine.Person.Age,
-						MarriedWith = command.MarryWith,
-					},
-				},
+				Payload = new(MarriageInformation: new(
+					MarriageCertificateGuid: command.MarriageCertificate.Guid,
+					MarriedAtAge: stateMachine.Person.Age,
+					MarriedWithId: command.MarryWith.Id
+				)),
 			});
 	}
 }
@@ -39,16 +35,14 @@ internal interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
 	{
 		return Result.Ok(new Divorced
 		{
-			Payload = new()
-			{
-				MarriageInformation = MarriageInformation,
-				DivorceInformation = new()
-				{
-					DivorceCertificate = command.DivorceCertificate,
-					DivorcedAtAge = stateMachine.Person.Age,
-					DivorcedFrom = MarriageInformation.MarriedWith,
-				},
-			},
+			Payload = new(
+				MarriageInformation,
+				DivorceInformation: new(
+					DivorceCertificateGuid: command.DivorceCertificate.Guid,
+					DivorcedAtAge: stateMachine.Person.Age,
+					DivorcedFromId: MarriageInformation.MarriedWithId
+				)
+			),
 		});
 	}
 }
@@ -60,15 +54,13 @@ internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, 
 	{
 		return Result.Ok(new Widowed
 		{
-			Payload = new()
-			{
-				MarriageInformation = MarriageInformation,
-				WidowhoodInformation = new()
-				{
-					WidowedAtAge = stateMachine.Person.Age,
-					WidowedFrom = MarriageInformation.MarriedWith,
-				},
-			},
+			Payload = new(
+				MarriageInformation,
+				WidowhoodInformation: new(
+					WidowedAtAge: stateMachine.Person.Age,
+					WidowedFromId: MarriageInformation.MarriedWithId
+				)
+			),
 		});
 	}
 }
@@ -79,14 +71,10 @@ internal interface ICanDecease : IMaritalTransition<DeceaseCommand, Deceased>
 	{
 		return Result.Ok(new Deceased
 		{
-			Payload = new()
-			{
-				DeathInformation = new()
-				{
-					DeathCertificate = command.DeathCertificate,
-					DeceasedAtAge = stateMachine.Person.Age,
-				},
-			},
+			Payload = new(new(
+				DeathCertificateGuid: command.DeathCertificate.Guid,
+				DeceasedAtAge: stateMachine.Person.Age
+			)),
 		});
 	}
 }
