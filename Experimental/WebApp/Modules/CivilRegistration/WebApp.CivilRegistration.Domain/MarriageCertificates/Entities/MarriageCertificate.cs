@@ -8,7 +8,6 @@ namespace WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
 
 internal class MarriageCertificate : Entity<MarriageCertificateId>
 {
-	public required MarriageCertificateGuid Guid { get; set; }
 	public PersonId HusbandId { get; set; }
 	public required Person Husband { get; set; }
 	public PersonId WifeId { get; set; }
@@ -35,7 +34,7 @@ internal class MarriageCertificate : Entity<MarriageCertificateId>
 	{
 		var marriageCertificate = new MarriageCertificate
 		{
-			Guid = MarriageCertificateGuid.CreateVersion7(),
+			Id = MarriageCertificateId.CreateVersion7(),
 			Husband = command.Husband,
 			Wife = command.Wife,
 		};

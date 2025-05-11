@@ -35,10 +35,14 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 
 	public static Result<MaritalStateMachine, InvalidOperationException> Create()
 	{
-		var stateMachine = new MaritalStateMachine();
+		var stateMachine = new MaritalStateMachine
+		{
+			Id = MaritalStateMachineId.CreateVersion7(),
+		};
 
 		stateMachine.AddState(new Single
 		{
+			Id = MaritalStatusId.CreateVersion7(),
 			Payload = new(),
 		});
 

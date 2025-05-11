@@ -12,8 +12,7 @@ internal class PersonConfiguration : IEntityTypeConfiguration<Person>
 		builder.HasKey(x => x.Id);
 
 		builder.Property(x => x.Id)
-			.HasConversion(x => x.Value, x => new(x))
-			.ValueGeneratedOnAdd();
+			.HasConversion(x => x.Value, x => new(x));
 
 		builder.Property(x => x.Gender)
 			.HasMaxLength(255)

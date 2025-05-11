@@ -9,7 +9,6 @@ namespace WebApp.CivilRegistration.Domain.DivorceCertificates.Entities;
 
 internal class DivorceCertificate : Entity<DivorceCertificateId>
 {
-	public DivorceCertificateGuid Guid { get; set; }
 	public MarriageCertificateId MarriageCertificateId { get; set; }
 	public required MarriageCertificate MarriageCertificate { get; set; }
 
@@ -26,6 +25,7 @@ internal class DivorceCertificate : Entity<DivorceCertificateId>
 	{
 		var divorceCertificate = new DivorceCertificate
 		{
+			Id = DivorceCertificateId.CreateVersion7(),
 			MarriageCertificate = command.MarriageCertificate,
 		};
 

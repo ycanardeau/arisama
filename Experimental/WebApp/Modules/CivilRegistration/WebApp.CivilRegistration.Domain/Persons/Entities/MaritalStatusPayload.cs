@@ -6,13 +6,13 @@ using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
 internal sealed record MarriageInformation(
-	MarriageCertificateGuid MarriageCertificateGuid,
+	MarriageCertificateId MarriageCertificateId,
 	Age MarriedAtAge,
 	PersonId MarriedWithId
 );
 
 internal sealed record DivorceInformation(
-	DivorceCertificateGuid DivorceCertificateGuid,
+	DivorceCertificateId DivorceCertificateId,
 	Age DivorcedAtAge,
 	PersonId DivorcedFromId
 );
@@ -23,7 +23,7 @@ internal sealed record WidowhoodInformation(
 );
 
 internal sealed record DeathInformation(
-	DeathCertificateGuid DeathCertificateGuid,
+	DeathCertificateId DeathCertificateId,
 	Age DeceasedAtAge
 );
 

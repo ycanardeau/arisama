@@ -11,8 +11,7 @@ internal class MaritalStateMachineConfiguration : IEntityTypeConfiguration<Marit
 		builder.HasKey(x => x.Id);
 
 		builder.Property(x => x.Id)
-			.HasConversion(x => x.Value, x => new(x))
-			.ValueGeneratedOnAdd();
+			.HasConversion(x => x.Value, x => new(x));
 
 		builder.HasOne(x => x.Person)
 			.WithOne(x => x.MaritalStateMachine)

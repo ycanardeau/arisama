@@ -38,6 +38,7 @@ internal class Person : Entity<PersonId>
 			.Bind(CreateMaritalStateMachine)
 			.Map(x => new Person
 			{
+				Id = PersonId.CreateVersion7(),
 				Age = age,
 				Gender = gender,
 				MaritalStateMachine = x.MaritalStateMachine,

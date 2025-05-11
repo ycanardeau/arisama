@@ -1,4 +1,5 @@
 using DiscriminatedOnions;
+using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
@@ -19,8 +20,9 @@ internal interface ICanMarry : IMaritalTransition<MarryCommand, Married>
 			? Result.Error(new InvalidOperationException("Not of marriageable age"))
 			: Result.Ok(new Married
 			{
+				Id = MaritalStatusId.CreateVersion7(),
 				Payload = new(MarriageInformation: new(
-					MarriageCertificateGuid: command.MarriageCertificate.Guid,
+					MarriageCertificateId: command.MarriageCertificate.Id,
 					MarriedAtAge: stateMachine.Person.Age,
 					MarriedWithId: command.MarryWith.Id
 				)),
@@ -35,10 +37,11 @@ internal interface ICanDivorce : IMaritalTransition<DivorceCommand, Divorced>
 	{
 		return Result.Ok(new Divorced
 		{
+			Id = MaritalStatusId.CreateVersion7(),
 			Payload = new(
 				MarriageInformation,
 				DivorceInformation: new(
-					DivorceCertificateGuid: command.DivorceCertificate.Guid,
+					DivorceCertificateId: command.DivorceCertificate.Id,
 					DivorcedAtAge: stateMachine.Person.Age,
 					DivorcedFromId: MarriageInformation.MarriedWithId
 				)
@@ -54,6 +57,7 @@ internal interface ICanBecomeWidowed : IMaritalTransition<BecomeWidowedCommand, 
 	{
 		return Result.Ok(new Widowed
 		{
+			Id = MaritalStatusId.CreateVersion7(),
 			Payload = new(
 				MarriageInformation,
 				WidowhoodInformation: new(
@@ -71,8 +75,9 @@ internal interface ICanDecease : IMaritalTransition<DeceaseCommand, Deceased>
 	{
 		return Result.Ok(new Deceased
 		{
+			Id = MaritalStatusId.CreateVersion7(),
 			Payload = new(new(
-				DeathCertificateGuid: command.DeathCertificate.Guid,
+				DeathCertificateId: command.DeathCertificate.Id,
 				DeceasedAtAge: stateMachine.Person.Age
 			)),
 		});

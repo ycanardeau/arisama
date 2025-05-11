@@ -1,3 +1,3 @@
 namespace WebApp.CivilRegistration.Contracts.Persons.Dtos;
 
-public sealed record CreatePersonResponseDto(int Id);
+public sealed record CreatePersonResponseDto(Guid Id);
