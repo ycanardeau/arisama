@@ -1,4 +1,3 @@
-using DiscriminatedOnions;
 using FastEndpoints;
 using MediatR;
 using Microsoft.AspNetCore.Http;

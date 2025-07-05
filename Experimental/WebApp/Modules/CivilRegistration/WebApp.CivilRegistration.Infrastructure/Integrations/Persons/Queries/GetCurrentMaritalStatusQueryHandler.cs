@@ -1,6 +1,6 @@
-using DiscriminatedOnions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Nut.Results;
 using WebApp.CivilRegistration.Application.Interfaces.Mappers;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Contracts.Persons.Queries;
@@ -12,9 +12,9 @@ namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Queries;
 internal class GetCurrentMaritalStatusEndpoint(
 	ApplicationDbContext dbContext,
 	IMaritalStatusMapper maritalStatusMapper
-) : IRequestHandler<GetCurrentMaritalStatusQuery, Result<GetCurrentMaritalStatusResponseDto, InvalidOperationException>>
+) : IRequestHandler<GetCurrentMaritalStatusQuery, Result<GetCurrentMaritalStatusResponseDto>>
 {
-	public async Task<Result<GetCurrentMaritalStatusResponseDto, InvalidOperationException>> Handle(GetCurrentMaritalStatusQuery request, CancellationToken cancellationToken)
+	public async Task<Result<GetCurrentMaritalStatusResponseDto>> Handle(GetCurrentMaritalStatusQuery request, CancellationToken cancellationToken)
 	{
 		var person = await dbContext.Persons
 			.Include(x => x.MaritalStateMachine.States)
@@ -22,11 +22,11 @@ internal class GetCurrentMaritalStatusEndpoint(
 
 		if (person is null)
 		{
-			return Result.Error(new InvalidOperationException($"Person {request.Id} not found"));
+			return Result.Error<GetCurrentMaritalStatusResponseDto>(new InvalidOperationException($"Person {request.Id} not found"));
 		}
 
-		return Result.Ok(new GetCurrentMaritalStatusResponseDto(
+		return new GetCurrentMaritalStatusResponseDto(
 			MaritalStatus: maritalStatusMapper.Map(person.MaritalStateMachine.CurrentState)
-		));
+		);
 	}
 }

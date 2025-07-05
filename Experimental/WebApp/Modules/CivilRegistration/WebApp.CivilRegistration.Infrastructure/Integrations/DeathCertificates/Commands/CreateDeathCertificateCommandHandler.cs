@@ -1,6 +1,6 @@
-using DiscriminatedOnions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Nut.Results;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Commands;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Dtos;
 using WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
@@ -10,9 +10,9 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.DeathCertificates.Commands;
 
-internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateDeathCertificateCommand, Result<CreateDeathCertificateResponseDto, InvalidOperationException>>
+internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateDeathCertificateCommand, Result<CreateDeathCertificateResponseDto>>
 {
-	public async Task<Result<CreateDeathCertificateResponseDto, InvalidOperationException>> Handle(CreateDeathCertificateCommand request, CancellationToken cancellationToken)
+	public async Task<Result<CreateDeathCertificateResponseDto>> Handle(CreateDeathCertificateCommand request, CancellationToken cancellationToken)
 	{
 		var deceased = await dbContext.Persons
 			.Include(x => x.MaritalStateMachine.States)
@@ -20,7 +20,7 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 
 		if (deceased is null)
 		{
-			return Result.Error(new InvalidOperationException($"Person {request.DeceasedId} not found"));
+			return Result.Error<CreateDeathCertificateResponseDto>(new InvalidOperationException($"Person {request.DeceasedId} not found"));
 		}
 
 		var widowed = deceased.MaritalStateMachine.CurrentState is not Married state
@@ -30,13 +30,8 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 				.SingleAsync(x => x.Id == state.Payload.MarriageInformation.MarriedWithId, cancellationToken);
 
 		return await DeathCertificate.Create(new CreateCommand(Deceased: deceased, Widowed: widowed))
-			.MapAsync(async x =>
-			{
-				dbContext.DeathCertificates.Add(x);
-
-				await dbContext.SaveChangesAsync(cancellationToken);
-
-				return new CreateDeathCertificateResponseDto(Id: x.Id.Value);
-			});
+			.Tap(x => dbContext.DeathCertificates.Add(x))
+			.Tap(x => dbContext.SaveChangesAsync(cancellationToken))
+			.Map(x => new CreateDeathCertificateResponseDto(Id: x.Id.Value));
 	}
 }

@@ -1,4 +1,4 @@
-using DiscriminatedOnions;
+using Nut.Results;
 using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
@@ -14,14 +14,14 @@ internal class DivorceCertificate : Entity<DivorceCertificateId>
 
 	private DivorceCertificate() { }
 
-	private Result<DivorceCertificate, InvalidOperationException> Divorce()
+	private Result<DivorceCertificate> Divorce()
 	{
 		return MarriageCertificate.Husband.Divorce(new DivorceCommand(this))
 			.Map(x => MarriageCertificate.Wife.Divorce(new DivorceCommand(this)))
 			.Map(x => this);
 	}
 
-	public static Result<DivorceCertificate, InvalidOperationException> Create(CreateCommand command)
+	public static Result<DivorceCertificate> Create(CreateCommand command)
 	{
 		var divorceCertificate = new DivorceCertificate
 		{

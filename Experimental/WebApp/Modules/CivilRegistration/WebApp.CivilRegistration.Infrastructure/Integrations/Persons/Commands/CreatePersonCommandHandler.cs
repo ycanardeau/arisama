@@ -1,5 +1,5 @@
-using DiscriminatedOnions;
 using MediatR;
+using Nut.Results;
 using WebApp.CivilRegistration.Contracts.Persons.Commands;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Contracts.Persons.Enums;
@@ -9,9 +9,9 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Commands;
 
-internal class CreatePersonCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreatePersonCommand, Result<CreatePersonResponseDto, InvalidOperationException>>
+internal class CreatePersonCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreatePersonCommand, Result<CreatePersonResponseDto>>
 {
-	public Task<Result<CreatePersonResponseDto, InvalidOperationException>> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
+	public Task<Result<CreatePersonResponseDto>> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
 	{
 		return Person.Create(
 			age: new Age(request.Age),
@@ -20,13 +20,8 @@ internal class CreatePersonCommandHandler(ApplicationDbContext dbContext) : IReq
 				onFemale: () => new Female()
 			)
 		)
-			.MapAsync(async x =>
-			{
-				dbContext.Persons.Add(x);
-
-				await dbContext.SaveChangesAsync(cancellationToken);
-
-				return new CreatePersonResponseDto(Id: x.Id.Value);
-			});
+			.Tap(x => dbContext.Persons.Add(x))
+			.Tap(x => dbContext.SaveChangesAsync(cancellationToken))
+			.Map(x => new CreatePersonResponseDto(Id: x.Id.Value));
 	}
 }

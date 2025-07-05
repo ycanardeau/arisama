@@ -1,4 +1,4 @@
-using DiscriminatedOnions;
+using Nut.Results;
 using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
@@ -15,14 +15,14 @@ internal class DeathCertificate : Entity<DeathCertificateId>
 
 	private DeathCertificate() { }
 
-	private Result<DeathCertificate, InvalidOperationException> Decease()
+	private Result<DeathCertificate> Decease()
 	{
 		return Deceased.Decease(new DeceaseCommand(this))
 			.Map(x => Widowed?.BecomeWidowed(new BecomeWidowedCommand()))
 			.Map(x => this);
 	}
 
-	public static Result<DeathCertificate, InvalidOperationException> Create(CreateCommand command)
+	public static Result<DeathCertificate> Create(CreateCommand command)
 	{
 		var deathCertificate = new DeathCertificate
 		{

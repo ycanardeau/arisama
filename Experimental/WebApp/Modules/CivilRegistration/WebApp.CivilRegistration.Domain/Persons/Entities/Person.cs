@@ -1,4 +1,4 @@
-using DiscriminatedOnions;
+using Nut.Results;
 using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
@@ -23,7 +23,7 @@ internal class Person : Entity<PersonId>
 		public MaritalStateMachine MaritalStateMachine { get; init; } = default!;
 	}
 
-	private static Result<CreatePersonContext, InvalidOperationException> CreateMaritalStateMachine(CreatePersonContext context)
+	private static Result<CreatePersonContext> CreateMaritalStateMachine(CreatePersonContext context)
 	{
 		return MaritalStateMachine.Create()
 			.Map(x => context with
@@ -32,10 +32,10 @@ internal class Person : Entity<PersonId>
 			});
 	}
 
-	public static Result<Person, InvalidOperationException> Create(Age age, Gender gender)
+	public static Result<Person> Create(Age age, Gender gender)
 	{
-		return Result.Ok<CreatePersonContext, InvalidOperationException>(new CreatePersonContext())
-			.Bind(CreateMaritalStateMachine)
+		return Result.Ok(new CreatePersonContext())
+			.FlatMap(CreateMaritalStateMachine)
 			.Map(x => new Person
 			{
 				Id = PersonId.CreateVersion7(),
@@ -45,25 +45,25 @@ internal class Person : Entity<PersonId>
 			});
 	}
 
-	public Result<Person, InvalidOperationException> Marry(MarryCommand command)
+	public Result<Person> Marry(MarryCommand command)
 	{
 		return MaritalStateMachine.Marry(command)
 			.Map(x => this);
 	}
 
-	public Result<Person, InvalidOperationException> Divorce(DivorceCommand command)
+	public Result<Person> Divorce(DivorceCommand command)
 	{
 		return MaritalStateMachine.Divorce(command)
 			.Map(x => this);
 	}
 
-	public Result<Person, InvalidOperationException> BecomeWidowed(BecomeWidowedCommand command)
+	public Result<Person> BecomeWidowed(BecomeWidowedCommand command)
 	{
 		return MaritalStateMachine.BecomeWidowed(command)
 			.Map(x => this);
 	}
 
-	public Result<Person, InvalidOperationException> Decease(DeceaseCommand command)
+	public Result<Person> Decease(DeceaseCommand command)
 	{
 		return MaritalStateMachine.Decease(command)
 			.Map(x => this);

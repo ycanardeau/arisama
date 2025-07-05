@@ -1,4 +1,4 @@
-using DiscriminatedOnions;
+using Nut.Results;
 using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.Persons.Events;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
@@ -33,7 +33,7 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 		return nextState;
 	}
 
-	public static Result<MaritalStateMachine, InvalidOperationException> Create()
+	public static Result<MaritalStateMachine> Create()
 	{
 		var stateMachine = new MaritalStateMachine
 		{
@@ -46,38 +46,38 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 			Payload = new(),
 		});
 
-		return Result.Ok(stateMachine);
+		return stateMachine;
 	}
 
 	public MaritalStatus CurrentState => States.MaxBy(x => x.Version) ?? throw new InvalidOperationException("Sequence contains no elements");
 
-	private Result<TNextState, InvalidOperationException> ExecuteIf<TTransition, TCommand, TNextState>(TCommand command)
+	private Result<TNextState> ExecuteIf<TTransition, TCommand, TNextState>(TCommand command)
 		where TCommand : MaritalCommand
 		where TNextState : MaritalStatus
 		where TTransition : IMaritalTransition<TCommand, TNextState>
 	{
 		return CurrentState is not TTransition transition
-			? Result.Error(new InvalidOperationException($"{nameof(CurrentState)} is not {typeof(TTransition).Name}"))
+			? Result.Error<TNextState>(new InvalidOperationException($"{nameof(CurrentState)} is not {typeof(TTransition).Name}"))
 			: transition.Execute(this, command)
 				.Map(AddState);
 	}
 
-	public Result<Married, InvalidOperationException> Marry(MarryCommand command)
+	public Result<Married> Marry(MarryCommand command)
 	{
 		return ExecuteIf<ICanMarry, MarryCommand, Married>(command);
 	}
 
-	public Result<Divorced, InvalidOperationException> Divorce(DivorceCommand command)
+	public Result<Divorced> Divorce(DivorceCommand command)
 	{
 		return ExecuteIf<ICanDivorce, DivorceCommand, Divorced>(command);
 	}
 
-	public Result<Widowed, InvalidOperationException> BecomeWidowed(BecomeWidowedCommand command)
+	public Result<Widowed> BecomeWidowed(BecomeWidowedCommand command)
 	{
 		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand, Widowed>(command);
 	}
 
-	public Result<Deceased, InvalidOperationException> Decease(DeceaseCommand command)
+	public Result<Deceased> Decease(DeceaseCommand command)
 	{
 		return ExecuteIf<ICanDecease, DeceaseCommand, Deceased>(command);
 	}
