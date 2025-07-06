@@ -44,6 +44,7 @@ internal static class ServiceExtensions
 			siloBuilder.UseLocalhostClustering();
 			siloBuilder.AddMemoryGrainStorage("persons");
 			siloBuilder.AddMemoryGrainStorage("maritalStateMachines");
+			siloBuilder.AddMemoryGrainStorage("marriageCertificates");
 		});
 
 		return builder;

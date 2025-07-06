@@ -1,3 +1,4 @@
+using Nut.Results;
 using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains;
@@ -7,38 +8,36 @@ internal class PersonGrain(
 	IPersistentState<PersonState> state
 ) : Grain, IPersonGrain
 {
-	public Task Initialize()
-	{
-		var maritalStateMachineGrain = GrainFactory.GetGrain<IMaritalStateMachineGrain>(this.GetPrimaryKeyString());
+	private IMaritalStateMachineGrain _maritalStateMachineGrain = null!;
 
-		return maritalStateMachineGrain.Initialize();
+	public override Task OnActivateAsync(CancellationToken cancellationToken)
+	{
+		_maritalStateMachineGrain = GrainFactory.GetGrain<IMaritalStateMachineGrain>(this.GetPrimaryKey());
+		return base.OnActivateAsync(cancellationToken);
 	}
 
-	public Task Marry()
+	public Task<Result> Initialize()
 	{
-		var maritalStateMachineGrain = GrainFactory.GetGrain<IMaritalStateMachineGrain>(this.GetPrimaryKeyString());
-
-		return maritalStateMachineGrain.Marry();
+		return _maritalStateMachineGrain.Initialize();
 	}
 
-	public Task Divorce()
+	public Task<Result> Marry(Guid marryWith)
 	{
-		var maritalStateMachineGrain = GrainFactory.GetGrain<IMaritalStateMachineGrain>(this.GetPrimaryKeyString());
-
-		return maritalStateMachineGrain.Divorce();
+		return _maritalStateMachineGrain.Marry(marryWith);
 	}
 
-	public Task BecomeWidowed()
+	public Task<Result> Divorce()
 	{
-		var maritalStateMachineGrain = GrainFactory.GetGrain<IMaritalStateMachineGrain>(this.GetPrimaryKeyString());
-
-		return maritalStateMachineGrain.BecomeWidowed();
+		return _maritalStateMachineGrain.Divorce();
 	}
 
-	public Task Decease()
+	public Task<Result> BecomeWidowed()
 	{
-		var maritalStateMachineGrain = GrainFactory.GetGrain<IMaritalStateMachineGrain>(this.GetPrimaryKeyString());
+		return _maritalStateMachineGrain.BecomeWidowed();
+	}
 
-		return maritalStateMachineGrain.Decease();
+	public Task<Result> Decease()
+	{
+		return _maritalStateMachineGrain.Decease();
 	}
 }

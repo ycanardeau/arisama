@@ -1,3 +1,4 @@
+using Nut.Results;
 using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains;
@@ -7,78 +8,86 @@ internal class MaritalStateMachineGrain(
 	IPersistentState<MaritalStateMachineState> state
 ) : Grain, IMaritalStateMachineGrain
 {
-	public Task Initialize()
+	private MaritalStatus? CurrentState => state.State.States.MaxBy(x => x.Version);
+
+	private void AddState(MaritalStatus maritalStatus)
 	{
-		if (state.State.States.Count != 0)
+		state.State.States.Add(maritalStatus);
+	}
+
+	public Task<Result> Initialize()
+	{
+		if (CurrentState is not null)
 		{
-			throw new InvalidOperationException();
+			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		state.State.States.Add(new Single
+		AddState(new Single
 		{
 			Version = 1,
 		});
 
-		return Task.CompletedTask;
+		return Result.Ok().AsTask();
 	}
 
-	public Task Marry()
+	public Task<Result> Marry(Guid marryWith)
 	{
-		if (state.State.States.MaxBy(x => x.Version) is not ICanMarry currentState)
+		if (CurrentState is not ICanMarry currentState)
 		{
-			throw new InvalidOperationException();
+			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		state.State.States.Add(new Married
+		AddState(new Married
+		{
+			Version = currentState.Version + 1,
+			MarryWith = marryWith,
+		});
+
+		return Result.Ok().AsTask();
+	}
+
+	public Task<Result> Divorce()
+	{
+		if (CurrentState is not ICanDivorce currentState)
+		{
+			return Result.Error(new InvalidOperationException()).AsTask();
+		}
+
+		AddState(new Divorced
 		{
 			Version = currentState.Version + 1,
 		});
 
-		return Task.CompletedTask;
+		return Result.Ok().AsTask();
 	}
 
-	public Task Divorce()
+	public Task<Result> BecomeWidowed()
 	{
-		if (state.State.States.MaxBy(x => x.Version) is not ICanDivorce currentState)
+		if (CurrentState is not ICanBecomeWidowed currentState)
 		{
-			throw new InvalidOperationException();
+			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		state.State.States.Add(new Divorced
+		AddState(new Widowed
 		{
 			Version = currentState.Version + 1,
 		});
 
-		return Task.CompletedTask;
+		return Result.Ok().AsTask();
 	}
 
-	public Task BecomeWidowed()
+	public Task<Result> Decease()
 	{
-		if (state.State.States.MaxBy(x => x.Version) is not ICanBecomeWidowed currentState)
+		if (CurrentState is not ICanDecease currentState)
 		{
-			throw new InvalidOperationException();
+			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		state.State.States.Add(new Widowed
+		AddState(new Deceased
 		{
 			Version = currentState.Version + 1,
 		});
 
-		return Task.CompletedTask;
-	}
-
-	public Task Decease()
-	{
-		if (state.State.States.MaxBy(x => x.Version) is not ICanDecease currentState)
-		{
-			throw new InvalidOperationException();
-		}
-
-		state.State.States.Add(new Deceased
-		{
-			Version = currentState.Version + 1,
-		});
-
-		return Task.CompletedTask;
+		return Result.Ok().AsTask();
 	}
 }

@@ -1,20 +1,22 @@
+using Nut.Results;
+
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 
 [Alias("WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions.IMaritalStateMachineGrain")]
-internal interface IMaritalStateMachineGrain : IGrainWithStringKey
+internal interface IMaritalStateMachineGrain : IGrainWithGuidKey
 {
 	[Alias("Initialize")]
-	Task Initialize();
+	Task<Result> Initialize();
 
 	[Alias("Marray")]
-	Task Marry();
+	Task<Result> Marry(Guid marryWith);
 
 	[Alias("Divorce")]
-	Task Divorce();
+	Task<Result> Divorce();
 
 	[Alias("BecomeWidowed")]
-	Task BecomeWidowed();
+	Task<Result> BecomeWidowed();
 
 	[Alias("Decease")]
-	Task Decease();
+	Task<Result> Decease();
 }

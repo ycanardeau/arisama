@@ -32,7 +32,11 @@ internal sealed record Single : MaritalStatus
 internal sealed record Married : MaritalStatus
 	, ICanDecease
 	, ICanDivorce
-	, ICanBecomeWidowed;
+	, ICanBecomeWidowed
+{
+	[Id(0)]
+	public required Guid MarryWith { get; init; }
+}
 
 [GenerateSerializer]
 [Alias("WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Divorced")]

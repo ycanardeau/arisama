@@ -7,7 +7,7 @@ internal static class ServiceExtensions
 {
 	public static IServiceCollection AddEndpoints(this IServiceCollection services)
 	{
-		// TODO: services.AddFastEndpoints();
+		services.AddFastEndpoints();
 		return services;
 	}
 }

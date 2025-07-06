@@ -8,12 +8,11 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Integrations.Persons.C
 
 internal class CreatePersonCommandHandler(IGrainFactory grains) : IRequestHandler<CreatePersonCommand, Result<CreatePersonResponseDto>>
 {
-	public async Task<Result<CreatePersonResponseDto>> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
+	public Task<Result<CreatePersonResponseDto>> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
 	{
-		var personGrain = grains.GetGrain<IPersonGrain>(primaryKey: request.Id);
+		var personGrain = grains.GetGrain<IPersonGrain>(Guid.CreateVersion7());
 
-		await personGrain.Initialize();
-
-		return Result.Ok(new CreatePersonResponseDto(Id: personGrain.GetPrimaryKeyString()));
+		return personGrain.Initialize()
+			.FlatMap(() => Result.Ok(new CreatePersonResponseDto(Id: personGrain.GetPrimaryKey())));
 	}
 }
