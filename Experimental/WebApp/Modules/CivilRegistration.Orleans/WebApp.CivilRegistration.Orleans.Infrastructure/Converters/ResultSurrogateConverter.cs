@@ -24,3 +24,28 @@ internal sealed class ResultSurrogateConverter : IConverter<Result, ResultSurrog
 		};
 	}
 }
+
+[RegisterConverter]
+internal sealed class ResultSurrogateConverter<T> : IConverter<Result<T>, ResultSurrogate<T>>
+{
+	public Result<T> ConvertFromSurrogate(in ResultSurrogate<T> surrogate)
+	{
+		return surrogate.IsOk
+			? Result.Ok(surrogate.Value)
+			: Result.Error<T>(surrogate.Exception);
+	}
+
+	public ResultSurrogate<T> ConvertToSurrogate(in Result<T> value)
+	{
+		return new ResultSurrogate<T>
+		{
+			IsOk = value.IsOk,
+			Exception = value.IsOk
+				? null!
+				: value.GetError(),
+			Value = value.IsOk
+				? value.Get()
+				: default!,
+		};
+	}
+}
