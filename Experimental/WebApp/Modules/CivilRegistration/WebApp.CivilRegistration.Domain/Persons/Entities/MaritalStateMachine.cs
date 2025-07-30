@@ -40,11 +40,7 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 			Id = MaritalStateMachineId.CreateVersion7(),
 		};
 
-		stateMachine.AddState(new Single
-		{
-			Id = MaritalStatusId.CreateVersion7(),
-			Payload = new(),
-		});
+		stateMachine.AddState(new ValueObjects.Single());
 
 		return stateMachine;
 	}

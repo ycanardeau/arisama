@@ -1,5 +1,6 @@
 using WebApp.CivilRegistration.Domain.Common.Events;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
+using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.Persons.Events;
 

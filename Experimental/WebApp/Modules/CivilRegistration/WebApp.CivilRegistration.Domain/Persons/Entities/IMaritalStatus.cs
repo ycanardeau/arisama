@@ -1,3 +1,5 @@
+using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
+
 namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
 internal interface IMaritalStatus;

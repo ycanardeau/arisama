@@ -14,7 +14,7 @@ internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbCo
 	public async Task<Result<CreateMarriageCertificateResponseDto>> Handle(CreateMarriageCertificateCommand request, CancellationToken cancellationToken)
 	{
 		var husband = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine.States)
+			.Include(x => x.MaritalStateMachine)
 			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.HusbandId), cancellationToken);
 
 		if (husband is null)
@@ -23,7 +23,7 @@ internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbCo
 		}
 
 		var wife = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine.States)
+			.Include(x => x.MaritalStateMachine)
 			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.WifeId), cancellationToken);
 
 		if (wife is null)

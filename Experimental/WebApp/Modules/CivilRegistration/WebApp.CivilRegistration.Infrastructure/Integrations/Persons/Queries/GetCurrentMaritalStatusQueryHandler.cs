@@ -9,7 +9,7 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Queries;
 
-internal class GetCurrentMaritalStatusEndpoint(
+internal class GetCurrentMaritalStatusQueryHandler(
 	ApplicationDbContext dbContext,
 	IMaritalStatusMapper maritalStatusMapper
 ) : IRequestHandler<GetCurrentMaritalStatusQuery, Result<GetCurrentMaritalStatusResponseDto>>
@@ -17,7 +17,7 @@ internal class GetCurrentMaritalStatusEndpoint(
 	public async Task<Result<GetCurrentMaritalStatusResponseDto>> Handle(GetCurrentMaritalStatusQuery request, CancellationToken cancellationToken)
 	{
 		var person = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine.States)
+			.Include(x => x.MaritalStateMachine)
 			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.Id), cancellationToken);
 
 		if (person is null)

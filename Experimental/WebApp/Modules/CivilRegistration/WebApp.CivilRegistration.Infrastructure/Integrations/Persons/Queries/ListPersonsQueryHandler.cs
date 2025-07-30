@@ -16,7 +16,7 @@ internal class ListPersonsQueryHandler(
 	public async Task<Result<ListPersonsResponseDto>> Handle(ListPersonsQuery request, CancellationToken cancellationToken)
 	{
 		var persons = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine.States)
+			.Include(x => x.MaritalStateMachine)
 			.ToListAsync(cancellationToken);
 
 		return new ListPersonsResponseDto(Persons: [.. persons.Select(personMapper.Map)]);

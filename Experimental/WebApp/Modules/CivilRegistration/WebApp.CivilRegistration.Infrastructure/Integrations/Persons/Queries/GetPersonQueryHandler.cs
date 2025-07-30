@@ -18,7 +18,7 @@ internal class GetPersonQueryHandler(
 	private async Task<Result<Person>> GetPerson(GetPersonQuery request, CancellationToken cancellationToken)
 	{
 		var person = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine.States)
+			.Include(x => x.MaritalStateMachine)
 			.AsNoTracking()
 			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.Id), cancellationToken);
 

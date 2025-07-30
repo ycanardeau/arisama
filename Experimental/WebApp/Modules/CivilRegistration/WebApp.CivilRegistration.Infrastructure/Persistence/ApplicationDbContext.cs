@@ -15,8 +15,6 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
 
 	public DbSet<MaritalStateMachine> MaritalStateMachines { get; set; }
 
-	public DbSet<MaritalStatus> MaritalStatuses { get; set; }
-
 	public DbSet<MarriageCertificate> MarriageCertificates { get; set; }
 
 	public DbSet<DivorceCertificate> DivorceCertificates { get; set; }

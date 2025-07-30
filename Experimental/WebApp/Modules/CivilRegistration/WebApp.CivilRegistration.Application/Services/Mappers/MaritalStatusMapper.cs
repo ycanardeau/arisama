@@ -1,7 +1,7 @@
 using WebApp.CivilRegistration.Application.Interfaces.Mappers;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
-using WebApp.CivilRegistration.Domain.Persons.Entities;
-using Single = WebApp.CivilRegistration.Domain.Persons.Entities.Single;
+using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
+using Single = WebApp.CivilRegistration.Domain.Persons.ValueObjects.Single;
 
 namespace WebApp.CivilRegistration.Application.Services.Mappers;
 
@@ -54,7 +54,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new MarriedDto
 		{
 			Version = value.Version.Value,
-			MarriageInformation = Map(value.Payload.MarriageInformation),
+			MarriageInformation = Map(value.MarriageInformation),
 		};
 	}
 
@@ -63,8 +63,8 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new DivorcedDto
 		{
 			Version = value.Version.Value,
-			MarriageInformation = Map(value.Payload.MarriageInformation),
-			DivorceInformation = Map(value.Payload.DivorceInformation),
+			MarriageInformation = Map(value.MarriageInformation),
+			DivorceInformation = Map(value.DivorceInformation),
 		};
 	}
 
@@ -73,8 +73,8 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new WidowedDto
 		{
 			Version = value.Version.Value,
-			MarriageInformation = Map(value.Payload.MarriageInformation),
-			WidowhoodInformation = Map(value.Payload.WidowhoodInformation),
+			MarriageInformation = Map(value.MarriageInformation),
+			WidowhoodInformation = Map(value.WidowhoodInformation),
 		};
 	}
 
@@ -83,7 +83,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		return new DeceasedDto
 		{
 			Version = value.Version.Value,
-			DeathInformation = Map(value.Payload.DeathInformation),
+			DeathInformation = Map(value.DeathInformation),
 		};
 	}
 
