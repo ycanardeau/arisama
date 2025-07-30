@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.ValueObjects;
@@ -28,24 +29,29 @@ internal sealed record DeathInformation(
 	Age DeceasedAtAge
 );
 
+[JsonDerivedType(typeof(SingleState), typeDiscriminator: "Single")]
+[JsonDerivedType(typeof(MarriedState), typeDiscriminator: "Married")]
+[JsonDerivedType(typeof(DivorcedState), typeDiscriminator: "Divorced")]
+[JsonDerivedType(typeof(WidowedState), typeDiscriminator: "Widowed")]
+[JsonDerivedType(typeof(DeceasedState), typeDiscriminator: "Deceased")]
 internal abstract record MaritalStatus : IMaritalStatus
 {
 	public MaritalStatusVersion Version { get; set; }
 }
 
-internal sealed record Single() : MaritalStatus
+internal sealed record SingleState() : MaritalStatus
 	, ICanDecease
 	, ICanMarry
 ;
 
-internal sealed record Married(MarriageInformation MarriageInformation) : MaritalStatus
+internal sealed record MarriedState(MarriageInformation MarriageInformation) : MaritalStatus
 	, IHasMarriageInformation
 	, ICanDecease
 	, ICanDivorce
 	, ICanBecomeWidowed
 ;
 
-internal sealed record Divorced(
+internal sealed record DivorcedState(
 	MarriageInformation MarriageInformation,
 	DivorceInformation DivorceInformation
 ) : MaritalStatus
@@ -55,7 +61,7 @@ internal sealed record Divorced(
 	, ICanMarry
 ;
 
-internal sealed record Widowed(
+internal sealed record WidowedState(
 	MarriageInformation MarriageInformation,
 	WidowhoodInformation WidowhoodInformation
 ) : MaritalStatus
@@ -65,7 +71,7 @@ internal sealed record Widowed(
 	, ICanMarry
 ;
 
-internal sealed record Deceased(DeathInformation DeathInformation) : MaritalStatus
+internal sealed record DeceasedState(DeathInformation DeathInformation) : MaritalStatus
 	, IHasDeathInformation
 ;
 
@@ -73,20 +79,20 @@ internal static class MaritalStatusExtensions
 {
 	public static U Match<U>(
 		this MaritalStatus state,
-		Func<Single, U> onSingle,
-		Func<Married, U> onMarried,
-		Func<Divorced, U> onDivorced,
-		Func<Widowed, U> onWidowed,
-		Func<Deceased, U> onDeceased
+		Func<SingleState, U> onSingle,
+		Func<MarriedState, U> onMarried,
+		Func<DivorcedState, U> onDivorced,
+		Func<WidowedState, U> onWidowed,
+		Func<DeceasedState, U> onDeceased
 	)
 	{
 		return state switch
 		{
-			Single x => onSingle(x),
-			Married x => onMarried(x),
-			Divorced x => onDivorced(x),
-			Widowed x => onWidowed(x),
-			Deceased x => onDeceased(x),
+			SingleState x => onSingle(x),
+			MarriedState x => onMarried(x),
+			DivorcedState x => onDivorced(x),
+			WidowedState x => onWidowed(x),
+			DeceasedState x => onDeceased(x),
 			_ => throw new UnreachableException(),
 		};
 	}

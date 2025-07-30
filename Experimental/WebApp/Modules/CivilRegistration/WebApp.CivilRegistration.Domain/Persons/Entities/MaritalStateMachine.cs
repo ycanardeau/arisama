@@ -40,7 +40,7 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 			Id = MaritalStateMachineId.CreateVersion7(),
 		};
 
-		stateMachine.AddState(new ValueObjects.Single());
+		stateMachine.AddState(new SingleState());
 
 		return stateMachine;
 	}
@@ -58,23 +58,23 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 				.Map(AddState);
 	}
 
-	public Result<Married> Marry(MarryCommand command)
+	public Result<MarriedState> Marry(MarryCommand command)
 	{
-		return ExecuteIf<ICanMarry, MarryCommand, Married>(command);
+		return ExecuteIf<ICanMarry, MarryCommand, MarriedState>(command);
 	}
 
-	public Result<Divorced> Divorce(DivorceCommand command)
+	public Result<DivorcedState> Divorce(DivorceCommand command)
 	{
-		return ExecuteIf<ICanDivorce, DivorceCommand, Divorced>(command);
+		return ExecuteIf<ICanDivorce, DivorceCommand, DivorcedState>(command);
 	}
 
-	public Result<Widowed> BecomeWidowed(BecomeWidowedCommand command)
+	public Result<WidowedState> BecomeWidowed(BecomeWidowedCommand command)
 	{
-		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand, Widowed>(command);
+		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand, WidowedState>(command);
 	}
 
-	public Result<Deceased> Decease(DeceaseCommand command)
+	public Result<DeceasedState> Decease(DeceaseCommand command)
 	{
-		return ExecuteIf<ICanDecease, DeceaseCommand, Deceased>(command);
+		return ExecuteIf<ICanDecease, DeceaseCommand, DeceasedState>(command);
 	}
 }

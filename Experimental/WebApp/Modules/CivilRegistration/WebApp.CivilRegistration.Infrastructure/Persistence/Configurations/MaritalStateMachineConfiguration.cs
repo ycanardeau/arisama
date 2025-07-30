@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
@@ -27,7 +28,12 @@ internal class MaritalStateMachineConfiguration : IEntityTypeConfiguration<Marit
 		builder.Property(x => x.States)
 			.HasConversion(
 				x => JsonSerializer.Serialize(x, s_jsonSerializerOptions),
-				x => JsonSerializer.Deserialize<MaritalStatus[]>(x, s_jsonSerializerOptions)!
+				x => JsonSerializer.Deserialize<List<MaritalStatus>>(x, s_jsonSerializerOptions)!,
+				new ValueComparer<ICollection<MaritalStatus>>(
+					(c1, c2) => c1!.SequenceEqual(c2!),
+					c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+					c => c.ToList()
+				)
 			);
 	}
 }
