@@ -10,9 +10,9 @@ static class Program
 	{
 		var loggerFactory = LoggerFactory.Create(builder => { });
 		var builder = new StateMachineBuilder<IMembershipTransition, MembershipCommand, MembershipState>(loggerFactory)
-			.ConfigureState<ICanSuspend, Suspend, Inactive>()
-			.ConfigureState<ICanTerminate, Terminate, Terminated>()
-			.ConfigureState<ICanReactivate, Reactivate, Active>();
+			.AddTransition<ICanSuspend, Suspend, Inactive>()
+			.AddTransition<ICanTerminate, Terminate, Terminated>()
+			.AddTransition<ICanReactivate, Reactivate, Active>();
 
 		Console.WriteLine("Creating member from JSON");
 		var aMember = builder.Build(JsonSerializer.Deserialize<IEnumerable<MembershipState>>(@"[{""$type"":""Active""}]") ?? throw new InvalidOperationException());

@@ -43,7 +43,7 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 		return this;
 	}
 
-	public StateMachineBuilder<TTransition, TCommand, TState> ConfigureState<TFrom, TOn, TTo>()
+	public StateMachineBuilder<TTransition, TCommand, TState> AddTransition<TFrom, TOn, TTo>()
 		where TFrom : TTransition
 		where TOn : TCommand, ICommand<TFrom, TTo>
 		where TTo : TState

@@ -18,14 +18,14 @@ static class Program
 		});
 
 		var alarm = new StateMachineBuilder<IAlarmTransition, AlarmCommand, AlarmState>(loggerFactory)
-			.ConfigureState<ICanStartup, Startup, Disarmed>()
-			.ConfigureState<ICanArm, Arm, PreArmed>()
-			.ConfigureState<ICanDisarm, Disarm, Disarmed>()
-			.ConfigureState<ICanTrigger, Trigger, PreTriggered>()
-			.ConfigureState<ICanAcknowledge, Acknowledge, Acknowledged>()
-			.ConfigureState<ICanPause, Pause, ArmPaused>()
-			.ConfigureState<ICanTimeOutArmed, TimeOutArmed, Armed>()
-			.ConfigureState<ICanTimeOutTriggered, TimeOutTriggered, Triggered>()
+			.AddTransition<ICanStartup, Startup, Disarmed>()
+			.AddTransition<ICanArm, Arm, PreArmed>()
+			.AddTransition<ICanDisarm, Disarm, Disarmed>()
+			.AddTransition<ICanTrigger, Trigger, PreTriggered>()
+			.AddTransition<ICanAcknowledge, Acknowledge, Acknowledged>()
+			.AddTransition<ICanPause, Pause, ArmPaused>()
+			.AddTransition<ICanTimeOutArmed, TimeOutArmed, Armed>()
+			.AddTransition<ICanTimeOutTriggered, TimeOutTriggered, Triggered>()
 			.Build([new Undefined()]);
 	}
 }

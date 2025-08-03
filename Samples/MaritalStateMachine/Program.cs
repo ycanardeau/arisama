@@ -18,10 +18,10 @@ static class Program
 		});
 
 		var maritalStateMachine = new StateMachineBuilder<IMaritalTransition, MaritalCommand, MaritalStatus>(loggerFactory)
-			.ConfigureState<ICanMarry, Marry, Married>()
-			.ConfigureState<ICanDivorce, Divorce, Divorced>()
-			.ConfigureState<ICanBecomeWidowed, BecomeWidowed, Widowed>()
-			.ConfigureState<ICanDecease, Decease, Deceased>()
+			.AddTransition<ICanMarry, Marry, Married>()
+			.AddTransition<ICanDivorce, Divorce, Divorced>()
+			.AddTransition<ICanBecomeWidowed, BecomeWidowed, Widowed>()
+			.AddTransition<ICanDecease, Decease, Deceased>()
 			.Build([new Single()]);
 
 		await maritalStateMachine.SendAsync(new Marry());
