@@ -2,21 +2,20 @@ using Aigamo.Arisama;
 
 namespace Alarm;
 
-interface IAlarmTransition : ITransition
-{
-	public interface ICanStartup : IAlarmTransition;
+internal interface IAlarmTransition : ITransition;
 
-	public interface ICanArm : IAlarmTransition;
+internal interface ICanStartup : IAlarmTransition;
 
-	public interface ICanDisarm : IAlarmTransition;
+internal interface ICanArm : IAlarmTransition;
 
-	public interface ICanTrigger : IAlarmTransition;
+internal interface ICanDisarm : IAlarmTransition;
 
-	public interface ICanAcknowledge : IAlarmTransition;
+internal interface ICanTrigger : IAlarmTransition;
 
-	public interface ICanPause : IAlarmTransition;
+internal interface ICanAcknowledge : IAlarmTransition;
 
-	public interface ICanTimeOutArmed : IAlarmTransition;
+internal interface ICanPause : IAlarmTransition;
 
-	public interface ICanTimeOutTriggered : IAlarmTransition;
-}
+internal interface ICanTimeOutArmed : IAlarmTransition;
+
+internal interface ICanTimeOutTriggered : IAlarmTransition;

@@ -2,22 +2,21 @@ using Aigamo.Arisama;
 
 namespace VendingMachine;
 
-interface IVendingMachineTransition : ITransition
+internal interface IVendingMachineTransition : ITransition;
+
+internal interface ICanInsertCoin : IVendingMachineTransition
 {
-	public interface ICanInsertCoin : IVendingMachineTransition
-	{
-		Coin TotalAmount { get; }
-	}
+	Coin TotalAmount { get; }
+}
 
-	public interface ICanChooseProduct : IVendingMachineTransition;
+internal interface ICanChooseProduct : IVendingMachineTransition;
 
-	public interface ICanReturnChange : IVendingMachineTransition
-	{
-		Coin TotalAmount { get; }
-	}
+internal interface ICanReturnChange : IVendingMachineTransition
+{
+	Coin TotalAmount { get; }
+}
 
-	public interface ICanDispenseProduct : IVendingMachineTransition
-	{
-		ProductId ProductId { get; }
-	}
+internal interface ICanDispenseProduct : IVendingMachineTransition
+{
+	ProductId ProductId { get; }
 }

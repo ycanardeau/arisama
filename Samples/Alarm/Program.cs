@@ -1,8 +1,5 @@
 using Aigamo.Arisama;
 using Microsoft.Extensions.Logging;
-using static Alarm.IAlarmCommand;
-using static Alarm.IAlarmState;
-using static Alarm.IAlarmTransition;
 
 namespace Alarm;
 
@@ -20,7 +17,7 @@ static class Program
 			});
 		});
 
-		var alarm = new StateMachineBuilder<IAlarmTransition, IAlarmCommand, IAlarmState>(loggerFactory)
+		var alarm = new StateMachineBuilder<IAlarmTransition, AlarmCommand, AlarmState>(loggerFactory)
 			.ConfigureState<ICanStartup, Startup, Disarmed>()
 			.ConfigureState<ICanArm, Arm, PreArmed>()
 			.ConfigureState<ICanDisarm, Disarm, Disarmed>()

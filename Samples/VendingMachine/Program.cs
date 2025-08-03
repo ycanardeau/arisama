@@ -1,8 +1,5 @@
 using Aigamo.Arisama;
 using Microsoft.Extensions.Logging;
-using static VendingMachine.IVendingMachineCommand;
-using static VendingMachine.IVendingMachineState;
-using static VendingMachine.IVendingMachineTransition;
 
 namespace VendingMachine;
 
@@ -20,7 +17,7 @@ static class Program
 			});
 		});
 
-		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, IVendingMachineCommand, IVendingMachineState>(loggerFactory)
+		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, VendingMachineCommand, VendingMachineState>(loggerFactory)
 			.ConfigureState<ICanInsertCoin, InsertCoin, CoinInserted>()
 			.ConfigureState<ICanChooseProduct, ChooseProduct, ProductChosen>()
 			.ConfigureState<ICanReturnChange, ReturnChange, ChangeReturned>()

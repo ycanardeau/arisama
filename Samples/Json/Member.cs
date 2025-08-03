@@ -1,43 +1,39 @@
 using System.Text.Json.Serialization;
 using Aigamo.Arisama;
-using static Json.IMembershipState;
-using static Json.IMembershipTransition;
 
 namespace Json;
 
-interface IMembershipTransition : ITransition
+internal interface IMembershipTransition : ITransition;
+
+internal interface ICanSuspend : IMembershipTransition;
+
+internal interface ICanTerminate : IMembershipTransition;
+
+internal interface ICanReactivate : IMembershipTransition;
+
+internal abstract record MembershipCommand : ICommand;
+
+internal sealed record Suspend : MembershipCommand, ICommand<ICanSuspend, Inactive>
 {
-	public interface ICanSuspend : IMembershipTransition;
-
-	public interface ICanTerminate : IMembershipTransition;
-
-	public interface ICanReactivate : IMembershipTransition;
+	Inactive ICommand<ICanSuspend, Inactive>.Execute(ICanSuspend from)
+	{
+		return new Inactive();
+	}
 }
 
-interface IMembershipCommand : ICommand
+internal sealed record Terminate : MembershipCommand, ICommand<ICanTerminate, Terminated>
 {
-	public sealed record Suspend : IMembershipCommand, ICommand<ICanSuspend, Inactive>
+	Terminated ICommand<ICanTerminate, Terminated>.Execute(ICanTerminate from)
 	{
-		Inactive ICommand<ICanSuspend, Inactive>.Execute(ICanSuspend from)
-		{
-			return new Inactive();
-		}
+		return new Terminated();
 	}
+}
 
-	public sealed record Terminate : IMembershipCommand, ICommand<ICanTerminate, Terminated>
+internal sealed record Reactivate : MembershipCommand, ICommand<ICanReactivate, Active>
+{
+	Active ICommand<ICanReactivate, Active>.Execute(ICanReactivate from)
 	{
-		Terminated ICommand<ICanTerminate, Terminated>.Execute(ICanTerminate from)
-		{
-			return new Terminated();
-		}
-	}
-
-	public sealed record Reactivate : IMembershipCommand, ICommand<ICanReactivate, Active>
-	{
-		Active ICommand<ICanReactivate, Active>.Execute(ICanReactivate from)
-		{
-			return new Active();
-		}
+		return new Active();
 	}
 }
 
@@ -45,16 +41,15 @@ interface IMembershipCommand : ICommand
 [JsonDerivedType(typeof(Inactive), typeDiscriminator: "Inactive")]
 [JsonDerivedType(typeof(Active), typeDiscriminator: "Active")]
 [JsonDerivedType(typeof(Terminated), typeDiscriminator: "Terminated")]
-interface IMembershipState : IState
-{
-	public sealed record Inactive : IMembershipState,
-		ICanReactivate,
-		ICanTerminate;
+internal abstract record MembershipState : IState;
 
-	public sealed record Active : IMembershipState,
-		ICanSuspend,
-		ICanTerminate;
+internal sealed record Inactive : MembershipState,
+	ICanReactivate,
+	ICanTerminate;
 
-	public sealed record Terminated : IMembershipState,
-		ICanReactivate;
-}
+internal sealed record Active : MembershipState,
+	ICanSuspend,
+	ICanTerminate;
+
+internal sealed record Terminated : MembershipState,
+	ICanReactivate;
