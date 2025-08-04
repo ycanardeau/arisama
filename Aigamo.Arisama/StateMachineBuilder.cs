@@ -34,7 +34,7 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 		return this;
 	}
 
-	private StateMachineBuilder<TTransition, TCommand, TState> ConfigureState<TFrom, TOn, TTo>(Func<TFrom, TOn, TTo> callback)
+	private StateMachineBuilder<TTransition, TCommand, TState> AddTransition<TFrom, TOn, TTo>(Func<TFrom, TOn, TTo> callback)
 		where TFrom : TTransition
 		where TOn : TCommand, ICommand<TFrom, TTo>
 		where TTo : TState
@@ -48,7 +48,7 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 		where TOn : TCommand, ICommand<TFrom, TTo>
 		where TTo : TState
 	{
-		return ConfigureState<TFrom, TOn, TTo>((from, command) => command.Execute(from));
+		return AddTransition<TFrom, TOn, TTo>((from, command) => command.Execute(from));
 	}
 
 	public StateMachine<TTransition, TCommand, TState> Build(IEnumerable<TState> initialStates, StateMachine<TTransition, TCommand, TState>.StateMachineOptions options)
