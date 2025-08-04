@@ -24,7 +24,7 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 	private TNextState AddState<TNextState>(TNextState nextState)
 		where TNextState : MaritalStatus
 	{
-		nextState.Version = IncrementVersion();
+		IncrementVersion();
 
 		States.Add(nextState);
 
@@ -45,7 +45,7 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 		return stateMachine;
 	}
 
-	public MaritalStatus CurrentState => States.MaxBy(x => x.Version) ?? throw new InvalidOperationException("Sequence contains no elements");
+	public MaritalStatus CurrentState => States.Last();
 
 	private Result<TNextState> ExecuteIf<TTransition, TCommand, TNextState>(TCommand command)
 		where TCommand : MaritalCommand

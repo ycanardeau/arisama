@@ -45,7 +45,6 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 	{
 		return new SingleDto
 		{
-			Version = value.Version.Value,
 		};
 	}
 
@@ -53,7 +52,6 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 	{
 		return new MarriedDto
 		{
-			Version = value.Version.Value,
 			MarriageInformation = Map(value.MarriageInformation),
 		};
 	}
@@ -62,7 +60,6 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 	{
 		return new DivorcedDto
 		{
-			Version = value.Version.Value,
 			MarriageInformation = Map(value.MarriageInformation),
 			DivorceInformation = Map(value.DivorceInformation),
 		};
@@ -72,7 +69,6 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 	{
 		return new WidowedDto
 		{
-			Version = value.Version.Value,
 			MarriageInformation = Map(value.MarriageInformation),
 			WidowhoodInformation = Map(value.WidowhoodInformation),
 		};
@@ -82,7 +78,6 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 	{
 		return new DeceasedDto
 		{
-			Version = value.Version.Value,
 			DeathInformation = Map(value.DeathInformation),
 		};
 	}

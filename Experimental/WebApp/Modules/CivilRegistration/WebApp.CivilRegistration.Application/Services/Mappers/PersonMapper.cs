@@ -21,7 +21,6 @@ internal class PersonMapper(IMaritalStatusMapper maritalStatusMapper) : IPersonM
 				Version: person.MaritalStateMachine.Version.Value,
 				States: [
 					.. person.MaritalStateMachine.States
-						.OrderBy(x => x.Version)
 						.Select(maritalStatusMapper.Map)
 				]
 			)

@@ -34,10 +34,7 @@ internal sealed record DeathInformation(
 [JsonDerivedType(typeof(DivorcedState), typeDiscriminator: "Divorced")]
 [JsonDerivedType(typeof(WidowedState), typeDiscriminator: "Widowed")]
 [JsonDerivedType(typeof(DeceasedState), typeDiscriminator: "Deceased")]
-internal abstract record MaritalStatus : IMaritalStatus
-{
-	public MaritalStatusVersion Version { get; set; }
-}
+internal abstract record MaritalStatus : IMaritalStatus;
 
 internal sealed record SingleState() : MaritalStatus
 	, ICanDecease

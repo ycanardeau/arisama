@@ -29,10 +29,7 @@ public sealed record DeathInformationDto(
 [JsonDerivedType(typeof(DivorcedDto), typeDiscriminator: "Divorced")]
 [JsonDerivedType(typeof(WidowedDto), typeDiscriminator: "Widowed")]
 [JsonDerivedType(typeof(DeceasedDto), typeDiscriminator: "Deceased")]
-public abstract record MaritalStatusDto
-{
-	public required int Version { get; init; }
-}
+public abstract record MaritalStatusDto;
 
 public sealed record SingleDto : MaritalStatusDto;
 
