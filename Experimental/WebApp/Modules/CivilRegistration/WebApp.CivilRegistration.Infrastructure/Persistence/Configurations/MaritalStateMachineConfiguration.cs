@@ -23,7 +23,8 @@ internal class MaritalStateMachineConfiguration : IEntityTypeConfiguration<Marit
 			.HasForeignKey<MaritalStateMachine>(x => x.PersonId);
 
 		builder.Property(x => x.Version)
-			.HasConversion(x => x.Value, x => new(x));
+			.HasConversion(x => x.Value, x => new(x))
+			.IsConcurrencyToken();
 
 		builder.Property(x => x.States)
 			.HasConversion(
