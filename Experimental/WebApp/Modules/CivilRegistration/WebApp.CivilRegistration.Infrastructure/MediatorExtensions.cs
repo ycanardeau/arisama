@@ -1,4 +1,3 @@
-using MediatR;
 using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Infrastructure.Persistence;
 

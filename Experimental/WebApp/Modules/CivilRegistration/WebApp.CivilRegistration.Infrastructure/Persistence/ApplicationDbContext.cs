@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.Entities;

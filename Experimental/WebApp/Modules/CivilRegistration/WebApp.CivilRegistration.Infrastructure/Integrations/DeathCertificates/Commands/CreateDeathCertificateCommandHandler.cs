@@ -1,6 +1,4 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Nut.Results;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Commands;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Dtos;
 using WebApp.CivilRegistration.Domain.DeathCertificates.Entities;

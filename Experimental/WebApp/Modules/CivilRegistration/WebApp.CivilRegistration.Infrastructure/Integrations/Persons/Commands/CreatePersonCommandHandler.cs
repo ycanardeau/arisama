@@ -1,5 +1,3 @@
-using MediatR;
-using Nut.Results;
 using WebApp.CivilRegistration.Contracts.Persons.Commands;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Contracts.Persons.Enums;

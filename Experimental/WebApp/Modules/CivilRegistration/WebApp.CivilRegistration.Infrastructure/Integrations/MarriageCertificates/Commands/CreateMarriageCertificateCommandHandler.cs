@@ -1,6 +1,4 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Nut.Results;
 using WebApp.CivilRegistration.Contracts.MarriageCertificates.Commands;
 using WebApp.CivilRegistration.Contracts.MarriageCertificates.Dtos;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;

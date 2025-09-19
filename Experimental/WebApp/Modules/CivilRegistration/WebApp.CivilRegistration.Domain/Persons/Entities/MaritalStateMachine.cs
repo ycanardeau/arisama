@@ -1,4 +1,3 @@
-using Nut.Results;
 using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.Persons.Events;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;

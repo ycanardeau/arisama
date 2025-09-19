@@ -1,6 +1,4 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Nut.Results;
 using WebApp.CivilRegistration.Application.Interfaces.Mappers;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Contracts.Persons.Queries;

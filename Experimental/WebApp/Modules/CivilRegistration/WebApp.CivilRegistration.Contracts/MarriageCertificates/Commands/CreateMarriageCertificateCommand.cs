@@ -1,5 +1,3 @@
-using MediatR;
-using Nut.Results;
 using WebApp.CivilRegistration.Contracts.MarriageCertificates.Dtos;
 
 namespace WebApp.CivilRegistration.Contracts.MarriageCertificates.Commands;

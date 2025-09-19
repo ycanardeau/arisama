@@ -1,5 +1,3 @@
-using MediatR;
-using Nut.Results;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Dtos;
 
 namespace WebApp.CivilRegistration.Contracts.DeathCertificates.Commands;
