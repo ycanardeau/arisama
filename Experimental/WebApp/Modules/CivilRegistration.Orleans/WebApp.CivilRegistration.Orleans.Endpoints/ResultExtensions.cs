@@ -1,19 +1,23 @@
-using Microsoft.AspNetCore.Http;
-using Nut.Results;
+using System.Diagnostics;
+using WebApp.Shared.Exceptions;
 
 namespace WebApp.CivilRegistration.Orleans.Endpoints;
 
 internal static class ResultExtensions
 {
-	public static IResult ToApiResult<T>(this Result<T> result)
+	public static IResult ToMinimalApiResult<T>(this Result<T> result)
 	{
-		return result.Map(x => Results.Ok(x))
-			.ThrowIfError()
-			.Get();
-	}
-
-	public static async Task<TOut> Pipe<TIn, TOut>(this Task<TIn> previous, Func<TIn, TOut> next)
-	{
-		return next(await previous);
+		return result.Match<T, IResult>(
+			ok: x => TypedResults.Ok(x),
+			err: x => x switch
+			{
+				BadRequestException => TypedResults.BadRequest(),
+				UnauthorizedException => TypedResults.Unauthorized(),
+				ForbiddenException => TypedResults.Forbid(),
+				NotFoundException => TypedResults.NotFound(),
+				UnprocessableEntityException => TypedResults.UnprocessableEntity(),
+				_ => throw new UnreachableException()
+			}
+		).Get();
 	}
 }

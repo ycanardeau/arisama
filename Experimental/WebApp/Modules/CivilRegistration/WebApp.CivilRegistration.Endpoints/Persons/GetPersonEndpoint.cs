@@ -1,28 +1,18 @@
-using FastEndpoints;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Contracts.Persons.Queries;
 
 namespace WebApp.CivilRegistration.Endpoints.Persons;
 
-internal class GetPersonEndpoint(ISender sender) : Endpoint<GetPersonQuery, GetPersonResponseDto>
+public class GetPersonEndpoint(ISender sender) : ControllerBase
 {
-	public override void Configure()
+	[Tags("Civil Registration - People")]
+	[HttpGet("/civil-registration/people/{id}")]
+	[AllowAnonymous]
+	[Produces<GetPersonResponseDto>]
+	public async Task<IResult> HandleAsync(Guid id, CancellationToken ct)
 	{
-		Get("/{id}");
-		AllowAnonymous();
-		Group<PersonsGroup>();
-		Description(builder => builder
-			.Produces<GetPersonResponseDto>()
-			.ProducesProblemFE()
-		);
-	}
-
-	public override Task HandleAsync(GetPersonQuery req, CancellationToken ct)
-	{
-		return sender.Send(req, ct)
-			.Pipe(ResultExtensions.ToApiResult)
-			.Pipe(SendResultAsync);
+		var response = await sender.Send(new GetPersonQuery(id), ct);
+		return response.ToMinimalApiResult();
 	}
 }

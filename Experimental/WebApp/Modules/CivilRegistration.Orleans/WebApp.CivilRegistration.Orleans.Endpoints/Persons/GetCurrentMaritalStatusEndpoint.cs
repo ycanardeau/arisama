@@ -1,28 +1,18 @@
-using FastEndpoints;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using WebApp.CivilRegistration.Orleans.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Orleans.Contracts.Persons.Queries;
 
 namespace WebApp.CivilRegistration.Orleans.Endpoints.Persons;
 
-internal class GetCurrentMaritalStatusEndpoint(ISender sender) : Endpoint<GetCurrentMaritalStatusQuery, GetCurrentMaritalStatusResponseDto>
+public class GetCurrentMaritalStatusEndpoint(ISender sender) : ControllerBase
 {
-	public override void Configure()
+	[Tags("Orleans - Civil Registration - People")]
+	[HttpGet("/orleans/civil-registration/people/{id}/marital-status")]
+	[AllowAnonymous]
+	[Produces<GetCurrentMaritalStatusResponseDto>]
+	public async Task<IResult> HandleAsync(Guid id, GetCurrentMaritalStatusQuery req, CancellationToken ct)
 	{
-		Get("/{id}/marital-status");
-		AllowAnonymous();
-		Group<PersonsGroup>();
-		Description(builder => builder
-			.Produces<GetCurrentMaritalStatusResponseDto>()
-			.ProducesProblemFE()
-		);
-	}
-
-	public override Task HandleAsync(GetCurrentMaritalStatusQuery req, CancellationToken ct)
-	{
-		return sender.Send(req, ct)
-			.Pipe(ResultExtensions.ToApiResult)
-			.Pipe(SendResultAsync);
+		var response = await sender.Send(req, ct);
+		return response.ToMinimalApiResult();
 	}
 }

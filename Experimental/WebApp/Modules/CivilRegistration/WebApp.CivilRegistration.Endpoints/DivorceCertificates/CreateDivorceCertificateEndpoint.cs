@@ -1,28 +1,18 @@
-using FastEndpoints;
-using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using WebApp.CivilRegistration.Contracts.DivorceCertificates.Commands;
 using WebApp.CivilRegistration.Contracts.DivorceCertificates.Dtos;
 
 namespace WebApp.CivilRegistration.Endpoints.DivorceCertificates;
 
-internal class CreateDivorceCertificateEndpoint(ISender sender) : Endpoint<CreateDivorceCertificateCommand, CreateDivorceCertificateResponseDto>
+public class CreateDivorceCertificateEndpoint(ISender sender) : ControllerBase
 {
-	public override void Configure()
+	[Tags("Civil Registration - Divorce Certificates")]
+	[HttpPost("/civil-registration/divorce-certificates")]
+	[AllowAnonymous]
+	[Produces<CreateDivorceCertificateResponseDto>]
+	public async Task<IResult> HandleAsync(CreateDivorceCertificateCommand req, CancellationToken ct)
 	{
-		Post("/");
-		AllowAnonymous();
-		Group<DivorceCertificatesGroup>();
-		Description(builder => builder
-			.Produces<CreateDivorceCertificateResponseDto>()
-			.ProducesProblemFE()
-		);
-	}
-
-	public override Task HandleAsync(CreateDivorceCertificateCommand req, CancellationToken ct)
-	{
-		return sender.Send(req, ct)
-			.Pipe(ResultExtensions.ToApiResult)
-			.Pipe(SendResultAsync);
+		var response = await sender.Send(req, ct);
+		return response.ToMinimalApiResult();
 	}
 }
