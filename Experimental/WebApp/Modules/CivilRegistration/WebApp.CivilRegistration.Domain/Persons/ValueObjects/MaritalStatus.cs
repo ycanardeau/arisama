@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using System.Text.Json.Serialization;
+using Aigamo.MatchGenerator;
 using WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.ValueObjects;
@@ -29,6 +29,7 @@ internal sealed record DeathInformation(
 	Age DeceasedAtAge
 );
 
+[GenerateMatch]
 [JsonDerivedType(typeof(SingleState), typeDiscriminator: "Single")]
 [JsonDerivedType(typeof(MarriedState), typeDiscriminator: "Married")]
 [JsonDerivedType(typeof(DivorcedState), typeDiscriminator: "Divorced")]
@@ -71,26 +72,3 @@ internal sealed record WidowedState(
 internal sealed record DeceasedState(DeathInformation DeathInformation) : MaritalStatus
 	, IHasDeathInformation
 ;
-
-internal static class MaritalStatusExtensions
-{
-	public static U Match<U>(
-		this MaritalStatus state,
-		Func<SingleState, U> onSingle,
-		Func<MarriedState, U> onMarried,
-		Func<DivorcedState, U> onDivorced,
-		Func<WidowedState, U> onWidowed,
-		Func<DeceasedState, U> onDeceased
-	)
-	{
-		return state switch
-		{
-			SingleState x => onSingle(x),
-			MarriedState x => onMarried(x),
-			DivorcedState x => onDivorced(x),
-			WidowedState x => onWidowed(x),
-			DeceasedState x => onDeceased(x),
-			_ => throw new UnreachableException(),
-		};
-	}
-}

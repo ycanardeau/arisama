@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aigamo.MatchGenerator" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Nut.Results" />
     <PackageReference Include="StronglyTypedId" />
