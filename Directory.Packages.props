@@ -3,7 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Aigamo.MatchGenerator" Version="0.0.0-preview011" />
+    <PackageVersion Include="Aigamo.MatchGenerator" Version="0.0.0-preview013" />
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.2" />
     <PackageVersion Include="Aspire.Hosting.MySql" Version="9.5.2" />
     <PackageVersion Include="Aspire.Pomelo.EntityFrameworkCore.MySql" Version="9.5.2" />
