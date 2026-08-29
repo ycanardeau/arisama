@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Aigamo.MatchGenerator;
 using WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.ValueObjects;

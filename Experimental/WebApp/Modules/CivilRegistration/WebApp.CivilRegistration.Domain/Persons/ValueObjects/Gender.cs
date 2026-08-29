@@ -1,5 +1,3 @@
-using Aigamo.MatchGenerator;
-
 namespace WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
 [GenerateMatch]

@@ -1,5 +1,3 @@
-using Aigamo.MatchGenerator;
-
 namespace WebApp.CivilRegistration.Orleans.Contracts.Persons.Enums;
 
 [GenerateMatch]
