@@ -23,16 +23,11 @@ internal abstract record MaritalStatus
 
 [GenerateSerializer]
 [Alias("WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Single")]
-internal sealed record Single : MaritalStatus
-	, ICanDecease
-	, ICanMarry;
+internal sealed record Single : MaritalStatus, ICanDecease, ICanMarry;
 
 [GenerateSerializer]
 [Alias("WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Married")]
-internal sealed record Married : MaritalStatus
-	, ICanDecease
-	, ICanDivorce
-	, ICanBecomeWidowed
+internal sealed record Married : MaritalStatus, ICanDecease, ICanDivorce, ICanBecomeWidowed
 {
 	[Id(0)]
 	public required Guid MarryWith { get; init; }
@@ -40,15 +35,11 @@ internal sealed record Married : MaritalStatus
 
 [GenerateSerializer]
 [Alias("WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Divorced")]
-internal sealed record Divorced : MaritalStatus
-	, ICanDecease
-	, ICanMarry;
+internal sealed record Divorced : MaritalStatus, ICanDecease, ICanMarry;
 
 [GenerateSerializer]
 [Alias("WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Widowed")]
-internal sealed record Widowed : MaritalStatus
-	, ICanDecease
-	, ICanMarry;
+internal sealed record Widowed : MaritalStatus, ICanDecease, ICanMarry;
 
 [GenerateSerializer]
 [Alias("WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Deceased")]

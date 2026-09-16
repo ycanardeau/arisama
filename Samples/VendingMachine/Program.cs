@@ -17,7 +17,11 @@ static class Program
 			});
 		});
 
-		var vendingMachine = new StateMachineBuilder<IVendingMachineTransition, VendingMachineCommand, VendingMachineState>(loggerFactory)
+		var vendingMachine = new StateMachineBuilder<
+			IVendingMachineTransition,
+			VendingMachineCommand,
+			VendingMachineState
+		>(loggerFactory)
 			.AddTransition<ICanInsertCoin, InsertCoin, CoinInserted>()
 			.AddTransition<ICanChooseProduct, ChooseProduct, ProductChosen>()
 			.AddTransition<ICanReturnChange, ReturnChange, ChangeReturned>()

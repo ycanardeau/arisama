@@ -10,7 +10,11 @@ public class GetCurrentMaritalStatusEndpoint(ISender sender) : ControllerBase
 	[HttpGet("/orleans/civil-registration/people/{id}/marital-status")]
 	[AllowAnonymous]
 	[Produces<GetCurrentMaritalStatusResponseDto>]
-	public async Task<IResult> HandleAsync(Guid id, GetCurrentMaritalStatusQuery req, CancellationToken ct)
+	public async Task<IResult> HandleAsync(
+		Guid id,
+		GetCurrentMaritalStatusQuery req,
+		CancellationToken ct
+	)
 	{
 		var response = await sender.Send(req, ct);
 		return response.ToMinimalApiResult();

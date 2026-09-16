@@ -10,15 +10,10 @@ internal class DeathCertificateConfiguration : IEntityTypeConfiguration<DeathCer
 	{
 		builder.HasKey(x => x.Id);
 
-		builder.Property(x => x.Id)
-			.HasConversion(x => x.Value, x => new(x));
+		builder.Property(x => x.Id).HasConversion(x => x.Value, x => new(x));
 
-		builder.HasOne(x => x.Deceased)
-			.WithMany()
-			.HasForeignKey(x => x.DeceasedId);
+		builder.HasOne(x => x.Deceased).WithMany().HasForeignKey(x => x.DeceasedId);
 
-		builder.HasOne(x => x.Widowed)
-			.WithMany()
-			.HasForeignKey(x => x.WidowedId);
+		builder.HasOne(x => x.Widowed).WithMany().HasForeignKey(x => x.WidowedId);
 	}
 }

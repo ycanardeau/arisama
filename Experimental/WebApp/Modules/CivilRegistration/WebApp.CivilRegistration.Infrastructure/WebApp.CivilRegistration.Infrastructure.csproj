@@ -1,23 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Aspire.Pomelo.EntityFrameworkCore.MySql" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Json.Microsoft" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Aspire.Pomelo.EntityFrameworkCore.MySql" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Json.Microsoft" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\WebApp.CivilRegistration.Application\WebApp.CivilRegistration.Application.csproj" />
-    <ProjectReference Include="..\WebApp.CivilRegistration.Contracts\WebApp.CivilRegistration.Contracts.csproj" />
-    <ProjectReference Include="..\WebApp.CivilRegistration.Domain\WebApp.CivilRegistration.Domain.csproj" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\WebApp.CivilRegistration.Application\WebApp.CivilRegistration.Application.csproj" />
+		<ProjectReference Include="..\WebApp.CivilRegistration.Contracts\WebApp.CivilRegistration.Contracts.csproj" />
+		<ProjectReference Include="..\WebApp.CivilRegistration.Domain\WebApp.CivilRegistration.Domain.csproj" />
+	</ItemGroup>
 </Project>

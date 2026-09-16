@@ -37,19 +37,16 @@ internal sealed record Reactivate : MembershipCommand, ICommand<ICanReactivate, 
 	}
 }
 
-[JsonPolymorphic(UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor)]
+[JsonPolymorphic(
+	UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor
+)]
 [JsonDerivedType(typeof(Inactive), typeDiscriminator: "Inactive")]
 [JsonDerivedType(typeof(Active), typeDiscriminator: "Active")]
 [JsonDerivedType(typeof(Terminated), typeDiscriminator: "Terminated")]
 internal abstract record MembershipState : IState;
 
-internal sealed record Inactive : MembershipState,
-	ICanReactivate,
-	ICanTerminate;
+internal sealed record Inactive : MembershipState, ICanReactivate, ICanTerminate;
 
-internal sealed record Active : MembershipState,
-	ICanSuspend,
-	ICanTerminate;
+internal sealed record Active : MembershipState, ICanSuspend, ICanTerminate;
 
-internal sealed record Terminated : MembershipState,
-	ICanReactivate;
+internal sealed record Terminated : MembershipState, ICanReactivate;

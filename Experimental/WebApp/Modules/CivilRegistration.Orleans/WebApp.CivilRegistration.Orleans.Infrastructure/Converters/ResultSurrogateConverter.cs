@@ -8,9 +8,7 @@ internal sealed class ResultSurrogateConverter : IConverter<Result, ResultSurrog
 {
 	public Result ConvertFromSurrogate(in ResultSurrogate surrogate)
 	{
-		return surrogate.IsOk
-			? Result.Ok()
-			: Result.Error(surrogate.Exception);
+		return surrogate.IsOk ? Result.Ok() : Result.Error(surrogate.Exception);
 	}
 
 	public ResultSurrogate ConvertToSurrogate(in Result value)
@@ -18,9 +16,7 @@ internal sealed class ResultSurrogateConverter : IConverter<Result, ResultSurrog
 		return new ResultSurrogate
 		{
 			IsOk = value.IsOk,
-			Exception = value.IsOk
-				? null!
-				: value.GetError(),
+			Exception = value.IsOk ? null! : value.GetError(),
 		};
 	}
 }
@@ -30,9 +26,7 @@ internal sealed class ResultSurrogateConverter<T> : IConverter<Result<T>, Result
 {
 	public Result<T> ConvertFromSurrogate(in ResultSurrogate<T> surrogate)
 	{
-		return surrogate.IsOk
-			? Result.Ok(surrogate.Value)
-			: Result.Error<T>(surrogate.Exception);
+		return surrogate.IsOk ? Result.Ok(surrogate.Value) : Result.Error<T>(surrogate.Exception);
 	}
 
 	public ResultSurrogate<T> ConvertToSurrogate(in Result<T> value)
@@ -40,12 +34,8 @@ internal sealed class ResultSurrogateConverter<T> : IConverter<Result<T>, Result
 		return new ResultSurrogate<T>
 		{
 			IsOk = value.IsOk,
-			Exception = value.IsOk
-				? null!
-				: value.GetError(),
-			Value = value.IsOk
-				? value.Get()
-				: default!,
+			Exception = value.IsOk ? null! : value.GetError(),
+			Value = value.IsOk ? value.Get() : default!,
 		};
 	}
 }

@@ -8,12 +8,19 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.MarriageCertificates.Commands;
 
-internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbContext) : IRequestHandler<CreateMarriageCertificateCommand, Result<CreateMarriageCertificateResponseDto>>
+internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbContext)
+	: IRequestHandler<
+		CreateMarriageCertificateCommand,
+		Result<CreateMarriageCertificateResponseDto>
+	>
 {
-	private async Task<Result<Person>> GetPersonAsync(PersonId personId, CancellationToken cancellationToken)
+	private async Task<Result<Person>> GetPersonAsync(
+		PersonId personId,
+		CancellationToken cancellationToken
+	)
 	{
-		var person = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine)
+		var person = await dbContext
+			.Persons.Include(x => x.MaritalStateMachine)
 			.SingleOrDefaultAsync(x => x.Id == personId, cancellationToken);
 
 		return person is null
@@ -21,7 +28,10 @@ internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbCo
 			: person;
 	}
 
-	public Task<Result<CreateMarriageCertificateResponseDto>> Handle(CreateMarriageCertificateCommand request, CancellationToken cancellationToken)
+	public Task<Result<CreateMarriageCertificateResponseDto>> Handle(
+		CreateMarriageCertificateCommand request,
+		CancellationToken cancellationToken
+	)
 	{
 		return GetPersonAsync(new PersonId(request.HusbandId), cancellationToken)
 			.Combine(x => GetPersonAsync(new PersonId(request.WifeId), cancellationToken))

@@ -10,10 +10,10 @@ internal class DivorceCertificateConfiguration : IEntityTypeConfiguration<Divorc
 	{
 		builder.HasKey(x => x.Id);
 
-		builder.Property(x => x.Id)
-			.HasConversion(x => x.Value, x => new(x));
+		builder.Property(x => x.Id).HasConversion(x => x.Value, x => new(x));
 
-		builder.HasOne(x => x.MarriageCertificate)
+		builder
+			.HasOne(x => x.MarriageCertificate)
 			.WithMany()
 			.HasForeignKey(x => x.MarriageCertificateId);
 	}

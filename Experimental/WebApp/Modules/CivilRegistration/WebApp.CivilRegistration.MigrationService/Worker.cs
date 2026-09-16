@@ -14,7 +14,10 @@ public class Worker(
 	public const string ActivitySourceName = "Migrations";
 	private static readonly ActivitySource s_activitySource = new(ActivitySourceName);
 
-	private static async Task EnsureDatabaseAsync(ApplicationDbContext dbContext, CancellationToken cancellationToken)
+	private static async Task EnsureDatabaseAsync(
+		ApplicationDbContext dbContext,
+		CancellationToken cancellationToken
+	)
 	{
 		var dbCreator = dbContext.GetService<IRelationalDatabaseCreator>();
 
@@ -30,7 +33,10 @@ public class Worker(
 		});
 	}
 
-	private static Task RunMigrationAsync(ApplicationDbContext dbContext, CancellationToken cancellationToken)
+	private static Task RunMigrationAsync(
+		ApplicationDbContext dbContext,
+		CancellationToken cancellationToken
+	)
 	{
 		// https://github.com/dotnet/EntityFramework.Docs/blob/422810f5bb0004f8c5ec70219c13a9884ff8f9d9/entity-framework/core/what-is-new/ef-core-9.0/breaking-changes.md#migrations-transaction
 		return dbContext.Database.MigrateAsync(cancellationToken);
@@ -38,7 +44,10 @@ public class Worker(
 
 	protected override async Task ExecuteAsync(CancellationToken cancellationToken)
 	{
-		using var activity = s_activitySource.StartActivity("Migrating database", ActivityKind.Client);
+		using var activity = s_activitySource.StartActivity(
+			"Migrating database",
+			ActivityKind.Client
+		);
 
 		try
 		{

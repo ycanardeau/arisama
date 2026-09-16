@@ -1,19 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+		<PackageReference Include="Aspire.Pomelo.EntityFrameworkCore.MySql" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+		<PackageReference Include="Microsoft.Orleans.Server" />
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Aspire.Pomelo.EntityFrameworkCore.MySql" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-    <PackageReference Include="Microsoft.Orleans.Server" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Application\WebApp.CivilRegistration.Orleans.Application.csproj" />
-    <ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Contracts\WebApp.CivilRegistration.Orleans.Contracts.csproj" />
-    <ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Domain\WebApp.CivilRegistration.Orleans.Domain.csproj" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Application\WebApp.CivilRegistration.Orleans.Application.csproj" />
+		<ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Contracts\WebApp.CivilRegistration.Orleans.Contracts.csproj" />
+		<ProjectReference Include="..\WebApp.CivilRegistration.Orleans.Domain\WebApp.CivilRegistration.Orleans.Domain.csproj" />
+	</ItemGroup>
 </Project>

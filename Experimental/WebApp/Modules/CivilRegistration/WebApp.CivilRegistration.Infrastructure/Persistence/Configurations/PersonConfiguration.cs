@@ -11,25 +11,22 @@ internal class PersonConfiguration : IEntityTypeConfiguration<Person>
 	{
 		builder.HasKey(x => x.Id);
 
-		builder.Property(x => x.Id)
-			.HasConversion(x => x.Value, x => new(x));
+		builder.Property(x => x.Id).HasConversion(x => x.Value, x => new(x));
 
-		builder.Property(x => x.Gender)
+		builder
+			.Property(x => x.Gender)
 			.HasMaxLength(255)
 			.HasConversion(
-				x => x is Male
-					? "Male"
-					: x is Female
-					? "Female"
+				x =>
+					x is Male ? "Male"
+					: x is Female ? "Female"
 					: null,
-				x => x == "Male"
-					? new Male()
-					: x == "Female"
-					? new Female()
+				x =>
+					x == "Male" ? new Male()
+					: x == "Female" ? new Female()
 					: null!
 			);
 
-		builder.Property(x => x.Age)
-			.HasConversion(x => x.Value, x => new(x));
+		builder.Property(x => x.Age).HasConversion(x => x.Value, x => new(x));
 	}
 }

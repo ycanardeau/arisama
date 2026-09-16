@@ -5,7 +5,7 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains;
 
 internal class MaritalStateMachineGrain(
 	[PersistentState(stateName: "maritalStateMachine", storageName: "maritalStateMachines")]
-	IPersistentState<MaritalStateMachineState> state
+		IPersistentState<MaritalStateMachineState> state
 ) : Grain, IMaritalStateMachineGrain
 {
 	private MaritalStatus? CurrentState => state.State.States.MaxBy(x => x.Version);
@@ -22,10 +22,7 @@ internal class MaritalStateMachineGrain(
 			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		AddState(new Single
-		{
-			Version = 1,
-		});
+		AddState(new Single { Version = 1 });
 
 		return Result.Ok().AsTask();
 	}
@@ -37,11 +34,7 @@ internal class MaritalStateMachineGrain(
 			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		AddState(new Married
-		{
-			Version = currentState.Version + 1,
-			MarryWith = marryWith,
-		});
+		AddState(new Married { Version = currentState.Version + 1, MarryWith = marryWith });
 
 		return Result.Ok().AsTask();
 	}
@@ -53,10 +46,7 @@ internal class MaritalStateMachineGrain(
 			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		AddState(new Divorced
-		{
-			Version = currentState.Version + 1,
-		});
+		AddState(new Divorced { Version = currentState.Version + 1 });
 
 		return Result.Ok().AsTask();
 	}
@@ -68,10 +58,7 @@ internal class MaritalStateMachineGrain(
 			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		AddState(new Widowed
-		{
-			Version = currentState.Version + 1,
-		});
+		AddState(new Widowed { Version = currentState.Version + 1 });
 
 		return Result.Ok().AsTask();
 	}
@@ -83,10 +70,7 @@ internal class MaritalStateMachineGrain(
 			return Result.Error(new InvalidOperationException()).AsTask();
 		}
 
-		AddState(new Deceased
-		{
-			Version = currentState.Version + 1,
-		});
+		AddState(new Deceased { Version = currentState.Version + 1 });
 
 		return Result.Ok().AsTask();
 	}

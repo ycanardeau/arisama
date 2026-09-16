@@ -14,15 +14,9 @@ public sealed record DivorceInformationDto(
 	Guid DivorcedFromId
 );
 
-public sealed record WidowhoodInformationDto(
-	int WidowedAtAge,
-	Guid WidowedFromId
-);
+public sealed record WidowhoodInformationDto(int WidowedAtAge, Guid WidowedFromId);
 
-public sealed record DeathInformationDto(
-	Guid DeathCertificateId,
-	int DeceasedAtAge
-);
+public sealed record DeathInformationDto(Guid DeathCertificateId, int DeceasedAtAge);
 
 [JsonDerivedType(typeof(SingleDto), typeDiscriminator: "Single")]
 [JsonDerivedType(typeof(MarriedDto), typeDiscriminator: "Married")]

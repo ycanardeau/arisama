@@ -12,15 +12,20 @@ internal class GetCurrentMaritalStatusQueryHandler(
 	IMaritalStatusMapper maritalStatusMapper
 ) : IRequestHandler<GetCurrentMaritalStatusQuery, Result<GetCurrentMaritalStatusResponseDto>>
 {
-	public async Task<Result<GetCurrentMaritalStatusResponseDto>> Handle(GetCurrentMaritalStatusQuery request, CancellationToken cancellationToken)
+	public async Task<Result<GetCurrentMaritalStatusResponseDto>> Handle(
+		GetCurrentMaritalStatusQuery request,
+		CancellationToken cancellationToken
+	)
 	{
-		var person = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine)
+		var person = await dbContext
+			.Persons.Include(x => x.MaritalStateMachine)
 			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.Id), cancellationToken);
 
 		if (person is null)
 		{
-			return Result.Error<GetCurrentMaritalStatusResponseDto>(new InvalidOperationException($"Person {request.Id} not found"));
+			return Result.Error<GetCurrentMaritalStatusResponseDto>(
+				new InvalidOperationException($"Person {request.Id} not found")
+			);
 		}
 
 		return new GetCurrentMaritalStatusResponseDto(

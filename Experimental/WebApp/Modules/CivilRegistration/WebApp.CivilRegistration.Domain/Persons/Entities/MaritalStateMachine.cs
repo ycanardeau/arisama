@@ -34,10 +34,7 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 
 	public static Result<MaritalStateMachine> Create()
 	{
-		var stateMachine = new MaritalStateMachine
-		{
-			Id = MaritalStateMachineId.CreateVersion7(),
-		};
+		var stateMachine = new MaritalStateMachine { Id = MaritalStateMachineId.CreateVersion7() };
 
 		stateMachine.AddState(new SingleState());
 
@@ -52,9 +49,12 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 		where TTransition : IMaritalTransition<TCommand, TNextState>
 	{
 		return CurrentState is not TTransition transition
-			? Result.Error<TNextState>(new InvalidOperationException($"{nameof(CurrentState)} is not {typeof(TTransition).Name}"))
-			: transition.Execute(this, command)
-				.Map(AddState);
+			? Result.Error<TNextState>(
+				new InvalidOperationException(
+					$"{nameof(CurrentState)} is not {typeof(TTransition).Name}"
+				)
+			)
+			: transition.Execute(this, command).Map(AddState);
 	}
 
 	public Result<MarriedState> Marry(MarryCommand command)

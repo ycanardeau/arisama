@@ -5,7 +5,10 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains;
 internal sealed record MarriageCertificateState
 {
 	[Id(0)]
-	public required string/* TODO: Use strongly-typed ID. */ HusbandId { get; init; }
+	public required string /* TODO: Use strongly-typed ID. */
+	HusbandId { get; init; }
+
 	[Id(1)]
-	public required string/* TODO: Use strongly-typed ID. */ WifeId { get; init; }
+	public required string /* TODO: Use strongly-typed ID. */
+	WifeId { get; init; }
 }

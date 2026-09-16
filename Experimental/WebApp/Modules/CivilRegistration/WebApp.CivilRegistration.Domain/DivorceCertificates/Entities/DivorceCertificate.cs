@@ -15,7 +15,8 @@ internal class DivorceCertificate : Entity<DivorceCertificateId>
 
 	private Result<DivorceCertificate> Divorce()
 	{
-		return MarriageCertificate.Husband.Divorce(new DivorceCommand(this))
+		return MarriageCertificate
+			.Husband.Divorce(new DivorceCommand(this))
 			.Map(x => MarriageCertificate.Wife.Divorce(new DivorceCommand(this)))
 			.Map(x => this);
 	}
@@ -30,5 +31,4 @@ internal class DivorceCertificate : Entity<DivorceCertificateId>
 
 		return divorceCertificate.Divorce();
 	}
-
 }

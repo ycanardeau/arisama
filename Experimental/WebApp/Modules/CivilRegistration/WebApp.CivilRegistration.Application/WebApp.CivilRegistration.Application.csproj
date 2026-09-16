@@ -1,13 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\WebApp.CivilRegistration.Contracts\WebApp.CivilRegistration.Contracts.csproj" />
-    <ProjectReference Include="..\WebApp.CivilRegistration.Domain\WebApp.CivilRegistration.Domain.csproj" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\WebApp.CivilRegistration.Contracts\WebApp.CivilRegistration.Contracts.csproj" />
+		<ProjectReference Include="..\WebApp.CivilRegistration.Domain\WebApp.CivilRegistration.Domain.csproj" />
+	</ItemGroup>
 </Project>

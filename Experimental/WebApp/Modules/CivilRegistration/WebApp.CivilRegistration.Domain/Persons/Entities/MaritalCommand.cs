@@ -6,7 +6,8 @@ namespace WebApp.CivilRegistration.Domain.Persons.Entities;
 
 internal abstract record MaritalCommand;
 
-internal sealed record MarryCommand(MarriageCertificate MarriageCertificate, Person MarryWith) : MaritalCommand;
+internal sealed record MarryCommand(MarriageCertificate MarriageCertificate, Person MarryWith)
+	: MaritalCommand;
 
 internal sealed record DivorceCommand(DivorceCertificate DivorceCertificate) : MaritalCommand;
 

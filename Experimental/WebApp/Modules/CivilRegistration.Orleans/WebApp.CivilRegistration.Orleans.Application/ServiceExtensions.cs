@@ -9,7 +9,9 @@ internal static class ServiceExtensions
 {
 	public static IHostApplicationBuilder AddApplication(this IHostApplicationBuilder builder)
 	{
-		builder.Services.AddValidatorsFromAssemblyContaining<IApplication>(includeInternalTypes: true);
+		builder.Services.AddValidatorsFromAssemblyContaining<IApplication>(
+			includeInternalTypes: true
+		);
 
 		return builder;
 	}

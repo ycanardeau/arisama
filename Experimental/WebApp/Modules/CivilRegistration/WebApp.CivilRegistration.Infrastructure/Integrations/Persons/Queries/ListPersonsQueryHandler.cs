@@ -6,15 +6,16 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Queries;
 
-internal class ListPersonsQueryHandler(
-	ApplicationDbContext dbContext,
-	IPersonMapper personMapper
-) : IRequestHandler<ListPersonsQuery, Result<ListPersonsResponseDto>>
+internal class ListPersonsQueryHandler(ApplicationDbContext dbContext, IPersonMapper personMapper)
+	: IRequestHandler<ListPersonsQuery, Result<ListPersonsResponseDto>>
 {
-	public async Task<Result<ListPersonsResponseDto>> Handle(ListPersonsQuery request, CancellationToken cancellationToken)
+	public async Task<Result<ListPersonsResponseDto>> Handle(
+		ListPersonsQuery request,
+		CancellationToken cancellationToken
+	)
 	{
-		var persons = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine)
+		var persons = await dbContext
+			.Persons.Include(x => x.MaritalStateMachine)
 			.ToListAsync(cancellationToken);
 
 		return new ListPersonsResponseDto(Persons: [.. persons.Select(personMapper.Map)]);

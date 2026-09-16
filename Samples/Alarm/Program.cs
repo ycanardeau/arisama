@@ -17,7 +17,9 @@ static class Program
 			});
 		});
 
-		var alarm = new StateMachineBuilder<IAlarmTransition, AlarmCommand, AlarmState>(loggerFactory)
+		var alarm = new StateMachineBuilder<IAlarmTransition, AlarmCommand, AlarmState>(
+			loggerFactory
+		)
 			.AddTransition<ICanStartup, Startup, Disarmed>()
 			.AddTransition<ICanArm, Arm, PreArmed>()
 			.AddTransition<ICanDisarm, Disarm, Disarmed>()

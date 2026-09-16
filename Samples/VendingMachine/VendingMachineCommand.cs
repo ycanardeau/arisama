@@ -4,7 +4,9 @@ namespace VendingMachine;
 
 internal abstract record VendingMachineCommand : ICommand;
 
-internal sealed record InsertCoin(Coin Amount) : VendingMachineCommand, ICommand<ICanInsertCoin, CoinInserted>
+internal sealed record InsertCoin(Coin Amount)
+	: VendingMachineCommand,
+		ICommand<ICanInsertCoin, CoinInserted>
 {
 	public CoinInserted Execute(ICanInsertCoin from)
 	{
@@ -12,7 +14,9 @@ internal sealed record InsertCoin(Coin Amount) : VendingMachineCommand, ICommand
 	}
 }
 
-internal sealed record ChooseProduct(ProductId ProductId) : VendingMachineCommand, ICommand<ICanChooseProduct, ProductChosen>
+internal sealed record ChooseProduct(ProductId ProductId)
+	: VendingMachineCommand,
+		ICommand<ICanChooseProduct, ProductChosen>
 {
 	public ProductChosen Execute(ICanChooseProduct from)
 	{
@@ -20,7 +24,9 @@ internal sealed record ChooseProduct(ProductId ProductId) : VendingMachineComman
 	}
 }
 
-internal sealed record ReturnChange : VendingMachineCommand, ICommand<ICanReturnChange, ChangeReturned>
+internal sealed record ReturnChange
+	: VendingMachineCommand,
+		ICommand<ICanReturnChange, ChangeReturned>
 {
 	public ChangeReturned Execute(ICanReturnChange from)
 	{
@@ -28,7 +34,9 @@ internal sealed record ReturnChange : VendingMachineCommand, ICommand<ICanReturn
 	}
 }
 
-internal sealed record DispenseProduct : VendingMachineCommand, ICommand<ICanDispenseProduct, ProductDispensed>
+internal sealed record DispenseProduct
+	: VendingMachineCommand,
+		ICommand<ICanDispenseProduct, ProductDispensed>
 {
 	public ProductDispensed Execute(ICanDispenseProduct from)
 	{

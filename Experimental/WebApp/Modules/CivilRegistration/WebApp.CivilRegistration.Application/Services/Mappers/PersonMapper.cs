@@ -19,10 +19,7 @@ internal class PersonMapper(IMaritalStatusMapper maritalStatusMapper) : IPersonM
 			Age: person.Age.Value,
 			MaritalStateMachine: new MaritalStateMachineDto(
 				Version: person.MaritalStateMachine.Version.Value,
-				States: [
-					.. person.MaritalStateMachine.States
-						.Select(maritalStatusMapper.Map)
-				]
+				States: [.. person.MaritalStateMachine.States.Select(maritalStatusMapper.Map)]
 			)
 		);
 	}

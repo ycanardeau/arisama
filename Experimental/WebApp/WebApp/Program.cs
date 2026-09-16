@@ -4,12 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 
 // https://learn.microsoft.com/en-us/aspnet/core/web-api/?view=aspnetcore-8.0#attribute-on-an-assembly
 [assembly: ApiController]
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddControllers()
-	.AddJsonOptions(x => x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)));
+builder
+	.Services.AddControllers()
+	.AddJsonOptions(x =>
+		x.JsonSerializerOptions.Converters.Add(
+			new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+		)
+	);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -32,8 +38,7 @@ builder.Services.AddSwaggerGen(options =>
 	options.SelectDiscriminatorNameUsing(type =>
 	{
 		// see if the code has been annotated
-		var attribute = type
-			.GetCustomAttributes(true)
+		var attribute = type.GetCustomAttributes(true)
 			.OfType<JsonPolymorphicAttribute>()
 			.FirstOrDefault();
 
@@ -49,8 +54,7 @@ builder.Services.AddSwaggerGen(options =>
 		}
 
 		var attribute = type
-			.BaseType
-			.GetCustomAttributes(true)
+			.BaseType.GetCustomAttributes(true)
 			.OfType<JsonDerivedTypeAttribute>()
 			.FirstOrDefault(x => x.DerivedType == type);
 

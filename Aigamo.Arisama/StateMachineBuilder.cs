@@ -11,35 +11,50 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 {
 	public sealed class StateConfiguration
 	{
-		public required Func<StateMachine<TTransition, TCommand, TState>, TCommand, Task> CommandHandler { get; init; }
+		public required Func<
+			StateMachine<TTransition, TCommand, TState>,
+			TCommand,
+			Task
+		> CommandHandler { get; init; }
 	}
 
 	private readonly Dictionary<Type, StateConfiguration> _configurations = [];
 
-	private StateMachineBuilder<TTransition, TCommand, TState> AddCommandHandler<TOn>(Func<StateMachine<TTransition, TCommand, TState>, TOn, Task> commandHandler)
+	private StateMachineBuilder<TTransition, TCommand, TState> AddCommandHandler<TOn>(
+		Func<StateMachine<TTransition, TCommand, TState>, TOn, Task> commandHandler
+	)
 		where TOn : TCommand
 	{
-		_configurations.Add(typeof(TOn), new StateConfiguration
-		{
-			CommandHandler = (stateMachine, command) =>
+		_configurations.Add(
+			typeof(TOn),
+			new StateConfiguration
 			{
-				if (command is not TOn concreteCommand)
+				CommandHandler = (stateMachine, command) =>
 				{
-					throw new UnreachableException($"Invalid command type. Expected: {nameof(TOn)}, Actual: {command.GetType().Name}");
-				}
+					if (command is not TOn concreteCommand)
+					{
+						throw new UnreachableException(
+							$"Invalid command type. Expected: {nameof(TOn)}, Actual: {command.GetType().Name}"
+						);
+					}
 
-				return commandHandler(stateMachine, concreteCommand);
-			},
-		});
+					return commandHandler(stateMachine, concreteCommand);
+				},
+			}
+		);
 		return this;
 	}
 
-	private StateMachineBuilder<TTransition, TCommand, TState> AddTransition<TFrom, TOn, TTo>(Func<TFrom, TOn, TTo> callback)
+	private StateMachineBuilder<TTransition, TCommand, TState> AddTransition<TFrom, TOn, TTo>(
+		Func<TFrom, TOn, TTo> callback
+	)
 		where TFrom : TTransition
 		where TOn : TCommand, ICommand<TFrom, TTo>
 		where TTo : TState
 	{
-		AddCommandHandler<TOn>((stateMachine, command) => stateMachine.HandleAsync(callback, command));
+		AddCommandHandler<TOn>(
+			(stateMachine, command) => stateMachine.HandleAsync(callback, command)
+		);
 		return this;
 	}
 
@@ -51,7 +66,10 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 		return AddTransition<TFrom, TOn, TTo>((from, command) => command.Execute(from));
 	}
 
-	public StateMachine<TTransition, TCommand, TState> Build(IEnumerable<TState> initialStates, StateMachine<TTransition, TCommand, TState>.StateMachineOptions options)
+	public StateMachine<TTransition, TCommand, TState> Build(
+		IEnumerable<TState> initialStates,
+		StateMachine<TTransition, TCommand, TState>.StateMachineOptions options
+	)
 	{
 		return StateMachine<TTransition, TCommand, TState>.Create(
 			loggerFactory.CreateLogger<StateMachine<TTransition, TCommand, TState>>(),
@@ -71,7 +89,10 @@ public sealed class StateMachineBuilder<TTransition, TCommand, TState>(ILoggerFa
 		);
 	}
 
-	public StateMachine<TTransition, TCommand, TState> Build(IEnumerable<TState> initialStates, Action<StateMachine<TTransition, TCommand, TState>.StateMachineOptions> configureOptions)
+	public StateMachine<TTransition, TCommand, TState> Build(
+		IEnumerable<TState> initialStates,
+		Action<StateMachine<TTransition, TCommand, TState>.StateMachineOptions> configureOptions
+	)
 	{
 		var options = new StateMachine<TTransition, TCommand, TState>.StateMachineOptions();
 		configureOptions(options);

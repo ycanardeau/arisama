@@ -26,9 +26,15 @@ internal static class ServiceExtensions
 						// https://learn.microsoft.com/en-us/samples/dotnet/aspire-samples/aspire-efcore-migrations/
 						.MigrationsAssembly("WebApp.CivilRegistration.MigrationService")
 						// https://www.milanjovanovic.tech/blog/using-multiple-ef-core-dbcontext-in-single-application
-						.MigrationsHistoryTable(tableName: HistoryRepository.DefaultTableName, schema: ApplicationDbContext.Schema)
+						.MigrationsHistoryTable(
+							tableName: HistoryRepository.DefaultTableName,
+							schema: ApplicationDbContext.Schema
+						)
 						// https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/pull/982#issue-532498042
-						.SchemaBehavior(MySqlSchemaBehavior.Translate, (schema, entity) => $"{schema ?? "dbo"}_{entity}")
+						.SchemaBehavior(
+							MySqlSchemaBehavior.Translate,
+							(schema, entity) => $"{schema ?? "dbo"}_{entity}"
+						)
 						// https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/1752#issuecomment-1824090041
 						.UseMicrosoftJson()
 						// https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/1960#issuecomment-2541898357
@@ -40,7 +46,9 @@ internal static class ServiceExtensions
 
 	public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
 	{
-		builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<IInfrastructure>());
+		builder.Services.AddMediatR(config =>
+			config.RegisterServicesFromAssemblyContaining<IInfrastructure>()
+		);
 
 		builder.AddDbContext();
 

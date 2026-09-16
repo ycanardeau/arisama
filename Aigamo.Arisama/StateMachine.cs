@@ -35,12 +35,17 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 
 	public sealed class StateMachineOptions
 	{
-		public Func<StateChangingContext, Task> StateChanging { get; set; } = context => Task.CompletedTask;
-		public Func<StateChangedContext, Task> StateChanged { get; set; } = context => Task.CompletedTask;
+		public Func<StateChangingContext, Task> StateChanging { get; set; } =
+			context => Task.CompletedTask;
+		public Func<StateChangedContext, Task> StateChanged { get; set; } =
+			context => Task.CompletedTask;
 	}
 
 	private readonly ILogger<StateMachine<TTransition, TCommand, TState>> _logger;
-	private readonly ImmutableDictionary<Type, StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration> _configurations;
+	private readonly ImmutableDictionary<
+		Type,
+		StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration
+	> _configurations;
 	private readonly StateMachineOptions _options;
 
 	private readonly List<TState> _states = [];
@@ -48,7 +53,10 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 
 	private StateMachine(
 		ILogger<StateMachine<TTransition, TCommand, TState>> logger,
-		ImmutableDictionary<Type, StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration> configurations,
+		ImmutableDictionary<
+			Type,
+			StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration
+		> configurations,
 		StateMachineOptions options
 	)
 	{
@@ -64,12 +72,19 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 
 	internal static StateMachine<TTransition, TCommand, TState> Create(
 		ILogger<StateMachine<TTransition, TCommand, TState>> logger,
-		ImmutableDictionary<Type, StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration> configurations,
+		ImmutableDictionary<
+			Type,
+			StateMachineBuilder<TTransition, TCommand, TState>.StateConfiguration
+		> configurations,
 		StateMachineOptions options,
 		IEnumerable<TState> initialStates
 	)
 	{
-		var stateMachine = new StateMachine<TTransition, TCommand, TState>(logger, configurations, options);
+		var stateMachine = new StateMachine<TTransition, TCommand, TState>(
+			logger,
+			configurations,
+			options
+		);
 		foreach (var initialState in initialStates)
 		{
 			stateMachine.AddState(initialState);
@@ -85,21 +100,31 @@ public sealed class StateMachine<TTransition, TCommand, TState>
 		var previousState = States.Last();
 		if (previousState is not TFrom from)
 		{
-			_logger.LogError("Invalid transition from {} to {}", previousState.GetType().Name, typeof(TTo).Name);
-			throw new InvalidOperationException($"Invalid transition from {previousState.GetType().Name} to {typeof(TTo).Name}");
+			_logger.LogError(
+				"Invalid transition from {} to {}",
+				previousState.GetType().Name,
+				typeof(TTo).Name
+			);
+			throw new InvalidOperationException(
+				$"Invalid transition from {previousState.GetType().Name} to {typeof(TTo).Name}"
+			);
 		}
 
 		var state = callback(from, command);
 
 		_logger.LogInformation("Transitioning from {}", typeof(TFrom).Name);
 
-		await _options.StateChanging(new StateChangingContext(StateMachine: this, State: state, PreviousState: previousState));
+		await _options.StateChanging(
+			new StateChangingContext(StateMachine: this, State: state, PreviousState: previousState)
+		);
 
 		AddState(state);
 
 		_logger.LogInformation("Transitioned to {}", typeof(TTo).Name);
 
-		await _options.StateChanged(new StateChangedContext(StateMachine: this, State: state, PreviousState: previousState));
+		await _options.StateChanged(
+			new StateChangedContext(StateMachine: this, State: state, PreviousState: previousState)
+		);
 	}
 
 	public Task SendAsync<TOn>(TOn command)

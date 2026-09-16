@@ -8,27 +8,33 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Queries;
 
-internal class GetPersonQueryHandler(
-	ApplicationDbContext dbContext,
-	IPersonMapper personMapper
-) : IRequestHandler<GetPersonQuery, Result<GetPersonResponseDto>>
+internal class GetPersonQueryHandler(ApplicationDbContext dbContext, IPersonMapper personMapper)
+	: IRequestHandler<GetPersonQuery, Result<GetPersonResponseDto>>
 {
-	private async Task<Result<Person>> GetPerson(GetPersonQuery request, CancellationToken cancellationToken)
+	private async Task<Result<Person>> GetPerson(
+		GetPersonQuery request,
+		CancellationToken cancellationToken
+	)
 	{
-		var person = await dbContext.Persons
-			.Include(x => x.MaritalStateMachine)
+		var person = await dbContext
+			.Persons.Include(x => x.MaritalStateMachine)
 			.AsNoTracking()
 			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.Id), cancellationToken);
 
 		if (person is null)
 		{
-			return Result.Error<Person>(new InvalidOperationException($"Person {request.Id} not found"));
+			return Result.Error<Person>(
+				new InvalidOperationException($"Person {request.Id} not found")
+			);
 		}
 
 		return person;
 	}
 
-	public Task<Result<GetPersonResponseDto>> Handle(GetPersonQuery request, CancellationToken cancellationToken)
+	public Task<Result<GetPersonResponseDto>> Handle(
+		GetPersonQuery request,
+		CancellationToken cancellationToken
+	)
 	{
 		return GetPerson(request, cancellationToken)
 			.Map(x => new GetPersonResponseDto(Person: personMapper.Map(x)));

@@ -15,18 +15,20 @@ internal class MaritalStateMachineConfiguration : IEntityTypeConfiguration<Marit
 	{
 		builder.HasKey(x => x.Id);
 
-		builder.Property(x => x.Id)
-			.HasConversion(x => x.Value, x => new(x));
+		builder.Property(x => x.Id).HasConversion(x => x.Value, x => new(x));
 
-		builder.HasOne(x => x.Person)
+		builder
+			.HasOne(x => x.Person)
 			.WithOne(x => x.MaritalStateMachine)
 			.HasForeignKey<MaritalStateMachine>(x => x.PersonId);
 
-		builder.Property(x => x.Version)
+		builder
+			.Property(x => x.Version)
 			.HasConversion(x => x.Value, x => new(x))
 			.IsConcurrencyToken();
 
-		builder.Property(x => x.States)
+		builder
+			.Property(x => x.States)
 			.HasConversion(
 				x => JsonSerializer.Serialize(x, s_jsonSerializerOptions),
 				x => JsonSerializer.Deserialize<List<MaritalStatus>>(x, s_jsonSerializerOptions)!,

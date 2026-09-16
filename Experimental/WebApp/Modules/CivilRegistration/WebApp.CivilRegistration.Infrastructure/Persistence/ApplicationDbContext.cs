@@ -6,7 +6,10 @@ using WebApp.CivilRegistration.Domain.Persons.Entities;
 
 namespace WebApp.CivilRegistration.Infrastructure.Persistence;
 
-internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator) : DbContext(options)
+internal class ApplicationDbContext(
+	DbContextOptions<ApplicationDbContext> options,
+	IMediator mediator
+) : DbContext(options)
 {
 	public static string Schema { get; } = "WebApp_CivilRegistration";
 
@@ -27,7 +30,10 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
 		base.OnModelCreating(modelBuilder);
 	}
 
-	public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+	public override async Task<int> SaveChangesAsync(
+		bool acceptAllChangesOnSuccess,
+		CancellationToken cancellationToken = default
+	)
 	{
 		await mediator.DispatchDomainEventsAsync(this);
 

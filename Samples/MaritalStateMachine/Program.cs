@@ -17,7 +17,11 @@ static class Program
 			});
 		});
 
-		var maritalStateMachine = new StateMachineBuilder<IMaritalTransition, MaritalCommand, MaritalStatus>(loggerFactory)
+		var maritalStateMachine = new StateMachineBuilder<
+			IMaritalTransition,
+			MaritalCommand,
+			MaritalStatus
+		>(loggerFactory)
 			.AddTransition<ICanMarry, Marry, Married>()
 			.AddTransition<ICanDivorce, Divorce, Divorced>()
 			.AddTransition<ICanBecomeWidowed, BecomeWidowed, Widowed>()

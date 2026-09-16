@@ -43,17 +43,12 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 
 	private static MaritalStatusDto Map(SingleState value)
 	{
-		return new SingleDto
-		{
-		};
+		return new SingleDto { };
 	}
 
 	private static MaritalStatusDto Map(MarriedState value)
 	{
-		return new MarriedDto
-		{
-			MarriageInformation = Map(value.MarriageInformation),
-		};
+		return new MarriedDto { MarriageInformation = Map(value.MarriageInformation) };
 	}
 
 	private static MaritalStatusDto Map(DivorcedState value)
@@ -76,10 +71,7 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 
 	private static MaritalStatusDto Map(DeceasedState value)
 	{
-		return new DeceasedDto
-		{
-			DeathInformation = Map(value.DeathInformation),
-		};
+		return new DeceasedDto { DeathInformation = Map(value.DeathInformation) };
 	}
 
 	public MaritalStatusDto Map(MaritalStatus value)

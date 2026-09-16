@@ -10,7 +10,10 @@ public class CreateMarriageCertificateEndpoint(ISender sender) : ControllerBase
 	[HttpPost("/civil-registration/marriage-certificates")]
 	[AllowAnonymous]
 	[Produces<CreateMarriageCertificateResponseDto>]
-	public async Task<IResult> HandleAsync(CreateMarriageCertificateCommand req, CancellationToken ct)
+	public async Task<IResult> HandleAsync(
+		CreateMarriageCertificateCommand req,
+		CancellationToken ct
+	)
 	{
 		var response = await sender.Send(req, ct);
 		return response.ToMinimalApiResult();

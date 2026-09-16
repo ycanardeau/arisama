@@ -2,7 +2,9 @@ using Nut.Results;
 
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 
-[Alias("WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions.IMaritalStateMachineGrain")]
+[Alias(
+	"WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions.IMaritalStateMachineGrain"
+)]
 internal interface IMaritalStateMachineGrain : IGrainWithGuidKey
 {
 	[Alias("Initialize")]

@@ -5,14 +5,16 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains;
 
 internal class PersonGrain(
 	[PersistentState(stateName: "person", storageName: "persons")]
-	IPersistentState<PersonState> state
+		IPersistentState<PersonState> state
 ) : Grain, IPersonGrain
 {
 	private IMaritalStateMachineGrain _maritalStateMachineGrain = null!;
 
 	public override Task OnActivateAsync(CancellationToken cancellationToken)
 	{
-		_maritalStateMachineGrain = GrainFactory.GetGrain<IMaritalStateMachineGrain>(this.GetPrimaryKey());
+		_maritalStateMachineGrain = GrainFactory.GetGrain<IMaritalStateMachineGrain>(
+			this.GetPrimaryKey()
+		);
 		return base.OnActivateAsync(cancellationToken);
 	}
 
