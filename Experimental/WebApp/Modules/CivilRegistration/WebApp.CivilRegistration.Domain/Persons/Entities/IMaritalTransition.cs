@@ -11,16 +11,18 @@ internal interface IMaritalTransition<TCommand, TNextState> : IMaritalTransition
 	Result<TNextState> Execute(MaritalStateMachine stateMachine, TCommand command);
 }
 
-internal interface ICanMarry : IMaritalTransition<MarryCommand, MarriedState>
+internal interface ICanMarry : IMaritalTransition<MarryCommand, MaritalStatus.Married>
 {
-	Result<MarriedState> IMaritalTransition<MarryCommand, MarriedState>.Execute(
+	Result<MaritalStatus.Married> IMaritalTransition<MarryCommand, MaritalStatus.Married>.Execute(
 		MaritalStateMachine stateMachine,
 		MarryCommand command
 	)
 	{
 		return !stateMachine.Person.CanMarryAtCurrentAge
-			? Result.Error<MarriedState>(new InvalidOperationException("Not of marriageable age"))
-			: new MarriedState(
+			? Result.Error<MaritalStatus.Married>(
+				new InvalidOperationException("Not of marriageable age")
+			)
+			: new MaritalStatus.Married(
 				MarriageInformation: new(
 					MarriageCertificateId: command.MarriageCertificate.Id,
 					MarriedAtAge: stateMachine.Person.Age,
@@ -31,15 +33,15 @@ internal interface ICanMarry : IMaritalTransition<MarryCommand, MarriedState>
 }
 
 internal interface ICanDivorce
-	: IMaritalTransition<DivorceCommand, DivorcedState>,
+	: IMaritalTransition<DivorceCommand, MaritalStatus.Divorced>,
 		IHasMarriageInformation
 {
-	Result<DivorcedState> IMaritalTransition<DivorceCommand, DivorcedState>.Execute(
-		MaritalStateMachine stateMachine,
-		DivorceCommand command
-	)
+	Result<MaritalStatus.Divorced> IMaritalTransition<
+		DivorceCommand,
+		MaritalStatus.Divorced
+	>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)
 	{
-		return new DivorcedState(
+		return new MaritalStatus.Divorced(
 			MarriageInformation,
 			DivorceInformation: new(
 				DivorceCertificateId: command.DivorceCertificate.Id,
@@ -51,15 +53,15 @@ internal interface ICanDivorce
 }
 
 internal interface ICanBecomeWidowed
-	: IMaritalTransition<BecomeWidowedCommand, WidowedState>,
+	: IMaritalTransition<BecomeWidowedCommand, MaritalStatus.Widowed>,
 		IHasMarriageInformation
 {
-	Result<WidowedState> IMaritalTransition<BecomeWidowedCommand, WidowedState>.Execute(
-		MaritalStateMachine stateMachine,
-		BecomeWidowedCommand command
-	)
+	Result<MaritalStatus.Widowed> IMaritalTransition<
+		BecomeWidowedCommand,
+		MaritalStatus.Widowed
+	>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)
 	{
-		return new WidowedState(
+		return new MaritalStatus.Widowed(
 			MarriageInformation,
 			WidowhoodInformation: new(
 				WidowedAtAge: stateMachine.Person.Age,
@@ -69,14 +71,14 @@ internal interface ICanBecomeWidowed
 	}
 }
 
-internal interface ICanDecease : IMaritalTransition<DeceaseCommand, DeceasedState>
+internal interface ICanDecease : IMaritalTransition<DeceaseCommand, MaritalStatus.Deceased>
 {
-	Result<DeceasedState> IMaritalTransition<DeceaseCommand, DeceasedState>.Execute(
-		MaritalStateMachine stateMachine,
-		DeceaseCommand command
-	)
+	Result<MaritalStatus.Deceased> IMaritalTransition<
+		DeceaseCommand,
+		MaritalStatus.Deceased
+	>.Execute(MaritalStateMachine stateMachine, DeceaseCommand command)
 	{
-		return new DeceasedState(
+		return new MaritalStatus.Deceased(
 			DeathInformation: new(
 				DeathCertificateId: command.DeathCertificate.Id,
 				DeceasedAtAge: stateMachine.Person.Age

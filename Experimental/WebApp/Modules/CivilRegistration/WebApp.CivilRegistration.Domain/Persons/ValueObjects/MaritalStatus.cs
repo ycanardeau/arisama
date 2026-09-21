@@ -23,32 +23,35 @@ internal sealed record WidowhoodInformation(Age WidowedAtAge, PersonId WidowedFr
 internal sealed record DeathInformation(DeathCertificateId DeathCertificateId, Age DeceasedAtAge);
 
 [GenerateMatch]
-[JsonDerivedType(typeof(SingleState), typeDiscriminator: "Single")]
-[JsonDerivedType(typeof(MarriedState), typeDiscriminator: "Married")]
-[JsonDerivedType(typeof(DivorcedState), typeDiscriminator: "Divorced")]
-[JsonDerivedType(typeof(WidowedState), typeDiscriminator: "Widowed")]
-[JsonDerivedType(typeof(DeceasedState), typeDiscriminator: "Deceased")]
-internal abstract record MaritalStatus : IMaritalStatus;
+[JsonDerivedType(typeof(Single), typeDiscriminator: nameof(Single))]
+[JsonDerivedType(typeof(Married), typeDiscriminator: nameof(Married))]
+[JsonDerivedType(typeof(Divorced), typeDiscriminator: nameof(Divorced))]
+[JsonDerivedType(typeof(Widowed), typeDiscriminator: nameof(Widowed))]
+[JsonDerivedType(typeof(Deceased), typeDiscriminator: nameof(Deceased))]
+internal abstract record MaritalStatus
+{
+	private MaritalStatus() { }
 
-internal sealed record SingleState() : MaritalStatus, ICanDecease, ICanMarry;
+	public sealed record Single() : MaritalStatus, ICanDecease, ICanMarry;
 
-internal sealed record MarriedState(MarriageInformation MarriageInformation)
-	: MaritalStatus,
-		IHasMarriageInformation,
-		ICanDecease,
-		ICanDivorce,
-		ICanBecomeWidowed;
+	public sealed record Married(MarriageInformation MarriageInformation)
+		: MaritalStatus,
+			IHasMarriageInformation,
+			ICanDecease,
+			ICanDivorce,
+			ICanBecomeWidowed;
 
-internal sealed record DivorcedState(
-	MarriageInformation MarriageInformation,
-	DivorceInformation DivorceInformation
-) : MaritalStatus, IHasMarriageInformation, IHasDivorceInformation, ICanDecease, ICanMarry;
+	public sealed record Divorced(
+		MarriageInformation MarriageInformation,
+		DivorceInformation DivorceInformation
+	) : MaritalStatus, IHasMarriageInformation, IHasDivorceInformation, ICanDecease, ICanMarry;
 
-internal sealed record WidowedState(
-	MarriageInformation MarriageInformation,
-	WidowhoodInformation WidowhoodInformation
-) : MaritalStatus, IHasMarriageInformation, IHasWidowhoodInformation, ICanDecease, ICanMarry;
+	public sealed record Widowed(
+		MarriageInformation MarriageInformation,
+		WidowhoodInformation WidowhoodInformation
+	) : MaritalStatus, IHasMarriageInformation, IHasWidowhoodInformation, ICanDecease, ICanMarry;
 
-internal sealed record DeceasedState(DeathInformation DeathInformation)
-	: MaritalStatus,
-		IHasDeathInformation;
+	public sealed record Deceased(DeathInformation DeathInformation)
+		: MaritalStatus,
+			IHasDeathInformation;
+}

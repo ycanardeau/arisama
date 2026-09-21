@@ -1,7 +1,6 @@
 using WebApp.CivilRegistration.Application.Interfaces.Mappers;
 using WebApp.CivilRegistration.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
-using SingleState = WebApp.CivilRegistration.Domain.Persons.ValueObjects.SingleState;
 
 namespace WebApp.CivilRegistration.Application.Services.Mappers;
 
@@ -41,47 +40,45 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 		);
 	}
 
-	private static MaritalStatusDto Map(SingleState value)
+	private static MaritalStatusDto Map(MaritalStatus.Single value)
 	{
-		return new SingleDto { };
+		return new MaritalStatusDto.Single { };
 	}
 
-	private static MaritalStatusDto Map(MarriedState value)
+	private static MaritalStatusDto Map(MaritalStatus.Married value)
 	{
-		return new MarriedDto { MarriageInformation = Map(value.MarriageInformation) };
+		return new MaritalStatusDto.Married(MarriageInformation: Map(value.MarriageInformation));
 	}
 
-	private static MaritalStatusDto Map(DivorcedState value)
+	private static MaritalStatusDto Map(MaritalStatus.Divorced value)
 	{
-		return new DivorcedDto
-		{
-			MarriageInformation = Map(value.MarriageInformation),
-			DivorceInformation = Map(value.DivorceInformation),
-		};
+		return new MaritalStatusDto.Divorced(
+			MarriageInformation: Map(value.MarriageInformation),
+			DivorceInformation: Map(value.DivorceInformation)
+		);
 	}
 
-	private static MaritalStatusDto Map(WidowedState value)
+	private static MaritalStatusDto Map(MaritalStatus.Widowed value)
 	{
-		return new WidowedDto
-		{
-			MarriageInformation = Map(value.MarriageInformation),
-			WidowhoodInformation = Map(value.WidowhoodInformation),
-		};
+		return new MaritalStatusDto.Widowed(
+			MarriageInformation: Map(value.MarriageInformation),
+			WidowhoodInformation: Map(value.WidowhoodInformation)
+		);
 	}
 
-	private static MaritalStatusDto Map(DeceasedState value)
+	private static MaritalStatusDto Map(MaritalStatus.Deceased value)
 	{
-		return new DeceasedDto { DeathInformation = Map(value.DeathInformation) };
+		return new MaritalStatusDto.Deceased(DeathInformation: Map(value.DeathInformation));
 	}
 
 	public MaritalStatusDto Map(MaritalStatus value)
 	{
 		return value.Match(
-			onSingleState: Map,
-			onMarriedState: Map,
-			onDivorcedState: Map,
-			onWidowedState: Map,
-			onDeceasedState: Map
+			onSingle: Map,
+			onMarried: Map,
+			onDivorced: Map,
+			onWidowed: Map,
+			onDeceased: Map
 		);
 	}
 }

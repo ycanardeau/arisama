@@ -18,33 +18,28 @@ public sealed record WidowhoodInformationDto(int WidowedAtAge, Guid WidowedFromI
 
 public sealed record DeathInformationDto(Guid DeathCertificateId, int DeceasedAtAge);
 
-[JsonDerivedType(typeof(SingleDto), typeDiscriminator: "Single")]
-[JsonDerivedType(typeof(MarriedDto), typeDiscriminator: "Married")]
-[JsonDerivedType(typeof(DivorcedDto), typeDiscriminator: "Divorced")]
-[JsonDerivedType(typeof(WidowedDto), typeDiscriminator: "Widowed")]
-[JsonDerivedType(typeof(DeceasedDto), typeDiscriminator: "Deceased")]
-public abstract record MaritalStatusDto;
-
-public sealed record SingleDto : MaritalStatusDto;
-
-public sealed record MarriedDto : MaritalStatusDto
+[JsonDerivedType(typeof(Single), typeDiscriminator: nameof(Single))]
+[JsonDerivedType(typeof(Married), typeDiscriminator: nameof(Married))]
+[JsonDerivedType(typeof(Divorced), typeDiscriminator: nameof(Divorced))]
+[JsonDerivedType(typeof(Widowed), typeDiscriminator: nameof(Widowed))]
+[JsonDerivedType(typeof(Deceased), typeDiscriminator: nameof(Deceased))]
+public abstract record MaritalStatusDto
 {
-	public required MarriageInformationDto MarriageInformation { get; init; }
-}
+	private MaritalStatusDto() { }
 
-public sealed record DivorcedDto : MaritalStatusDto
-{
-	public required MarriageInformationDto MarriageInformation { get; init; }
-	public required DivorceInformationDto DivorceInformation { get; init; }
-}
+	public sealed record Single() : MaritalStatusDto;
 
-public sealed record WidowedDto : MaritalStatusDto
-{
-	public required MarriageInformationDto MarriageInformation { get; init; }
-	public required WidowhoodInformationDto WidowhoodInformation { get; init; }
-}
+	public sealed record Married(MarriageInformationDto MarriageInformation) : MaritalStatusDto;
 
-public sealed record DeceasedDto : MaritalStatusDto
-{
-	public required DeathInformationDto DeathInformation { get; init; }
+	public sealed record Divorced(
+		MarriageInformationDto MarriageInformation,
+		DivorceInformationDto DivorceInformation
+	) : MaritalStatusDto;
+
+	public sealed record Widowed(
+		MarriageInformationDto MarriageInformation,
+		WidowhoodInformationDto WidowhoodInformation
+	) : MaritalStatusDto;
+
+	public sealed record Deceased(DeathInformationDto DeathInformation) : MaritalStatusDto;
 }

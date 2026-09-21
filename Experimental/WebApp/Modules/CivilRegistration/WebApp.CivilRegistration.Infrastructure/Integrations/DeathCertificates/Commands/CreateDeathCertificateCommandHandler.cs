@@ -26,7 +26,7 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 			);
 		}
 
-		var widowed = deceased.MaritalStateMachine.CurrentState is not MarriedState state
+		var widowed = deceased.MaritalStateMachine.CurrentState is not MaritalStatus.Married state
 			? null
 			: await dbContext
 				.Persons.Include(x => x.MaritalStateMachine)
