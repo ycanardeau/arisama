@@ -23,7 +23,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
 	// https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/1607#issuecomment-607170559
-	options.CustomSchemaIds(type => type.ToString());
+	// Nested types render with a '+' separator (e.g. NotebookEventDto+NoteCopiedEventDto),
+	// which is invalid in an OpenAPI schema name; replace it with '.'.
+	options.CustomSchemaIds(type => type.ToString().Replace('+', '.'));
 
 	// https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/2343#issuecomment-1061233608
 	options.DescribeAllParametersInCamelCase();
