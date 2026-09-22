@@ -2,56 +2,51 @@ using WebApp.CivilRegistration.Orleans.Infrastructure.Surrogates;
 
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Converters;
 
-file static class WebAppErrorMapping
+file static class CivilRegistrationOrleansErrorMapping
 {
-	public static WebAppErrorKind ToKind(WebAppError error)
+	public static CivilRegistrationOrleansErrorKind ToKind(CivilRegistrationOrleansError error)
 	{
 		return error.Match(
-			onBadRequest: _ => WebAppErrorKind.BadRequest,
-			onUnauthorized: _ => WebAppErrorKind.Unauthorized,
-			onForbidden: _ => WebAppErrorKind.Forbidden,
-			onNotFound: _ => WebAppErrorKind.NotFound,
-			onUnprocessableEntity: _ => WebAppErrorKind.UnprocessableEntity,
-			onUnexpected: _ => WebAppErrorKind.Unexpected
+			onAlreadyInitialized: _ => CivilRegistrationOrleansErrorKind.AlreadyInitialized,
+			onInvalidMaritalState: _ => CivilRegistrationOrleansErrorKind.InvalidMaritalState
 		);
 	}
 
-	public static WebAppError FromKind(WebAppErrorKind kind)
+	public static CivilRegistrationOrleansError FromKind(CivilRegistrationOrleansErrorKind kind)
 	{
 		return kind switch
 		{
-			WebAppErrorKind.BadRequest => new WebAppError.BadRequest(),
-			WebAppErrorKind.Unauthorized => new WebAppError.Unauthorized(),
-			WebAppErrorKind.Forbidden => new WebAppError.Forbidden(),
-			WebAppErrorKind.NotFound => new WebAppError.NotFound(),
-			WebAppErrorKind.UnprocessableEntity => new WebAppError.UnprocessableEntity(),
-			_ => new WebAppError.Unexpected(),
+			CivilRegistrationOrleansErrorKind.AlreadyInitialized =>
+				new CivilRegistrationOrleansError.AlreadyInitialized(),
+			_ => new CivilRegistrationOrleansError.InvalidMaritalState(),
 		};
 	}
 }
 
 [RegisterConverter]
 internal sealed class ResultSurrogateConverter
-	: IConverter<Result<Unit, WebAppError>, ResultSurrogate>
+	: IConverter<Result<Unit, CivilRegistrationOrleansError>, ResultSurrogate>
 {
-	public Result<Unit, WebAppError> ConvertFromSurrogate(in ResultSurrogate surrogate)
+	public Result<Unit, CivilRegistrationOrleansError> ConvertFromSurrogate(
+		in ResultSurrogate surrogate
+	)
 	{
 		if (surrogate.IsOk)
 		{
 			return Ok();
 		}
 
-		return WebAppErrorMapping.FromKind(surrogate.Error);
+		return CivilRegistrationOrleansErrorMapping.FromKind(surrogate.Error);
 	}
 
-	public ResultSurrogate ConvertToSurrogate(in Result<Unit, WebAppError> value)
+	public ResultSurrogate ConvertToSurrogate(in Result<Unit, CivilRegistrationOrleansError> value)
 	{
 		return value.Fold(
 			onOk: _ => new ResultSurrogate { IsOk = true },
 			onError: error => new ResultSurrogate
 			{
 				IsOk = false,
-				Error = WebAppErrorMapping.ToKind(error),
+				Error = CivilRegistrationOrleansErrorMapping.ToKind(error),
 			}
 		);
 	}

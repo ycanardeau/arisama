@@ -7,7 +7,10 @@ internal class MarriageCertificateGrain(
 		IPersistentState<MarriageCertificateState> state
 ) : Grain, IMarriageCertificateGrain
 {
-	public Task<Result<Unit, WebAppError>> Marry(IPersonGrain husband, IPersonGrain wife)
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Marry(
+		IPersonGrain husband,
+		IPersonGrain wife
+	)
 	{
 		return husband
 			.Marry(marryWith: wife.GetPrimaryKey())

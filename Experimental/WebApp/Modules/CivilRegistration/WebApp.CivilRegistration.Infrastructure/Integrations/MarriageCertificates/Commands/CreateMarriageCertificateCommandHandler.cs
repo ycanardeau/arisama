@@ -11,10 +11,10 @@ namespace WebApp.CivilRegistration.Infrastructure.Integrations.MarriageCertifica
 internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbContext)
 	: IRequestHandler<
 		CreateMarriageCertificateCommand,
-		Result<CreateMarriageCertificateResponseDto, WebAppError>
+		Result<CreateMarriageCertificateResponseDto, CivilRegistrationError>
 	>
 {
-	private async Task<Result<Person, WebAppError>> GetPersonAsync(
+	private async Task<Result<Person, CivilRegistrationError>> GetPersonAsync(
 		PersonId personId,
 		CancellationToken cancellationToken
 	)
@@ -23,13 +23,10 @@ internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbCo
 			.Persons.Include(x => x.MaritalStateMachine)
 			.SingleOrDefaultAsync(x => x.Id == personId, cancellationToken);
 
-		return person is null
-			? NotFound<Person>( /* $"Person {personId} not found" */
-			)
-			: person;
+		return person is null ? new CivilRegistrationError.PersonNotFound() : person;
 	}
 
-	public Task<Result<CreateMarriageCertificateResponseDto, WebAppError>> Handle(
+	public Task<Result<CreateMarriageCertificateResponseDto, CivilRegistrationError>> Handle(
 		CreateMarriageCertificateCommand request,
 		CancellationToken cancellationToken
 	)

@@ -9,9 +9,9 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Queries;
 
 internal class GetPersonQueryHandler(ApplicationDbContext dbContext, IPersonMapper personMapper)
-	: IRequestHandler<GetPersonQuery, Result<GetPersonResponseDto, WebAppError>>
+	: IRequestHandler<GetPersonQuery, Result<GetPersonResponseDto, CivilRegistrationError>>
 {
-	private async Task<Result<Person, WebAppError>> GetPerson(
+	private async Task<Result<Person, CivilRegistrationError>> GetPerson(
 		GetPersonQuery request,
 		CancellationToken cancellationToken
 	)
@@ -23,14 +23,13 @@ internal class GetPersonQueryHandler(ApplicationDbContext dbContext, IPersonMapp
 
 		if (person is null)
 		{
-			return NotFound<Person>( /* $"Person {request.Id} not found" */
-			);
+			return new CivilRegistrationError.PersonNotFound();
 		}
 
 		return person;
 	}
 
-	public Task<Result<GetPersonResponseDto, WebAppError>> Handle(
+	public Task<Result<GetPersonResponseDto, CivilRegistrationError>> Handle(
 		GetPersonQuery request,
 		CancellationToken cancellationToken
 	)

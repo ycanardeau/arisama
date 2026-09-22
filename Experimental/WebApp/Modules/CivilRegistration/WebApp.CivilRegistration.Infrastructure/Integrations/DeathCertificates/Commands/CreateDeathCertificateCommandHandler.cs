@@ -10,10 +10,10 @@ namespace WebApp.CivilRegistration.Infrastructure.Integrations.DeathCertificates
 internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbContext)
 	: IRequestHandler<
 		CreateDeathCertificateCommand,
-		Result<CreateDeathCertificateResponseDto, WebAppError>
+		Result<CreateDeathCertificateResponseDto, CivilRegistrationError>
 	>
 {
-	public async Task<Result<CreateDeathCertificateResponseDto, WebAppError>> Handle(
+	public async Task<Result<CreateDeathCertificateResponseDto, CivilRegistrationError>> Handle(
 		CreateDeathCertificateCommand request,
 		CancellationToken cancellationToken
 	)
@@ -24,8 +24,7 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 
 		if (deceased is null)
 		{
-			return NotFound<CreateDeathCertificateResponseDto>( /* $"Person {request.DeceasedId} not found" */
-			);
+			return new CivilRegistrationError.PersonNotFound();
 		}
 
 		var widowed = deceased.MaritalStateMachine.CurrentState is not MaritalStatus.Married state

@@ -7,10 +7,10 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Integrations.Persons.Q
 internal class GetCurrentMaritalStatusEndpoint()
 	: IRequestHandler<
 		GetCurrentMaritalStatusQuery,
-		Result<GetCurrentMaritalStatusResponseDto, WebAppError>
+		Result<GetCurrentMaritalStatusResponseDto, CivilRegistrationOrleansError>
 	>
 {
-	public Task<Result<GetCurrentMaritalStatusResponseDto, WebAppError>> Handle(
+	public Task<Result<GetCurrentMaritalStatusResponseDto, CivilRegistrationOrleansError>> Handle(
 		GetCurrentMaritalStatusQuery request,
 		CancellationToken cancellationToken
 	)

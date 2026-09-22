@@ -8,10 +8,10 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Integrations.MarriageC
 internal class CreateMarriageCertificateCommandHandler(IGrainFactory grains)
 	: IRequestHandler<
 		CreateMarriageCertificateCommand,
-		Result<CreateMarriageCertificateResponseDto, WebAppError>
+		Result<CreateMarriageCertificateResponseDto, CivilRegistrationOrleansError>
 	>
 {
-	public Task<Result<CreateMarriageCertificateResponseDto, WebAppError>> Handle(
+	public Task<Result<CreateMarriageCertificateResponseDto, CivilRegistrationOrleansError>> Handle(
 		CreateMarriageCertificateCommand request,
 		CancellationToken cancellationToken
 	)

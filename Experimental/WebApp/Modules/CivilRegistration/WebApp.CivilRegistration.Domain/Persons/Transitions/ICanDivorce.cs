@@ -7,7 +7,7 @@ internal interface ICanDivorce
 	: IMaritalTransition<DivorceCommand, MaritalStatus.Divorced>,
 		IHasMarriageInformation
 {
-	Result<MaritalStatus.Divorced, WebAppError> IMaritalTransition<
+	Result<MaritalStatus.Divorced, CivilRegistrationError> IMaritalTransition<
 		DivorceCommand,
 		MaritalStatus.Divorced
 	>.Execute(MaritalStateMachine stateMachine, DivorceCommand command)

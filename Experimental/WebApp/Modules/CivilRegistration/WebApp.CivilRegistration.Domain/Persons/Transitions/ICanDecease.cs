@@ -5,7 +5,7 @@ namespace WebApp.CivilRegistration.Domain.Persons.Transitions;
 
 internal interface ICanDecease : IMaritalTransition<DeceaseCommand, MaritalStatus.Deceased>
 {
-	Result<MaritalStatus.Deceased, WebAppError> IMaritalTransition<
+	Result<MaritalStatus.Deceased, CivilRegistrationError> IMaritalTransition<
 		DeceaseCommand,
 		MaritalStatus.Deceased
 	>.Execute(MaritalStateMachine stateMachine, DeceaseCommand command)

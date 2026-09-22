@@ -13,10 +13,10 @@ internal class GetCurrentMaritalStatusQueryHandler(
 )
 	: IRequestHandler<
 		GetCurrentMaritalStatusQuery,
-		Result<GetCurrentMaritalStatusResponseDto, WebAppError>
+		Result<GetCurrentMaritalStatusResponseDto, CivilRegistrationError>
 	>
 {
-	public async Task<Result<GetCurrentMaritalStatusResponseDto, WebAppError>> Handle(
+	public async Task<Result<GetCurrentMaritalStatusResponseDto, CivilRegistrationError>> Handle(
 		GetCurrentMaritalStatusQuery request,
 		CancellationToken cancellationToken
 	)
@@ -27,8 +27,7 @@ internal class GetCurrentMaritalStatusQueryHandler(
 
 		if (person is null)
 		{
-			return NotFound<GetCurrentMaritalStatusResponseDto>( /* $"Person {request.Id} not found" */
-			);
+			return new CivilRegistrationError.PersonNotFound();
 		}
 
 		return new GetCurrentMaritalStatusResponseDto(

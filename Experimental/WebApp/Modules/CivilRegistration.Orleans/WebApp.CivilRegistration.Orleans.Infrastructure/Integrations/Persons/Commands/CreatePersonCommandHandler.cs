@@ -6,9 +6,12 @@ using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Integrations.Persons.Commands;
 
 internal class CreatePersonCommandHandler(IGrainFactory grains)
-	: IRequestHandler<CreatePersonCommand, Result<CreatePersonResponseDto, WebAppError>>
+	: IRequestHandler<
+		CreatePersonCommand,
+		Result<CreatePersonResponseDto, CivilRegistrationOrleansError>
+	>
 {
-	public Task<Result<CreatePersonResponseDto, WebAppError>> Handle(
+	public Task<Result<CreatePersonResponseDto, CivilRegistrationOrleansError>> Handle(
 		CreatePersonCommand request,
 		CancellationToken cancellationToken
 	)

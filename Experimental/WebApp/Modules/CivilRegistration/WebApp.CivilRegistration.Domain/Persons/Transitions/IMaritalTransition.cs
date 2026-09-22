@@ -9,5 +9,8 @@ internal interface IMaritalTransition<TCommand, TNextState> : IMaritalTransition
 	where TCommand : MaritalCommand
 	where TNextState : MaritalStatus
 {
-	Result<TNextState, WebAppError> Execute(MaritalStateMachine stateMachine, TCommand command);
+	Result<TNextState, CivilRegistrationError> Execute(
+		MaritalStateMachine stateMachine,
+		TCommand command
+	);
 }

@@ -1,16 +1,12 @@
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Surrogates;
 
-// Orleans-serializable discriminator for WebAppError, which lives in the Orleans-free
+// Orleans-serializable discriminator for CivilRegistrationOrleansError, which lives in the Orleans-free
 // WebApp.Shared kernel and therefore cannot carry [GenerateSerializer] itself.
 [GenerateSerializer]
-internal enum WebAppErrorKind : byte
+internal enum CivilRegistrationOrleansErrorKind : byte
 {
-	BadRequest,
-	Unauthorized,
-	Forbidden,
-	NotFound,
-	UnprocessableEntity,
-	Unexpected,
+	AlreadyInitialized,
+	InvalidMaritalState,
 }
 
 [GenerateSerializer]
@@ -21,5 +17,5 @@ internal struct ResultSurrogate
 	public bool IsOk;
 
 	[Id(1)]
-	public WebAppErrorKind Error;
+	public CivilRegistrationOrleansErrorKind Error;
 }

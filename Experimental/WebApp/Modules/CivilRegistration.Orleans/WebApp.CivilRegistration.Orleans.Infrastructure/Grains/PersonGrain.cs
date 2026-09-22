@@ -17,27 +17,27 @@ internal class PersonGrain(
 		return base.OnActivateAsync(cancellationToken);
 	}
 
-	public Task<Result<Unit, WebAppError>> Initialize()
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Initialize()
 	{
 		return _maritalStateMachineGrain.Initialize();
 	}
 
-	public Task<Result<Unit, WebAppError>> Marry(Guid marryWith)
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Marry(Guid marryWith)
 	{
 		return _maritalStateMachineGrain.Marry(marryWith);
 	}
 
-	public Task<Result<Unit, WebAppError>> Divorce()
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Divorce()
 	{
 		return _maritalStateMachineGrain.Divorce();
 	}
 
-	public Task<Result<Unit, WebAppError>> BecomeWidowed()
+	public Task<Result<Unit, CivilRegistrationOrleansError>> BecomeWidowed()
 	{
 		return _maritalStateMachineGrain.BecomeWidowed();
 	}
 
-	public Task<Result<Unit, WebAppError>> Decease()
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Decease()
 	{
 		return _maritalStateMachineGrain.Decease();
 	}

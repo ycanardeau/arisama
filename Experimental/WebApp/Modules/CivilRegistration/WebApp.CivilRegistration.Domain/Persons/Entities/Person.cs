@@ -22,14 +22,14 @@ internal class Person : Entity<PersonId>
 		public MaritalStateMachine MaritalStateMachine { get; init; } = default!;
 	}
 
-	private static Result<CreatePersonContext, WebAppError> CreateMaritalStateMachine(
+	private static Result<CreatePersonContext, CivilRegistrationError> CreateMaritalStateMachine(
 		CreatePersonContext context
 	)
 	{
 		return MaritalStateMachine.Create().Map(x => context with { MaritalStateMachine = x });
 	}
 
-	public static Result<Person, WebAppError> Create(Age age, Gender gender)
+	public static Result<Person, CivilRegistrationError> Create(Age age, Gender gender)
 	{
 		return Ok(new CreatePersonContext())
 			.FlatMap(CreateMaritalStateMachine)
@@ -42,22 +42,22 @@ internal class Person : Entity<PersonId>
 			});
 	}
 
-	public Result<Person, WebAppError> Marry(MarryCommand command)
+	public Result<Person, CivilRegistrationError> Marry(MarryCommand command)
 	{
 		return MaritalStateMachine.Marry(command).Map(x => this);
 	}
 
-	public Result<Person, WebAppError> Divorce(DivorceCommand command)
+	public Result<Person, CivilRegistrationError> Divorce(DivorceCommand command)
 	{
 		return MaritalStateMachine.Divorce(command).Map(x => this);
 	}
 
-	public Result<Person, WebAppError> BecomeWidowed(BecomeWidowedCommand command)
+	public Result<Person, CivilRegistrationError> BecomeWidowed(BecomeWidowedCommand command)
 	{
 		return MaritalStateMachine.BecomeWidowed(command).Map(x => this);
 	}
 
-	public Result<Person, WebAppError> Decease(DeceaseCommand command)
+	public Result<Person, CivilRegistrationError> Decease(DeceaseCommand command)
 	{
 		return MaritalStateMachine.Decease(command).Map(x => this);
 	}

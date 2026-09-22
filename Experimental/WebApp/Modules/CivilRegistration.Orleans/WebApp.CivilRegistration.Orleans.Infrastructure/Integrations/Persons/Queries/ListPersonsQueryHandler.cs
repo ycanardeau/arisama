@@ -5,9 +5,12 @@ using WebApp.CivilRegistration.Orleans.Contracts.Persons.Queries;
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Integrations.Persons.Queries;
 
 internal class ListPersonsQueryHandler()
-	: IRequestHandler<ListPersonsQuery, Result<ListPersonsResponseDto, WebAppError>>
+	: IRequestHandler<
+		ListPersonsQuery,
+		Result<ListPersonsResponseDto, CivilRegistrationOrleansError>
+	>
 {
-	public Task<Result<ListPersonsResponseDto, WebAppError>> Handle(
+	public Task<Result<ListPersonsResponseDto, CivilRegistrationOrleansError>> Handle(
 		ListPersonsQuery request,
 		CancellationToken cancellationToken
 	)

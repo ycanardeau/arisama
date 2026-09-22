@@ -14,7 +14,7 @@ internal class DeathCertificate : Entity<DeathCertificateId>
 
 	private DeathCertificate() { }
 
-	private Result<DeathCertificate, WebAppError> Decease()
+	private Result<DeathCertificate, CivilRegistrationError> Decease()
 	{
 		return Deceased
 			.Decease(new DeceaseCommand(this))
@@ -22,7 +22,7 @@ internal class DeathCertificate : Entity<DeathCertificateId>
 			.Map(x => this);
 	}
 
-	public static Result<DeathCertificate, WebAppError> Create(CreateCommand command)
+	public static Result<DeathCertificate, CivilRegistrationError> Create(CreateCommand command)
 	{
 		var deathCertificate = new DeathCertificate
 		{

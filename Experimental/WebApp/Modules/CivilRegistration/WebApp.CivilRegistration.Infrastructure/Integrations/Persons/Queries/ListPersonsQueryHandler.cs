@@ -7,9 +7,9 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Queries;
 
 internal class ListPersonsQueryHandler(ApplicationDbContext dbContext, IPersonMapper personMapper)
-	: IRequestHandler<ListPersonsQuery, Result<ListPersonsResponseDto, WebAppError>>
+	: IRequestHandler<ListPersonsQuery, Result<ListPersonsResponseDto, CivilRegistrationError>>
 {
-	public async Task<Result<ListPersonsResponseDto, WebAppError>> Handle(
+	public async Task<Result<ListPersonsResponseDto, CivilRegistrationError>> Handle(
 		ListPersonsQuery request,
 		CancellationToken cancellationToken
 	)

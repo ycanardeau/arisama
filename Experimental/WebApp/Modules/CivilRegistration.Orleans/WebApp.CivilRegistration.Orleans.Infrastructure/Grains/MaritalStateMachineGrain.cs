@@ -14,11 +14,11 @@ internal class MaritalStateMachineGrain(
 		state.State.States.Add(maritalStatus);
 	}
 
-	public Task<Result<Unit, WebAppError>> Initialize()
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Initialize()
 	{
 		if (CurrentState is not null)
 		{
-			return UnprocessableEntity().AsTask();
+			return Fail(new CivilRegistrationOrleansError.AlreadyInitialized()).AsTask();
 		}
 
 		AddState(new Single { Version = 1 });
@@ -26,11 +26,11 @@ internal class MaritalStateMachineGrain(
 		return Ok().AsTask();
 	}
 
-	public Task<Result<Unit, WebAppError>> Marry(Guid marryWith)
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Marry(Guid marryWith)
 	{
 		if (CurrentState is not ICanMarry currentState)
 		{
-			return UnprocessableEntity().AsTask();
+			return Fail(new CivilRegistrationOrleansError.InvalidMaritalState()).AsTask();
 		}
 
 		AddState(new Married { Version = currentState.Version + 1, MarryWith = marryWith });
@@ -38,11 +38,11 @@ internal class MaritalStateMachineGrain(
 		return Ok().AsTask();
 	}
 
-	public Task<Result<Unit, WebAppError>> Divorce()
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Divorce()
 	{
 		if (CurrentState is not ICanDivorce currentState)
 		{
-			return UnprocessableEntity().AsTask();
+			return Fail(new CivilRegistrationOrleansError.InvalidMaritalState()).AsTask();
 		}
 
 		AddState(new Divorced { Version = currentState.Version + 1 });
@@ -50,11 +50,11 @@ internal class MaritalStateMachineGrain(
 		return Ok().AsTask();
 	}
 
-	public Task<Result<Unit, WebAppError>> BecomeWidowed()
+	public Task<Result<Unit, CivilRegistrationOrleansError>> BecomeWidowed()
 	{
 		if (CurrentState is not ICanBecomeWidowed currentState)
 		{
-			return UnprocessableEntity().AsTask();
+			return Fail(new CivilRegistrationOrleansError.InvalidMaritalState()).AsTask();
 		}
 
 		AddState(new Widowed { Version = currentState.Version + 1 });
@@ -62,11 +62,11 @@ internal class MaritalStateMachineGrain(
 		return Ok().AsTask();
 	}
 
-	public Task<Result<Unit, WebAppError>> Decease()
+	public Task<Result<Unit, CivilRegistrationOrleansError>> Decease()
 	{
 		if (CurrentState is not ICanDecease currentState)
 		{
-			return UnprocessableEntity().AsTask();
+			return Fail(new CivilRegistrationOrleansError.InvalidMaritalState()).AsTask();
 		}
 
 		AddState(new Deceased { Version = currentState.Version + 1 });

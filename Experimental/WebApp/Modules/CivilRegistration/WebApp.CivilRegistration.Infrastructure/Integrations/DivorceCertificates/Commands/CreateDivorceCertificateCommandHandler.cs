@@ -10,10 +10,10 @@ namespace WebApp.CivilRegistration.Infrastructure.Integrations.DivorceCertificat
 internal class CreateDivorceCertificateCommandHandler(ApplicationDbContext dbContext)
 	: IRequestHandler<
 		CreateDivorceCertificateCommand,
-		Result<CreateDivorceCertificateResponseDto, WebAppError>
+		Result<CreateDivorceCertificateResponseDto, CivilRegistrationError>
 	>
 {
-	public async Task<Result<CreateDivorceCertificateResponseDto, WebAppError>> Handle(
+	public async Task<Result<CreateDivorceCertificateResponseDto, CivilRegistrationError>> Handle(
 		CreateDivorceCertificateCommand request,
 		CancellationToken cancellationToken
 	)
@@ -28,8 +28,7 @@ internal class CreateDivorceCertificateCommandHandler(ApplicationDbContext dbCon
 
 		if (marriageCertificate is null)
 		{
-			return NotFound<CreateDivorceCertificateResponseDto>( /* marriage certificate not found */
-			);
+			return new CivilRegistrationError.MarriageCertificateNotFound();
 		}
 
 		return await DivorceCertificate

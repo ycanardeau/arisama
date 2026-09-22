@@ -6,17 +6,17 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 internal interface IMaritalStateMachineGrain : IGrainWithGuidKey
 {
 	[Alias("Initialize")]
-	Task<Result<Unit, WebAppError>> Initialize();
+	Task<Result<Unit, CivilRegistrationOrleansError>> Initialize();
 
 	[Alias("Marray")]
-	Task<Result<Unit, WebAppError>> Marry(Guid marryWith);
+	Task<Result<Unit, CivilRegistrationOrleansError>> Marry(Guid marryWith);
 
 	[Alias("Divorce")]
-	Task<Result<Unit, WebAppError>> Divorce();
+	Task<Result<Unit, CivilRegistrationOrleansError>> Divorce();
 
 	[Alias("BecomeWidowed")]
-	Task<Result<Unit, WebAppError>> BecomeWidowed();
+	Task<Result<Unit, CivilRegistrationOrleansError>> BecomeWidowed();
 
 	[Alias("Decease")]
-	Task<Result<Unit, WebAppError>> Decease();
+	Task<Result<Unit, CivilRegistrationOrleansError>> Decease();
 }
