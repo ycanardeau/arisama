@@ -3,6 +3,7 @@ using WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.Persons.Entities;
+using WebApp.CivilRegistration.Domain.Persons.Transitions;
 
 namespace WebApp.CivilRegistration.Domain.Persons.ValueObjects;
 
