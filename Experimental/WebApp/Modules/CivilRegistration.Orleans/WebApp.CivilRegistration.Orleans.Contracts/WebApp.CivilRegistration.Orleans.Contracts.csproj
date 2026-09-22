@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<ItemGroup>
 		<PackageReference Include="MediatR" />
-		<PackageReference Include="Nut.Results" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="../../../WebApp.Shared/WebApp.Shared.csproj" />
 	</ItemGroup>
 </Project>

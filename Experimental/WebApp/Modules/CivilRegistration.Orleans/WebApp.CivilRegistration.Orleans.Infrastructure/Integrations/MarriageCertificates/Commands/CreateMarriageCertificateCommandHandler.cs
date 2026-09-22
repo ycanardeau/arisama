@@ -1,5 +1,4 @@
 using MediatR;
-using Nut.Results;
 using WebApp.CivilRegistration.Orleans.Contracts.MarriageCertificates.Commands;
 using WebApp.CivilRegistration.Orleans.Contracts.MarriageCertificates.Dtos;
 using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
@@ -9,10 +8,10 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Integrations.MarriageC
 internal class CreateMarriageCertificateCommandHandler(IGrainFactory grains)
 	: IRequestHandler<
 		CreateMarriageCertificateCommand,
-		Result<CreateMarriageCertificateResponseDto>
+		Result<CreateMarriageCertificateResponseDto, WebAppError>
 	>
 {
-	public Task<Result<CreateMarriageCertificateResponseDto>> Handle(
+	public Task<Result<CreateMarriageCertificateResponseDto, WebAppError>> Handle(
 		CreateMarriageCertificateCommand request,
 		CancellationToken cancellationToken
 	)
@@ -27,8 +26,8 @@ internal class CreateMarriageCertificateCommandHandler(IGrainFactory grains)
 
 		return marriageCertificateGrain
 			.Marry(husbandGrain, wifeGrain)
-			.FlatMap(() =>
-				Result.Ok(
+			.FlatMap(_ =>
+				Ok(
 					new CreateMarriageCertificateResponseDto(
 						Id: marriageCertificateGrain.GetPrimaryKey()
 					)

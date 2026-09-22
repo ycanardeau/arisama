@@ -10,3 +10,7 @@ indent_size = 4
 
 [*.cs]
 csharp_style_namespace_declarations=file_scoped:suggestion
+
+# Aigamo.Results conversion-style analyzer (ARS001/ARS002): prefer the implicit
+# conversion to Result over explicit Result.Ok/Result.Error factory calls.
+aigamo_results_conversion_style = implicit

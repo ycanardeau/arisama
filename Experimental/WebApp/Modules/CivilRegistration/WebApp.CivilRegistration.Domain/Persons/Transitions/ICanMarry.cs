@@ -5,14 +5,13 @@ namespace WebApp.CivilRegistration.Domain.Persons.Transitions;
 
 internal interface ICanMarry : IMaritalTransition<MarryCommand, MaritalStatus.Married>
 {
-	Result<MaritalStatus.Married> IMaritalTransition<MarryCommand, MaritalStatus.Married>.Execute(
-		MaritalStateMachine stateMachine,
-		MarryCommand command
-	)
+	Result<MaritalStatus.Married, WebAppError> IMaritalTransition<
+		MarryCommand,
+		MaritalStatus.Married
+	>.Execute(MaritalStateMachine stateMachine, MarryCommand command)
 	{
 		return !stateMachine.Person.CanMarryAtCurrentAge
-			? Result.Error<MaritalStatus.Married>(
-				new InvalidOperationException("Not of marriageable age")
+			? UnprocessableEntity<MaritalStatus.Married>( /* "Not of marriageable age" */
 			)
 			: new MaritalStatus.Married(
 				MarriageInformation: new(

@@ -1,4 +1,3 @@
-using Nut.Results;
 using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains;
@@ -8,10 +7,10 @@ internal class MarriageCertificateGrain(
 		IPersistentState<MarriageCertificateState> state
 ) : Grain, IMarriageCertificateGrain
 {
-	public Task<Result> Marry(IPersonGrain husband, IPersonGrain wife)
+	public Task<Result<Unit, WebAppError>> Marry(IPersonGrain husband, IPersonGrain wife)
 	{
 		return husband
 			.Marry(marryWith: wife.GetPrimaryKey())
-			.FlatMap(() => wife.Marry(marryWith: husband.GetPrimaryKey()));
+			.FlatMap(_ => wife.Marry(marryWith: husband.GetPrimaryKey()));
 	}
 }

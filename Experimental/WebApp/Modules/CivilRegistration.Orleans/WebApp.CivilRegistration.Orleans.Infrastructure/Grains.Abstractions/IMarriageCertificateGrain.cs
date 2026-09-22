@@ -1,5 +1,3 @@
-using Nut.Results;
-
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 
 [Alias(
@@ -8,5 +6,5 @@ namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 internal interface IMarriageCertificateGrain : IGrainWithGuidKey
 {
 	[Alias("Marry")]
-	Task<Result> Marry(IPersonGrain husband, IPersonGrain wife);
+	Task<Result<Unit, WebAppError>> Marry(IPersonGrain husband, IPersonGrain wife);
 }

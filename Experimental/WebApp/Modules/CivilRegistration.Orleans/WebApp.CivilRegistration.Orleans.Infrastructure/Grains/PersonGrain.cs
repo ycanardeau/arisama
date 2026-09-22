@@ -1,4 +1,3 @@
-using Nut.Results;
 using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains;
@@ -18,27 +17,27 @@ internal class PersonGrain(
 		return base.OnActivateAsync(cancellationToken);
 	}
 
-	public Task<Result> Initialize()
+	public Task<Result<Unit, WebAppError>> Initialize()
 	{
 		return _maritalStateMachineGrain.Initialize();
 	}
 
-	public Task<Result> Marry(Guid marryWith)
+	public Task<Result<Unit, WebAppError>> Marry(Guid marryWith)
 	{
 		return _maritalStateMachineGrain.Marry(marryWith);
 	}
 
-	public Task<Result> Divorce()
+	public Task<Result<Unit, WebAppError>> Divorce()
 	{
 		return _maritalStateMachineGrain.Divorce();
 	}
 
-	public Task<Result> BecomeWidowed()
+	public Task<Result<Unit, WebAppError>> BecomeWidowed()
 	{
 		return _maritalStateMachineGrain.BecomeWidowed();
 	}
 
-	public Task<Result> Decease()
+	public Task<Result<Unit, WebAppError>> Decease()
 	{
 		return _maritalStateMachineGrain.Decease();
 	}

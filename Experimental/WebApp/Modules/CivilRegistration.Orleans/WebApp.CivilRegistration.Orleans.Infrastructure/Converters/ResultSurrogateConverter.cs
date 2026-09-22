@@ -1,41 +1,58 @@
-using Nut.Results;
 using WebApp.CivilRegistration.Orleans.Infrastructure.Surrogates;
 
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Converters;
 
-[RegisterConverter]
-internal sealed class ResultSurrogateConverter : IConverter<Result, ResultSurrogate>
+file static class WebAppErrorMapping
 {
-	public Result ConvertFromSurrogate(in ResultSurrogate surrogate)
+	public static WebAppErrorKind ToKind(WebAppError error)
 	{
-		return surrogate.IsOk ? Result.Ok() : Result.Error(surrogate.Exception);
+		return error.Match(
+			onBadRequest: _ => WebAppErrorKind.BadRequest,
+			onUnauthorized: _ => WebAppErrorKind.Unauthorized,
+			onForbidden: _ => WebAppErrorKind.Forbidden,
+			onNotFound: _ => WebAppErrorKind.NotFound,
+			onUnprocessableEntity: _ => WebAppErrorKind.UnprocessableEntity,
+			onUnexpected: _ => WebAppErrorKind.Unexpected
+		);
 	}
 
-	public ResultSurrogate ConvertToSurrogate(in Result value)
+	public static WebAppError FromKind(WebAppErrorKind kind)
 	{
-		return new ResultSurrogate
+		return kind switch
 		{
-			IsOk = value.IsOk,
-			Exception = value.IsOk ? null! : value.GetError(),
+			WebAppErrorKind.BadRequest => new WebAppError.BadRequest(),
+			WebAppErrorKind.Unauthorized => new WebAppError.Unauthorized(),
+			WebAppErrorKind.Forbidden => new WebAppError.Forbidden(),
+			WebAppErrorKind.NotFound => new WebAppError.NotFound(),
+			WebAppErrorKind.UnprocessableEntity => new WebAppError.UnprocessableEntity(),
+			_ => new WebAppError.Unexpected(),
 		};
 	}
 }
 
 [RegisterConverter]
-internal sealed class ResultSurrogateConverter<T> : IConverter<Result<T>, ResultSurrogate<T>>
+internal sealed class ResultSurrogateConverter
+	: IConverter<Result<Unit, WebAppError>, ResultSurrogate>
 {
-	public Result<T> ConvertFromSurrogate(in ResultSurrogate<T> surrogate)
+	public Result<Unit, WebAppError> ConvertFromSurrogate(in ResultSurrogate surrogate)
 	{
-		return surrogate.IsOk ? Result.Ok(surrogate.Value) : Result.Error<T>(surrogate.Exception);
+		if (surrogate.IsOk)
+		{
+			return Ok();
+		}
+
+		return WebAppErrorMapping.FromKind(surrogate.Error);
 	}
 
-	public ResultSurrogate<T> ConvertToSurrogate(in Result<T> value)
+	public ResultSurrogate ConvertToSurrogate(in Result<Unit, WebAppError> value)
 	{
-		return new ResultSurrogate<T>
-		{
-			IsOk = value.IsOk,
-			Exception = value.IsOk ? null! : value.GetError(),
-			Value = value.IsOk ? value.Get() : default!,
-		};
+		return value.Fold(
+			onOk: _ => new ResultSurrogate { IsOk = true },
+			onError: error => new ResultSurrogate
+			{
+				IsOk = false,
+				Error = WebAppErrorMapping.ToKind(error),
+			}
+		);
 	}
 }

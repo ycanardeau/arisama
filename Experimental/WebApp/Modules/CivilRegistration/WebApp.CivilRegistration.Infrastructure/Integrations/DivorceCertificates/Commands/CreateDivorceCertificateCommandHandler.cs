@@ -8,9 +8,12 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.DivorceCertificates.Commands;
 
 internal class CreateDivorceCertificateCommandHandler(ApplicationDbContext dbContext)
-	: IRequestHandler<CreateDivorceCertificateCommand, Result<CreateDivorceCertificateResponseDto>>
+	: IRequestHandler<
+		CreateDivorceCertificateCommand,
+		Result<CreateDivorceCertificateResponseDto, WebAppError>
+	>
 {
-	public async Task<Result<CreateDivorceCertificateResponseDto>> Handle(
+	public async Task<Result<CreateDivorceCertificateResponseDto, WebAppError>> Handle(
 		CreateDivorceCertificateCommand request,
 		CancellationToken cancellationToken
 	)
@@ -25,8 +28,7 @@ internal class CreateDivorceCertificateCommandHandler(ApplicationDbContext dbCon
 
 		if (marriageCertificate is null)
 		{
-			return Result.Error<CreateDivorceCertificateResponseDto>(
-				new InvalidOperationException()
+			return NotFound<CreateDivorceCertificateResponseDto>( /* marriage certificate not found */
 			);
 		}
 

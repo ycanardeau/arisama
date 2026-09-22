@@ -8,9 +8,9 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Commands;
 
 internal class CreatePersonCommandHandler(ApplicationDbContext dbContext)
-	: IRequestHandler<CreatePersonCommand, Result<CreatePersonResponseDto>>
+	: IRequestHandler<CreatePersonCommand, Result<CreatePersonResponseDto, WebAppError>>
 {
-	public Task<Result<CreatePersonResponseDto>> Handle(
+	public Task<Result<CreatePersonResponseDto, WebAppError>> Handle(
 		CreatePersonCommand request,
 		CancellationToken cancellationToken
 	)

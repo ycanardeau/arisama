@@ -1,2 +1,4 @@
 global using MediatR;
-global using Nut.Results;
+global using WebApp.Shared.Errors;
+global using static WebApp.Shared.Extensions.ResultExtensions;
+global using Unit = Aigamo.Results.Unit;

@@ -8,5 +8,7 @@
 	<ItemGroup>
 		<PackageReference Include="Aigamo.MatchGenerator" />
 		<Using Include="Aigamo.MatchGenerator" />
+		<PackageReference Include="Aigamo.Results" />
+		<Using Include="Aigamo.Results" />
 	</ItemGroup>
 </Project>

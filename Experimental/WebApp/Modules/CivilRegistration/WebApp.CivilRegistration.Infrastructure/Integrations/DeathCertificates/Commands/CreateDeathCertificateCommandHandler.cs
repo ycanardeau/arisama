@@ -8,9 +8,12 @@ using WebApp.CivilRegistration.Infrastructure.Persistence;
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.DeathCertificates.Commands;
 
 internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbContext)
-	: IRequestHandler<CreateDeathCertificateCommand, Result<CreateDeathCertificateResponseDto>>
+	: IRequestHandler<
+		CreateDeathCertificateCommand,
+		Result<CreateDeathCertificateResponseDto, WebAppError>
+	>
 {
-	public async Task<Result<CreateDeathCertificateResponseDto>> Handle(
+	public async Task<Result<CreateDeathCertificateResponseDto, WebAppError>> Handle(
 		CreateDeathCertificateCommand request,
 		CancellationToken cancellationToken
 	)
@@ -21,8 +24,7 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 
 		if (deceased is null)
 		{
-			return Result.Error<CreateDeathCertificateResponseDto>(
-				new InvalidOperationException($"Person {request.DeceasedId} not found")
+			return NotFound<CreateDeathCertificateResponseDto>( /* $"Person {request.DeceasedId} not found" */
 			);
 		}
 

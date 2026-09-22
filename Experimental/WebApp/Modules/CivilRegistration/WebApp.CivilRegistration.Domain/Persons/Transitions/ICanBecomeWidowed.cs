@@ -7,7 +7,7 @@ internal interface ICanBecomeWidowed
 	: IMaritalTransition<BecomeWidowedCommand, MaritalStatus.Widowed>,
 		IHasMarriageInformation
 {
-	Result<MaritalStatus.Widowed> IMaritalTransition<
+	Result<MaritalStatus.Widowed, WebAppError> IMaritalTransition<
 		BecomeWidowedCommand,
 		MaritalStatus.Widowed
 	>.Execute(MaritalStateMachine stateMachine, BecomeWidowedCommand command)

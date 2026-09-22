@@ -13,7 +13,7 @@ internal class DivorceCertificate : Entity<DivorceCertificateId>
 
 	private DivorceCertificate() { }
 
-	private Result<DivorceCertificate> Divorce()
+	private Result<DivorceCertificate, WebAppError> Divorce()
 	{
 		return MarriageCertificate
 			.Husband.Divorce(new DivorceCommand(this))
@@ -21,7 +21,7 @@ internal class DivorceCertificate : Entity<DivorceCertificateId>
 			.Map(x => this);
 	}
 
-	public static Result<DivorceCertificate> Create(CreateCommand command)
+	public static Result<DivorceCertificate, WebAppError> Create(CreateCommand command)
 	{
 		var divorceCertificate = new DivorceCertificate
 		{

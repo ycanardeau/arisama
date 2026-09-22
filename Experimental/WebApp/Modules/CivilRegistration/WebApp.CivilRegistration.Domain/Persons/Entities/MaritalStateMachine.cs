@@ -33,7 +33,7 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 		return nextState;
 	}
 
-	public static Result<MaritalStateMachine> Create()
+	public static Result<MaritalStateMachine, WebAppError> Create()
 	{
 		var stateMachine = new MaritalStateMachine { Id = MaritalStateMachineId.CreateVersion7() };
 
@@ -44,36 +44,35 @@ internal class MaritalStateMachine : Entity<MaritalStateMachineId>
 
 	public MaritalStatus CurrentState => States.Last();
 
-	private Result<TNextState> ExecuteIf<TTransition, TCommand, TNextState>(TCommand command)
+	private Result<TNextState, WebAppError> ExecuteIf<TTransition, TCommand, TNextState>(
+		TCommand command
+	)
 		where TCommand : MaritalCommand
 		where TNextState : MaritalStatus
 		where TTransition : IMaritalTransition<TCommand, TNextState>
 	{
 		return CurrentState is not TTransition transition
-			? Result.Error<TNextState>(
-				new InvalidOperationException(
-					$"{nameof(CurrentState)} is not {typeof(TTransition).Name}"
-				)
+			? UnprocessableEntity<TNextState>( /* $"{nameof(CurrentState)} is not {typeof(TTransition).Name}" */
 			)
 			: transition.Execute(this, command).Map(AddState);
 	}
 
-	public Result<MaritalStatus.Married> Marry(MarryCommand command)
+	public Result<MaritalStatus.Married, WebAppError> Marry(MarryCommand command)
 	{
 		return ExecuteIf<ICanMarry, MarryCommand, MaritalStatus.Married>(command);
 	}
 
-	public Result<MaritalStatus.Divorced> Divorce(DivorceCommand command)
+	public Result<MaritalStatus.Divorced, WebAppError> Divorce(DivorceCommand command)
 	{
 		return ExecuteIf<ICanDivorce, DivorceCommand, MaritalStatus.Divorced>(command);
 	}
 
-	public Result<MaritalStatus.Widowed> BecomeWidowed(BecomeWidowedCommand command)
+	public Result<MaritalStatus.Widowed, WebAppError> BecomeWidowed(BecomeWidowedCommand command)
 	{
 		return ExecuteIf<ICanBecomeWidowed, BecomeWidowedCommand, MaritalStatus.Widowed>(command);
 	}
 
-	public Result<MaritalStatus.Deceased> Decease(DeceaseCommand command)
+	public Result<MaritalStatus.Deceased, WebAppError> Decease(DeceaseCommand command)
 	{
 		return ExecuteIf<ICanDecease, DeceaseCommand, MaritalStatus.Deceased>(command);
 	}

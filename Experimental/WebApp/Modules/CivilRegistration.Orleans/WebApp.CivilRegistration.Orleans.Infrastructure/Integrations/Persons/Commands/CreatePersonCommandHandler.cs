@@ -1,5 +1,4 @@
 using MediatR;
-using Nut.Results;
 using WebApp.CivilRegistration.Orleans.Contracts.Persons.Commands;
 using WebApp.CivilRegistration.Orleans.Contracts.Persons.Dtos;
 using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
@@ -7,9 +6,9 @@ using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Integrations.Persons.Commands;
 
 internal class CreatePersonCommandHandler(IGrainFactory grains)
-	: IRequestHandler<CreatePersonCommand, Result<CreatePersonResponseDto>>
+	: IRequestHandler<CreatePersonCommand, Result<CreatePersonResponseDto, WebAppError>>
 {
-	public Task<Result<CreatePersonResponseDto>> Handle(
+	public Task<Result<CreatePersonResponseDto, WebAppError>> Handle(
 		CreatePersonCommand request,
 		CancellationToken cancellationToken
 	)
@@ -18,6 +17,6 @@ internal class CreatePersonCommandHandler(IGrainFactory grains)
 
 		return personGrain
 			.Initialize()
-			.FlatMap(() => Result.Ok(new CreatePersonResponseDto(Id: personGrain.GetPrimaryKey())));
+			.FlatMap(_ => Ok(new CreatePersonResponseDto(Id: personGrain.GetPrimaryKey())));
 	}
 }

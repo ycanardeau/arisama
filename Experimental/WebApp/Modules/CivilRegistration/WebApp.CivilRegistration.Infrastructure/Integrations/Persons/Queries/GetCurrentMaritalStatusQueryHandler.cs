@@ -10,9 +10,13 @@ namespace WebApp.CivilRegistration.Infrastructure.Integrations.Persons.Queries;
 internal class GetCurrentMaritalStatusQueryHandler(
 	ApplicationDbContext dbContext,
 	IMaritalStatusMapper maritalStatusMapper
-) : IRequestHandler<GetCurrentMaritalStatusQuery, Result<GetCurrentMaritalStatusResponseDto>>
+)
+	: IRequestHandler<
+		GetCurrentMaritalStatusQuery,
+		Result<GetCurrentMaritalStatusResponseDto, WebAppError>
+	>
 {
-	public async Task<Result<GetCurrentMaritalStatusResponseDto>> Handle(
+	public async Task<Result<GetCurrentMaritalStatusResponseDto, WebAppError>> Handle(
 		GetCurrentMaritalStatusQuery request,
 		CancellationToken cancellationToken
 	)
@@ -23,8 +27,7 @@ internal class GetCurrentMaritalStatusQueryHandler(
 
 		if (person is null)
 		{
-			return Result.Error<GetCurrentMaritalStatusResponseDto>(
-				new InvalidOperationException($"Person {request.Id} not found")
+			return NotFound<GetCurrentMaritalStatusResponseDto>( /* $"Person {request.Id} not found" */
 			);
 		}
 
