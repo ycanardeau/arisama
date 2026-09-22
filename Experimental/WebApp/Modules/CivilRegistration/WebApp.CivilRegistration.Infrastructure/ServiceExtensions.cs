@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure;
@@ -17,9 +16,8 @@ internal static class ServiceExtensions
 	{
 		return builder.Services.AddDbContext<ApplicationDbContext>(options =>
 		{
-			options.UseMySql(
+			options.UseNpgsql(
 				builder.Configuration.GetConnectionString("DefaultConnection"),
-				MySqlServerVersion.LatestSupportedServerVersion,
 				sqlOptions =>
 				{
 					sqlOptions
@@ -29,16 +27,7 @@ internal static class ServiceExtensions
 						.MigrationsHistoryTable(
 							tableName: HistoryRepository.DefaultTableName,
 							schema: ApplicationDbContext.Schema
-						)
-						// https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/pull/982#issue-532498042
-						.SchemaBehavior(
-							MySqlSchemaBehavior.Translate,
-							(schema, entity) => $"{schema ?? "dbo"}_{entity}"
-						)
-						// https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/1752#issuecomment-1824090041
-						.UseMicrosoftJson()
-						// https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql/issues/1960#issuecomment-2541898357
-						.TranslateParameterizedCollectionsToConstants();
+						);
 				}
 			);
 		});

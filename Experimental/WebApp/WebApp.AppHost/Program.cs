@@ -1,9 +1,9 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var webAppDb = builder
-	.AddMySql("mysql")
-	.WithDataVolume("VolumeMount.mysql.data")
-	.WithPhpMyAdmin()
+	.AddPostgres("postgres")
+	.WithDataVolume()
+	.WithPgAdmin()
 	.AddDatabase("DefaultConnection", "WebApp");
 
 var civilRegistrationMigrationService = builder
