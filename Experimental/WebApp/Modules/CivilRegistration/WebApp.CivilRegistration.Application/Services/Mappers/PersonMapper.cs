@@ -12,10 +12,7 @@ internal class PersonMapper(IMaritalStatusMapper maritalStatusMapper) : IPersonM
 	{
 		return new PersonDto(
 			Id: person.Id.Value,
-			Gender: person.Gender.Match(
-				onMale: x => ApiGender.Male,
-				onFemale: x => ApiGender.Female
-			),
+			Gender: person.Gender.Match(Male: x => ApiGender.Male, Female: x => ApiGender.Female),
 			Age: person.Age.Value,
 			MaritalStateMachine: new MaritalStateMachineDto(
 				Version: person.MaritalStateMachine.Version.Value,

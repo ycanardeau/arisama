@@ -73,12 +73,6 @@ internal class MaritalStatusMapper : IMaritalStatusMapper
 
 	public MaritalStatusDto Map(MaritalStatus value)
 	{
-		return value.Match(
-			onSingle: Map,
-			onMarried: Map,
-			onDivorced: Map,
-			onWidowed: Map,
-			onDeceased: Map
-		);
+		return value.Match(Single: Map, Married: Map, Divorced: Map, Widowed: Map, Deceased: Map);
 	}
 }

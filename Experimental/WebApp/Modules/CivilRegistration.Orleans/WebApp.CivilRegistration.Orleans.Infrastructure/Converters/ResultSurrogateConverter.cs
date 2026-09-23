@@ -7,8 +7,8 @@ file static class CivilRegistrationOrleansErrorMapping
 	public static CivilRegistrationOrleansErrorKind ToKind(CivilRegistrationOrleansError error)
 	{
 		return error.Match(
-			onAlreadyInitialized: _ => CivilRegistrationOrleansErrorKind.AlreadyInitialized,
-			onInvalidMaritalState: _ => CivilRegistrationOrleansErrorKind.InvalidMaritalState
+			AlreadyInitialized: _ => CivilRegistrationOrleansErrorKind.AlreadyInitialized,
+			InvalidMaritalState: _ => CivilRegistrationOrleansErrorKind.InvalidMaritalState
 		);
 	}
 

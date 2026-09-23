@@ -17,7 +17,7 @@ internal class PersonConfiguration : IEntityTypeConfiguration<Person>
 			.Property(x => x.Gender)
 			.HasMaxLength(255)
 			.HasConversion(
-				x => x.Match(onMale: _ => "Male", onFemale: _ => "Female"),
+				x => x.Match(Male: _ => "Male", Female: _ => "Female"),
 				x =>
 					x == "Male" ? new Gender.Male()
 					: x == "Female" ? new Gender.Female()

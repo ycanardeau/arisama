@@ -17,13 +17,13 @@ internal static class ResultExtensions
 			onOk: value => TypedResults.Ok(value),
 			onError: error =>
 				error.Match(
-					onAlreadyInitialized: _ =>
+					AlreadyInitialized: _ =>
 						Problem(
 							StatusCodes.Status409Conflict,
 							nameof(CivilRegistrationOrleansError.AlreadyInitialized),
 							"The marital state machine has already been initialized."
 						),
-					onInvalidMaritalState: _ =>
+					InvalidMaritalState: _ =>
 						Problem(
 							StatusCodes.Status422UnprocessableEntity,
 							nameof(CivilRegistrationOrleansError.InvalidMaritalState),

@@ -19,8 +19,8 @@ internal class CreatePersonCommandHandler(ApplicationDbContext dbContext)
 			.Create(
 				age: new Age(request.Age),
 				gender: request.Gender.Match<Gender>(
-					onMale: () => new Gender.Male(),
-					onFemale: () => new Gender.Female()
+					Male: () => new Gender.Male(),
+					Female: () => new Gender.Female()
 				)
 			)
 			.Tap(x => dbContext.People.Add(x))

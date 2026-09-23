@@ -21,42 +21,42 @@ internal static class ResultExtensions
 			onOk: value => TypedResults.Ok(value),
 			onError: error =>
 				error.Match(
-					onSameIndividual: _ =>
+					SameIndividual: _ =>
 						Unprocessable(
 							nameof(CivilRegistrationError.SameIndividual),
 							"A marriage requires two individuals."
 						),
-					onSameSexMarriage: _ =>
+					SameSexMarriage: _ =>
 						Unprocessable(
 							nameof(CivilRegistrationError.SameSexMarriage),
 							"Same-sex marriage is not allowed in Japan as of writing."
 						),
-					onIneligibleHusband: _ =>
+					IneligibleHusband: _ =>
 						Unprocessable(
 							nameof(CivilRegistrationError.IneligibleHusband),
 							"The person cannot take the role of husband."
 						),
-					onIneligibleWife: _ =>
+					IneligibleWife: _ =>
 						Unprocessable(
 							nameof(CivilRegistrationError.IneligibleWife),
 							"The person cannot take the role of wife."
 						),
-					onNotMarriageable: _ =>
+					NotMarriageable: _ =>
 						Unprocessable(
 							nameof(CivilRegistrationError.NotMarriageable),
 							"The person is not of marriageable age."
 						),
-					onInvalidMaritalState: _ =>
+					InvalidMaritalState: _ =>
 						Unprocessable(
 							nameof(CivilRegistrationError.InvalidMaritalState),
 							"The requested transition is not valid from the current marital state."
 						),
-					onPersonNotFound: _ =>
+					PersonNotFound: _ =>
 						NotFound(
 							nameof(CivilRegistrationError.PersonNotFound),
 							"The referenced person does not exist."
 						),
-					onMarriageCertificateNotFound: _ =>
+					MarriageCertificateNotFound: _ =>
 						NotFound(
 							nameof(CivilRegistrationError.MarriageCertificateNotFound),
 							"The referenced marriage certificate does not exist."

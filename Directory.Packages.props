@@ -3,8 +3,8 @@
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageVersion Include="Aigamo.MatchGenerator" Version="0.0.0-preview023" />
-		<PackageVersion Include="Aigamo.Results" Version="0.0.0-preview003" />
+		<PackageVersion Include="Aigamo.MatchGenerator" Version="0.0.0-preview026" />
+		<PackageVersion Include="Aigamo.Results" Version="0.0.0-preview005" />
 		<PackageVersion Include="Aspire.Hosting.AppHost" Version="13.5.4" />
 		<PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.5.4" />
 		<PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.5.4" />
