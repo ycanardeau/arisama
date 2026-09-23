@@ -3,7 +3,7 @@ using WebApp.CivilRegistration.Orleans.Infrastructure.Grains.Abstractions;
 namespace WebApp.CivilRegistration.Orleans.Infrastructure.Grains;
 
 internal class PersonGrain(
-	[PersistentState(stateName: "person", storageName: "persons")]
+	[PersistentState(stateName: "person", storageName: "people")]
 		IPersistentState<PersonState> state
 ) : Grain, IPersonGrain
 {

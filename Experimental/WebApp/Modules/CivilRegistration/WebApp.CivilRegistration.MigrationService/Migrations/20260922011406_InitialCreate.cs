@@ -14,7 +14,7 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
 			migrationBuilder.EnsureSchema(name: "WebApp_CivilRegistration");
 
 			migrationBuilder.CreateTable(
-				name: "Persons",
+				name: "People",
 				schema: "WebApp_CivilRegistration",
 				columns: table => new
 				{
@@ -28,7 +28,7 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
 				},
 				constraints: table =>
 				{
-					table.PrimaryKey("PK_Persons", x => x.Id);
+					table.PrimaryKey("PK_People", x => x.Id);
 				}
 			);
 
@@ -45,18 +45,18 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
 				{
 					table.PrimaryKey("PK_DeathCertificates", x => x.Id);
 					table.ForeignKey(
-						name: "FK_DeathCertificates_Persons_DeceasedId",
+						name: "FK_DeathCertificates_People_DeceasedId",
 						column: x => x.DeceasedId,
 						principalSchema: "WebApp_CivilRegistration",
-						principalTable: "Persons",
+						principalTable: "People",
 						principalColumn: "Id",
 						onDelete: ReferentialAction.Cascade
 					);
 					table.ForeignKey(
-						name: "FK_DeathCertificates_Persons_WidowedId",
+						name: "FK_DeathCertificates_People_WidowedId",
 						column: x => x.WidowedId,
 						principalSchema: "WebApp_CivilRegistration",
-						principalTable: "Persons",
+						principalTable: "People",
 						principalColumn: "Id"
 					);
 				}
@@ -76,10 +76,10 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
 				{
 					table.PrimaryKey("PK_MaritalStateMachines", x => x.Id);
 					table.ForeignKey(
-						name: "FK_MaritalStateMachines_Persons_PersonId",
+						name: "FK_MaritalStateMachines_People_PersonId",
 						column: x => x.PersonId,
 						principalSchema: "WebApp_CivilRegistration",
-						principalTable: "Persons",
+						principalTable: "People",
 						principalColumn: "Id",
 						onDelete: ReferentialAction.Cascade
 					);
@@ -99,18 +99,18 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
 				{
 					table.PrimaryKey("PK_MarriageCertificates", x => x.Id);
 					table.ForeignKey(
-						name: "FK_MarriageCertificates_Persons_HusbandId",
+						name: "FK_MarriageCertificates_People_HusbandId",
 						column: x => x.HusbandId,
 						principalSchema: "WebApp_CivilRegistration",
-						principalTable: "Persons",
+						principalTable: "People",
 						principalColumn: "Id",
 						onDelete: ReferentialAction.Cascade
 					);
 					table.ForeignKey(
-						name: "FK_MarriageCertificates_Persons_WifeId",
+						name: "FK_MarriageCertificates_People_WifeId",
 						column: x => x.WifeId,
 						principalSchema: "WebApp_CivilRegistration",
-						principalTable: "Persons",
+						principalTable: "People",
 						principalColumn: "Id",
 						onDelete: ReferentialAction.Cascade
 					);
@@ -206,7 +206,7 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
 				schema: "WebApp_CivilRegistration"
 			);
 
-			migrationBuilder.DropTable(name: "Persons", schema: "WebApp_CivilRegistration");
+			migrationBuilder.DropTable(name: "People", schema: "WebApp_CivilRegistration");
 		}
 	}
 }

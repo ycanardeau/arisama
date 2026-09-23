@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.Entities;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
-using WebApp.CivilRegistration.Domain.Persons.Entities;
+using WebApp.CivilRegistration.Domain.People.Entities;
 
 namespace WebApp.CivilRegistration.Infrastructure.Persistence;
 
@@ -13,7 +13,7 @@ internal class ApplicationDbContext(
 {
 	public static string Schema { get; } = "WebApp_CivilRegistration";
 
-	public DbSet<Person> Persons { get; set; }
+	public DbSet<Person> People { get; set; }
 
 	public DbSet<MaritalStateMachine> MaritalStateMachines { get; set; }
 

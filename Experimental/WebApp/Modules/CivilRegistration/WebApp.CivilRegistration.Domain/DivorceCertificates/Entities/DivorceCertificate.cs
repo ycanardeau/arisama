@@ -2,7 +2,7 @@ using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.DivorceCertificates.ValueObjects;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.ValueObjects;
-using WebApp.CivilRegistration.Domain.Persons.Entities;
+using WebApp.CivilRegistration.Domain.People.Entities;
 
 namespace WebApp.CivilRegistration.Domain.DivorceCertificates.Entities;
 

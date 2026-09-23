@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApp.CivilRegistration.Contracts.MarriageCertificates.Commands;
 using WebApp.CivilRegistration.Contracts.MarriageCertificates.Dtos;
 using WebApp.CivilRegistration.Domain.MarriageCertificates.Entities;
-using WebApp.CivilRegistration.Domain.Persons.Entities;
-using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
+using WebApp.CivilRegistration.Domain.People.Entities;
+using WebApp.CivilRegistration.Domain.People.ValueObjects;
 using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.MarriageCertificates.Commands;
@@ -20,7 +20,7 @@ internal class CreateMarriageCertificateCommandHandler(ApplicationDbContext dbCo
 	)
 	{
 		var person = await dbContext
-			.Persons.Include(x => x.MaritalStateMachine)
+			.People.Include(x => x.MaritalStateMachine)
 			.SingleOrDefaultAsync(x => x.Id == personId, cancellationToken);
 
 		return person is null ? new CivilRegistrationError.PersonNotFound() : person;

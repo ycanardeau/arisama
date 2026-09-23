@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using WebApp.CivilRegistration.Domain.Persons.Entities;
-using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
+using WebApp.CivilRegistration.Domain.People.Entities;
+using WebApp.CivilRegistration.Domain.People.ValueObjects;
 
 namespace WebApp.CivilRegistration.Infrastructure.Persistence.Configurations;
 

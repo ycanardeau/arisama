@@ -1,8 +1,8 @@
 using WebApp.CivilRegistration.Application.Interfaces.Mappers;
-using WebApp.CivilRegistration.Contracts.Persons.Dtos;
-using WebApp.CivilRegistration.Contracts.Persons.Enums;
-using WebApp.CivilRegistration.Domain.Persons.Entities;
-using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
+using WebApp.CivilRegistration.Contracts.People.Dtos;
+using WebApp.CivilRegistration.Contracts.People.Enums;
+using WebApp.CivilRegistration.Domain.People.Entities;
+using WebApp.CivilRegistration.Domain.People.ValueObjects;
 
 namespace WebApp.CivilRegistration.Application.Services.Mappers;
 

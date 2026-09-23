@@ -1,5 +1,5 @@
-using WebApp.CivilRegistration.Contracts.Persons.Dtos;
-using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
+using WebApp.CivilRegistration.Contracts.People.Dtos;
+using WebApp.CivilRegistration.Domain.People.ValueObjects;
 
 namespace WebApp.CivilRegistration.Application.Interfaces.Mappers;
 

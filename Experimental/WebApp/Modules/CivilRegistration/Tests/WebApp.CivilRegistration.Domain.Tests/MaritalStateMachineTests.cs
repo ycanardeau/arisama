@@ -2,7 +2,7 @@ namespace WebApp.CivilRegistration.Domain.Tests;
 
 public class MaritalStateMachineTests
 {
-	private static Person NewPerson() => TestPersons.Male(30);
+	private static Person NewPerson() => TestPeople.Male(30);
 
 	[Fact]
 	public void NewlyCreatedPerson_StartsSingle()

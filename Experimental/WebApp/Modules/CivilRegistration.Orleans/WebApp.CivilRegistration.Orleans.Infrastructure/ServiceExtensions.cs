@@ -43,7 +43,7 @@ internal static class ServiceExtensions
 		builder.UseOrleans(static siloBuilder =>
 		{
 			siloBuilder.UseLocalhostClustering();
-			siloBuilder.AddMemoryGrainStorage("persons");
+			siloBuilder.AddMemoryGrainStorage("people");
 			siloBuilder.AddMemoryGrainStorage("maritalStateMachines");
 			siloBuilder.AddMemoryGrainStorage("marriageCertificates");
 		});

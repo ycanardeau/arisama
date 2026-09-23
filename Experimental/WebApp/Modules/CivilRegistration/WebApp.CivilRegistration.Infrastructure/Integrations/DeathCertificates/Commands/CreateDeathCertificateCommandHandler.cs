@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Commands;
 using WebApp.CivilRegistration.Contracts.DeathCertificates.Dtos;
 using WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
-using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
+using WebApp.CivilRegistration.Domain.People.ValueObjects;
 using WebApp.CivilRegistration.Infrastructure.Persistence;
 
 namespace WebApp.CivilRegistration.Infrastructure.Integrations.DeathCertificates.Commands;
@@ -19,7 +19,7 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 	)
 	{
 		var deceased = await dbContext
-			.Persons.Include(x => x.MaritalStateMachine)
+			.People.Include(x => x.MaritalStateMachine)
 			.SingleOrDefaultAsync(x => x.Id == new PersonId(request.DeceasedId), cancellationToken);
 
 		if (deceased is null)
@@ -30,7 +30,7 @@ internal class CreateDeathCertificateCommandHandler(ApplicationDbContext dbConte
 		var widowed = deceased.MaritalStateMachine.CurrentState is not MaritalStatus.Married state
 			? null
 			: await dbContext
-				.Persons.Include(x => x.MaritalStateMachine)
+				.People.Include(x => x.MaritalStateMachine)
 				.SingleAsync(
 					x => x.Id == state.MarriageInformation.MarriedWithId,
 					cancellationToken

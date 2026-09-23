@@ -1,4 +1,4 @@
-using WebApp.CivilRegistration.Domain.Persons.Entities;
+using WebApp.CivilRegistration.Domain.People.Entities;
 
 namespace WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
 

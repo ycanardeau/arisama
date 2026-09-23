@@ -1,7 +1,7 @@
 using WebApp.CivilRegistration.Domain.Common.Entities;
 using WebApp.CivilRegistration.Domain.DeathCertificates.ValueObjects;
-using WebApp.CivilRegistration.Domain.Persons.Entities;
-using WebApp.CivilRegistration.Domain.Persons.ValueObjects;
+using WebApp.CivilRegistration.Domain.People.Entities;
+using WebApp.CivilRegistration.Domain.People.ValueObjects;
 
 namespace WebApp.CivilRegistration.Domain.DeathCertificates.Entities;
 

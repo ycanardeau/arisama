@@ -81,7 +81,7 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
                     b.ToTable("MarriageCertificates", "WebApp_CivilRegistration");
                 });
 
-            modelBuilder.Entity("WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStateMachine", b =>
+            modelBuilder.Entity("WebApp.CivilRegistration.Domain.People.Entities.MaritalStateMachine", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -105,7 +105,7 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
                     b.ToTable("MaritalStateMachines", "WebApp_CivilRegistration");
                 });
 
-            modelBuilder.Entity("WebApp.CivilRegistration.Domain.Persons.Entities.Person", b =>
+            modelBuilder.Entity("WebApp.CivilRegistration.Domain.People.Entities.Person", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -120,18 +120,18 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Persons", "WebApp_CivilRegistration");
+                    b.ToTable("People", "WebApp_CivilRegistration");
                 });
 
             modelBuilder.Entity("WebApp.CivilRegistration.Domain.DeathCertificates.Entities.DeathCertificate", b =>
                 {
-                    b.HasOne("WebApp.CivilRegistration.Domain.Persons.Entities.Person", "Deceased")
+                    b.HasOne("WebApp.CivilRegistration.Domain.People.Entities.Person", "Deceased")
                         .WithMany()
                         .HasForeignKey("DeceasedId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApp.CivilRegistration.Domain.Persons.Entities.Person", "Widowed")
+                    b.HasOne("WebApp.CivilRegistration.Domain.People.Entities.Person", "Widowed")
                         .WithMany()
                         .HasForeignKey("WidowedId");
 
@@ -153,13 +153,13 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
 
             modelBuilder.Entity("WebApp.CivilRegistration.Domain.MarriageCertificates.Entities.MarriageCertificate", b =>
                 {
-                    b.HasOne("WebApp.CivilRegistration.Domain.Persons.Entities.Person", "Husband")
+                    b.HasOne("WebApp.CivilRegistration.Domain.People.Entities.Person", "Husband")
                         .WithMany()
                         .HasForeignKey("HusbandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebApp.CivilRegistration.Domain.Persons.Entities.Person", "Wife")
+                    b.HasOne("WebApp.CivilRegistration.Domain.People.Entities.Person", "Wife")
                         .WithMany()
                         .HasForeignKey("WifeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -170,18 +170,18 @@ namespace WebApp.CivilRegistration.MigrationService.Migrations
                     b.Navigation("Wife");
                 });
 
-            modelBuilder.Entity("WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStateMachine", b =>
+            modelBuilder.Entity("WebApp.CivilRegistration.Domain.People.Entities.MaritalStateMachine", b =>
                 {
-                    b.HasOne("WebApp.CivilRegistration.Domain.Persons.Entities.Person", "Person")
+                    b.HasOne("WebApp.CivilRegistration.Domain.People.Entities.Person", "Person")
                         .WithOne("MaritalStateMachine")
-                        .HasForeignKey("WebApp.CivilRegistration.Domain.Persons.Entities.MaritalStateMachine", "PersonId")
+                        .HasForeignKey("WebApp.CivilRegistration.Domain.People.Entities.MaritalStateMachine", "PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Person");
                 });
 
-            modelBuilder.Entity("WebApp.CivilRegistration.Domain.Persons.Entities.Person", b =>
+            modelBuilder.Entity("WebApp.CivilRegistration.Domain.People.Entities.Person", b =>
                 {
                     b.Navigation("MaritalStateMachine")
                         .IsRequired();

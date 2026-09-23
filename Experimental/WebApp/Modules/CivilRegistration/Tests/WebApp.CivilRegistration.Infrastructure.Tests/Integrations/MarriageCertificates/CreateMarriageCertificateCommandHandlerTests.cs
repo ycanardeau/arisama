@@ -9,7 +9,7 @@ public class CreateMarriageCertificateCommandHandlerTests
 	{
 		await using var context = TestDb.Create(dbName);
 		var person = Person.Create(new Age(age), gender).ValueOrThrow();
-		context.Persons.Add(person);
+		context.People.Add(person);
 		await context.SaveChangesAsync();
 		return person.Id.Value;
 	}
